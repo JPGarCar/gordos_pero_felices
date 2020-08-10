@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:gordos_pero_felizes/widgets/custom_popupMenuButton.dart';
 
-class CategoryPage extends StatefulWidget {
+class CategoryScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _CategoryPageState();
+    return _CategoryScreenState();
   }
 }
 
-class _CategoryPageState extends State<CategoryPage> {
+class _CategoryScreenState extends State<CategoryScreen> {
   List<Widget> getIconList(IconData iconData, int amount) {
     List<Widget> moneyList = new List();
     for (var i = 0; i < amount; i++) {

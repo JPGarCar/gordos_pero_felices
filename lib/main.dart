@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gordos_pero_felizes/business_page.dart';
-import 'package:gordos_pero_felizes/category_page.dart';
+import 'package:gordos_pero_felizes/screens/business_screen.dart';
+import 'package:gordos_pero_felizes/screens/category_screen.dart';
 
-import 'home_page.dart';
+import 'screens/home_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,9 +16,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
       ),
       routes: {
-        "/": (context) => HomePage(),
-        "/categoryPage": (context) => CategoryPage(),
-        "/businessPage": (context) => BusinessPage(),
+        "/": (context) => HomeScreen(),
+        "/categoryPage": (context) => CategoryScreen(),
+        "/businessPage": (context) => BusinessScreen(),
       },
       initialRoute: "/",
     );

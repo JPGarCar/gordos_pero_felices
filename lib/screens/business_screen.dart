@@ -2,14 +2,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class BusinessPage extends StatefulWidget {
+class BusinessScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _BusinessPageState();
+    return _BusinessScreenState();
   }
 }
 
-class _BusinessPageState extends State<BusinessPage> {
+class _BusinessScreenState extends State<BusinessScreen> {
   List<Widget> getIconList(IconData iconData, int amount) {
     List<Widget> moneyList = new List();
     for (var i = 0; i < amount; i++) {
