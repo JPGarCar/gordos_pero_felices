@@ -12,4 +12,4 @@ const k_appPadding = EdgeInsets.symmetric(horizontal: 20, vertical: 10);
 
 const k_iconSize = 40.0;
 
-const k_circularBorderRadius = 25.0;
+const k_circularBorderRadius = 15.0;

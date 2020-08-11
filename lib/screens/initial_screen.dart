@@ -2,6 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
+import 'package:gordos_pero_felizes/screens/new_user_screen.dart';
+import 'package:gordos_pero_felizes/widgets/red_rounded_button.dart';
+import 'package:gordos_pero_felizes/widgets/red_rounded_text_field.dart';
+import 'package:gordos_pero_felizes/widgets/custom_bottom_sheet.dart' as cbs;
 
 class InitialScreen extends StatefulWidget {
   static final String screenId = 'initialScreen';
@@ -44,7 +48,7 @@ class _InitialScreenState extends State<InitialScreen> {
                       children: [
                         RedRoundedTextField(
                           isEmail: true,
-                          hint: 'Nombre de Usuario',
+                          hint: 'Correo Electrónico',
                           textEditingController: emailController,
                         ),
                         RedRoundedTextField(
@@ -70,88 +74,28 @@ class _InitialScreenState extends State<InitialScreen> {
                     Flexible(
                       fit: FlexFit.loose,
                       flex: 2,
-                      child: GestureDetector(
-                        onTap: () {
-                          // TODO send user to new user screen
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: k_redColor,
-                            borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
-                              BoxShadow(
-                                color: k_redColorLight,
-                                offset: Offset.fromDirection(.8, 10),
+                      child: RedRoundedButton(
+                        buttonText: 'Nuevos Usuarios',
+                        onTapFunction: () {
+                          cbs.showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20),
+                                ),
                               ),
-                            ],
-                          ),
-                          child: Text(
-                            'Nuevos Usuarios',
-                            style: TextStyle(
-                              color: k_whiteColor,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
+                              builder: (context) {
+                                return SingleChildScrollView(
+                                    child: NewUserScreen());
+                              });
+                        },
                       ),
                     ),
                   ],
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class RedRoundedTextField extends StatelessWidget {
-  final bool isEmail;
-  final bool isPassword;
-  final String hint;
-  final TextEditingController textEditingController;
-
-  RedRoundedTextField(
-      {this.isEmail = false,
-      this.isPassword = false,
-      @required this.hint,
-      @required this.textEditingController});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(10.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: k_redColor,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: [
-            BoxShadow(
-              color: k_redColorLight,
-              offset: Offset.fromDirection(.8, 10),
-            ),
-          ],
-        ),
-        child: TextField(
-          controller: textEditingController,
-          style: TextStyle(
-            color: k_whiteColor,
-            fontSize: 16,
-          ),
-          keyboardType:
-              isEmail ? TextInputType.emailAddress : TextInputType.text,
-          obscureText: isPassword,
-          decoration: InputDecoration(
-            hintStyle: TextStyle(
-              color: k_whiteColor,
-              fontSize: 14,
-            ),
-            hintText: hint,
-            contentPadding: EdgeInsets.symmetric(horizontal: 10),
-            border: InputBorder.none,
           ),
         ),
       ),
