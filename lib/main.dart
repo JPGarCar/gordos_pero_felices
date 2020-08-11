@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/screens/business_screen.dart';
 import 'package:gordos_pero_felizes/screens/category_screen.dart';
+import 'package:gordos_pero_felizes/screens/initial_screen.dart';
 
 import 'screens/home_screen.dart';
 
@@ -16,9 +17,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
       ),
       routes: {
-        "/": (context) => HomeScreen(),
-        "/categoryPage": (context) => CategoryScreen(),
-        "/businessPage": (context) => BusinessScreen(),
+        "/homeScreen": (context) => HomeScreen(),
+        "/categoryScreen": (context) => CategoryScreen(),
+        "/businessScreen": (context) => BusinessScreen(),
+        '/': (context) => InitialScreen(),
       },
       initialRoute: "/",
     );
