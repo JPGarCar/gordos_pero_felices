@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
-
-const k_cardIconSize = 15.0;
+import 'package:gordos_pero_felizes/models/business.dart';
+import 'package:gordos_pero_felizes/widgets/business_card.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String screenId = 'homeScreen';
@@ -96,151 +96,17 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: ListView.builder(
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 15),
-                      child: Container(
-                        height: 225,
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(k_circularBorderRadius),
-                          image: DecorationImage(
-                            image: AssetImage('images/gourmet_burger.jpg'),
-                            fit: BoxFit.fill,
-                            colorFilter: ColorFilter.mode(
-                                Colors.black54, BlendMode.darken),
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(
-                                              k_circularBorderRadius),
-                                          bottomLeft: Radius.circular(
-                                              k_circularBorderRadius)),
-                                      color: Colors.grey.shade900),
-                                  height: 80,
-                                  width: 115,
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 5),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      // TODO this should be dynamic
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.attach_money,
-                                            color: Colors.white,
-                                            size: k_cardIconSize,
-                                          ),
-                                          Icon(
-                                            Icons.attach_money,
-                                            color: Colors.white,
-                                            size: k_cardIconSize,
-                                          ),
-                                          Icon(
-                                            Icons.attach_money,
-                                            color: Colors.white,
-                                            size: k_cardIconSize,
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.home,
-                                            color: Colors.white,
-                                            size: k_cardIconSize,
-                                          ),
-                                          Icon(
-                                            Icons.home,
-                                            color: Colors.white,
-                                            size: k_cardIconSize,
-                                          ),
-                                          Icon(
-                                            Icons.home,
-                                            color: Colors.white,
-                                            size: k_cardIconSize,
-                                          ),
-                                          Icon(
-                                            Icons.home,
-                                            color: Colors.white,
-                                            size: k_cardIconSize,
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.tag_faces,
-                                            color: Colors.white,
-                                            size: k_cardIconSize,
-                                          ),
-                                          Icon(
-                                            Icons.tag_faces,
-                                            color: Colors.white,
-                                            size: k_cardIconSize,
-                                          ),
-                                          Icon(
-                                            Icons.tag_faces,
-                                            color: Colors.white,
-                                            size: k_cardIconSize,
-                                          ),
-                                          Icon(
-                                            Icons.tag_faces,
-                                            color: Colors.white,
-                                            size: k_cardIconSize,
-                                          ),
-                                          Icon(
-                                            Icons.tag_faces,
-                                            color: Colors.white,
-                                            size: k_cardIconSize,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 20, horizontal: 15),
-                                  child: Text(
-                                    // TODO this title should be dynamic
-                                    'Restaurantes Nuevos',
-                                    style: TextStyle(
-                                      color: k_whiteColor,
-                                      fontSize: 26,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
+                    return BusinessCard(
+                      business: Business(
+                          businessName: 'Frat Pack',
+                          happyRating: 3,
+                          houseRating: 2,
+                          moneyRating: 4,
+                          textReview: 'This is a great business',
+                          mainImageAsset: 'images/gourmet_burger.jpg'),
                     );
                   },
-                  itemCount: 3,
+                  itemCount: 1,
                 ),
               )
             ],
