@@ -7,3 +7,9 @@ const Color k_redColorLight = Color.fromARGB(255, 242, 140, 151);
 const Color k_whiteColor = Colors.white;
 
 const double k_elevation = 20.0;
+
+const k_appPadding = EdgeInsets.symmetric(horizontal: 20, vertical: 10);
+
+const k_iconSize = 40.0;
+
+const k_circularBorderRadius = 25.0;

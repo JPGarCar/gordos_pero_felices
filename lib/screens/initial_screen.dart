@@ -19,7 +19,7 @@ class _InitialScreenState extends State<InitialScreen> {
     return SafeArea(
       child: Scaffold(
         body: Container(
-          padding: EdgeInsets.symmetric(horizontal: 45, vertical: 10),
+          padding: k_appPadding,
           color: k_whiteColor,
           child: Column(
             children: [

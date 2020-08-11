@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         BusinessScreen.screenId: (context) => BusinessScreen(),
         InitialScreen.screenId: (context) => InitialScreen(),
       },
-      initialRoute: InitialScreen.screenId,
+      initialRoute: HomeScreen.screenId,
     );
   }
 }
