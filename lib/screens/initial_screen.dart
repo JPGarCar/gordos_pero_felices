@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 
 class InitialScreen extends StatefulWidget {
+  static final String screenId = 'initialScreen';
+
   @override
   _InitialScreenState createState() => _InitialScreenState();
 }

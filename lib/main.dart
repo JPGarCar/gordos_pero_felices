@@ -17,12 +17,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
       ),
       routes: {
-        "/homeScreen": (context) => HomeScreen(),
-        "/categoryScreen": (context) => CategoryScreen(),
-        "/businessScreen": (context) => BusinessScreen(),
-        '/': (context) => InitialScreen(),
+        HomeScreen.screenId: (context) => HomeScreen(),
+        CategoryScreen.screenId: (context) => CategoryScreen(),
+        BusinessScreen.screenId: (context) => BusinessScreen(),
+        InitialScreen.screenId: (context) => InitialScreen(),
       },
-      initialRoute: "/",
+      initialRoute: InitialScreen.screenId,
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BusinessScreen extends StatefulWidget {
+  static final String screenId = 'businessScreen';
   @override
   State<StatefulWidget> createState() {
     return _BusinessScreenState();

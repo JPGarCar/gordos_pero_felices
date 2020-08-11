@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:gordos_pero_felizes/widgets/custom_popupMenuButton.dart';
 
 class CategoryScreen extends StatefulWidget {
+  static final String screenId = 'categoryScreen';
   @override
   State<StatefulWidget> createState() {
     return _CategoryScreenState();
