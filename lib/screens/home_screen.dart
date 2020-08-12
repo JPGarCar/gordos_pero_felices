@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/models/business.dart';
+import 'package:gordos_pero_felizes/models/category.dart';
 import 'package:gordos_pero_felizes/widgets/business_card.dart';
+import 'package:gordos_pero_felizes/widgets/category_card.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String screenId = 'homeScreen';
@@ -96,14 +98,11 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: ListView.builder(
                   itemBuilder: (context, index) {
-                    return BusinessCard(
-                      business: Business(
-                          businessName: 'Frat Pack',
-                          happyRating: 3,
-                          houseRating: 2,
-                          moneyRating: 4,
-                          textReview: 'This is a great business',
-                          mainImageAsset: 'images/gourmet_burger.jpg'),
+                    return CategoryCard(
+                      category: Category(
+                        name: 'Burgers',
+                        imageAssetPath: 'images/gourmet_burger.jpg',
+                      ),
                     );
                   },
                   itemCount: 1,
