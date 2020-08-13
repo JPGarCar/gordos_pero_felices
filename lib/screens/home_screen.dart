@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
-                  fontSize: 20,
+                  fontSize: 18,
                 ),
               ),
               Padding(
@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   itemCount: 3,
                 ),
-              )
+              ),
             ],
           ),
         ),

@@ -53,16 +53,22 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   child: Image.asset('images/gordos_logo.png'),
                 ),
               ),
-              Text(
-                'Restaurantes por Categoría',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  fontSize: 22,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 15),
+                child: Text(
+                  'Categorias',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                    fontSize: 18,
+                  ),
                 ),
               ),
               Expanded(
-                child: ListView.builder(
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                  ),
                   itemBuilder: (context, index) {
                     return CategoryCard(
                       category: Category(
@@ -71,9 +77,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       ),
                     );
                   },
-                  itemCount: 1,
+                  itemCount: 12,
                 ),
-              )
+              ),
             ],
           ),
         ),
