@@ -3,6 +3,7 @@ import 'package:gordos_pero_felizes/screens/business_screen.dart';
 import 'package:gordos_pero_felizes/screens/categories_screen.dart';
 import 'package:gordos_pero_felizes/screens/category_screen.dart';
 import 'package:gordos_pero_felizes/screens/initial_screen.dart';
+import 'package:gordos_pero_felizes/screens/user_screen.dart';
 
 import 'screens/home_screen.dart';
 
@@ -24,8 +25,9 @@ class MyApp extends StatelessWidget {
         BusinessScreen.screenId: (context) => BusinessScreen(),
         InitialScreen.screenId: (context) => InitialScreen(),
         CategoriesScreen.screenId: (context) => CategoriesScreen(),
+        UserScreen.screenId: (context) => UserScreen(),
       },
-      initialRoute: InitialScreen.screenId,
+      initialRoute: UserScreen.screenId,
     );
   }
 }
