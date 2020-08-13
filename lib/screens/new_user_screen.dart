@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded_text_field.dart';
+import 'package:gordos_pero_felizes/widgets/simple_text_button.dart';
 
 import '../constants.dart';
 
@@ -21,11 +22,13 @@ class _NewUserScreenState extends State<NewUserScreen> {
         children: [
           Row(
             children: [
-              Text(
-                'Regresar',
-                style: TextStyle(
+              SimpleTextButton(
+                text: 'Regresar',
+                textStyle: TextStyle(
                   color: k_redColor,
+                  fontWeight: FontWeight.w700,
                 ),
+                verticalPadding: 0,
               ),
             ],
           ),
@@ -91,11 +94,11 @@ class _NewUserScreenState extends State<NewUserScreen> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 35),
+                      padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
                         children: [
                           Expanded(
-                            flex: 2,
+                            flex: 4,
                             child: RedRoundedTextField(
                               hint: 'DD',
                               textEditingController: TextEditingController(),
@@ -110,7 +113,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
                             ),
                           ),
                           Expanded(
-                            flex: 2,
+                            flex: 4,
                             child: RedRoundedTextField(
                               hint: 'MM',
                               textEditingController: TextEditingController(),
@@ -125,7 +128,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
                             ),
                           ),
                           Expanded(
-                            flex: 3,
+                            flex: 5,
                             child: RedRoundedTextField(
                               hint: 'YYYY',
                               textEditingController: TextEditingController(),

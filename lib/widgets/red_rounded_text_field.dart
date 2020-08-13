@@ -19,36 +19,39 @@ class RedRoundedTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(10.0),
-      child: Container(
-        //constraints: BoxConstraints.tightFor(height: 35), TODO check if they want to change this
-        decoration: BoxDecoration(
-          color: k_redColor,
-          borderRadius: BorderRadius.circular(k_circularBorderRadius),
-          boxShadow: [
-            BoxShadow(
-              color: k_redColorLight,
-              offset: Offset.fromDirection(.8, 8),
-            ),
-          ],
-        ),
-        child: TextField(
-          textAlign: isCenterText ? TextAlign.center : TextAlign.start,
-          controller: textEditingController,
-          style: TextStyle(
-            color: k_whiteColor,
-            fontSize: 16,
+      child: SizedBox(
+        height: 35,
+        child: Container(
+          //constraints: BoxConstraints.tightFor(height: 35), TODO check if they want to change this
+          decoration: BoxDecoration(
+            color: k_redColor,
+            borderRadius: BorderRadius.circular(k_circularBorderRadius),
+            boxShadow: [
+              BoxShadow(
+                color: k_redColorLight,
+                offset: Offset.fromDirection(.8, 8),
+              ),
+            ],
           ),
-          keyboardType:
-              isEmail ? TextInputType.emailAddress : TextInputType.text,
-          obscureText: isPassword,
-          decoration: InputDecoration(
-            hintStyle: TextStyle(
+          child: TextField(
+            textAlign: isCenterText ? TextAlign.center : TextAlign.start,
+            controller: textEditingController,
+            style: TextStyle(
               color: k_whiteColor,
-              fontSize: 14,
+              fontSize: 16,
             ),
-            hintText: hint,
-            contentPadding: EdgeInsets.only(right: 10, left: 10),
-            border: InputBorder.none,
+            keyboardType:
+                isEmail ? TextInputType.emailAddress : TextInputType.text,
+            obscureText: isPassword,
+            decoration: InputDecoration(
+              hintStyle: TextStyle(
+                color: k_whiteColor,
+                fontSize: 14,
+              ),
+              hintText: hint,
+              contentPadding: EdgeInsets.only(right: 20, left: 20, bottom: 15),
+              border: InputBorder.none,
+            ),
           ),
         ),
       ),
