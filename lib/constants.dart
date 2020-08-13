@@ -15,3 +15,9 @@ const k_iconSize = 40.0;
 const k_circularBorderRadius = 15.0;
 
 const k_cardIconSize = 15.0;
+
+const k_cbsHeightRatio = 18.5 / 20.0;
+
+const k_defaultTextButtonStyle = TextStyle(
+  fontSize: 18,
+);

@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/models/business.dart';
 import 'package:gordos_pero_felizes/models/category.dart';
+import 'package:gordos_pero_felizes/screens/menu_screen.dart';
 import 'package:gordos_pero_felizes/widgets/business_card.dart';
 import 'package:gordos_pero_felizes/widgets/category_card.dart';
+import 'package:gordos_pero_felizes/widgets/custom_bottom_sheet.dart' as cbs;
 
 class HomeScreen extends StatefulWidget {
   static final String screenId = 'homeScreen';
@@ -20,15 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: k_whiteColor,
-        bottomSheet: BottomSheet(
-            onClosing: () {},
-            builder: (context) {
-              return SizedBox(
-                height: 20,
-              );
-            }
-            // TODO to be determined,
-            ),
         body: Container(
           padding: k_appPadding,
           child: Column(
@@ -37,10 +30,26 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(
-                    Icons.list,
-                    color: k_redColor,
-                    size: k_iconSize,
+                  GestureDetector(
+                    child: Icon(
+                      Icons.list,
+                      color: k_redColor,
+                      size: k_iconSize,
+                    ),
+                    onTap: () {
+                      return cbs.showModalBottomSheet(
+                          isScrollControlled: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(k_circularBorderRadius),
+                              topRight: Radius.circular(k_circularBorderRadius),
+                            ),
+                          ),
+                          context: context,
+                          builder: (context) {
+                            return MenuScreen();
+                          });
+                    },
                   ),
                   Icon(
                     Icons.account_circle,

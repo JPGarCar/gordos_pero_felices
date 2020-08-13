@@ -17,6 +17,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:gordos_pero_felizes/constants.dart';
 
 const Duration _bottomSheetEnterDuration = Duration(milliseconds: 500);
 const Duration _bottomSheetExitDuration = Duration(milliseconds: 350);
@@ -293,7 +294,7 @@ class _ModalBottomSheetLayout extends SingleChildLayoutDelegate {
       maxWidth: constraints.maxWidth,
       minHeight: 0.0,
       maxHeight: isScrollControlled
-          ? constraints.maxHeight * 18.5 / 20.0
+          ? constraints.maxHeight * k_cbsHeightRatio
           : constraints.maxHeight * 9.0 / 16.0,
     );
   }

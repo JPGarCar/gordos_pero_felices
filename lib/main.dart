@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gordos_pero_felizes/models/category.dart';
 import 'package:gordos_pero_felizes/screens/business_screen.dart';
 import 'package:gordos_pero_felizes/screens/categories_screen.dart';
 import 'package:gordos_pero_felizes/screens/category_screen.dart';
