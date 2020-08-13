@@ -81,8 +81,12 @@ class _InitialScreenState extends State<InitialScreen> {
                       color: k_redColor,
                       thickness: 1.5,
                     ),
-                    FacebookLogInButton(),
-                    GoogleLoginButton(),
+                    Column(
+                      children: [
+                        FacebookLogInButton(),
+                        GoogleLoginButton(),
+                      ],
+                    ),
                     SimpleTextButton(
                       verticalPadding: 0,
                       text: 'Crear una cuenta aquí',
@@ -121,8 +125,9 @@ class GoogleLoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OutlineButton(
-      splashColor: Colors.lightBlueAccent,
-      highlightedBorderColor: Colors.blueAccent,
+      splashColor: Color.fromARGB(255, 66, 133, 244),
+      highlightedBorderColor: Color.fromARGB(255, 66, 133, 244),
+      color: Colors.white,
       onPressed: () {},
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(k_circularBorderRadius),
@@ -130,24 +135,26 @@ class GoogleLoginButton extends StatelessWidget {
       highlightElevation: 0,
       borderSide: BorderSide(color: Colors.grey),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 10),
+        padding: EdgeInsets.symmetric(vertical: 8),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(right: 10),
+              padding: const EdgeInsets.only(right: 24),
               child: Image.asset(
                 'images/google_logo.png',
-                height: 30.0,
+                height: 18.0,
               ),
             ),
             Text(
               'Ingresa con Google',
               style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey.shade800,
-                  fontWeight: FontWeight.w700),
+                fontSize: 14,
+                color: Colors.grey.shade800,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Roboto',
+              ),
             )
           ],
         ),
@@ -162,13 +169,13 @@ class FacebookLogInButton extends StatelessWidget {
     return OutlineButton(
       splashColor: Colors.white,
       highlightedBorderColor: Colors.blue,
-      color: Colors.blue,
+      color: Colors.white,
       onPressed: () {},
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(k_circularBorderRadius),
       ),
       highlightElevation: 0,
-      borderSide: BorderSide(color: Colors.blue),
+      borderSide: BorderSide(color: Color.fromARGB(255, 66, 103, 178)),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 10),
         child: Row(
@@ -176,18 +183,19 @@ class FacebookLogInButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: EdgeInsets.only(right: 10),
+              padding: EdgeInsets.only(right: 24),
               child: Image.asset(
                 'images/facebook_logo.png',
-                height: 30,
+                height: 18,
               ),
             ),
             Text(
               'Ingresa con Facebook',
               style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.blue),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color.fromARGB(255, 66, 103, 178),
+                  fontFamily: 'Klavika'),
             )
           ],
         ),
