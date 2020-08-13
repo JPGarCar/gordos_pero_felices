@@ -28,17 +28,16 @@ class _InitialScreenState extends State<InitialScreen> {
           child: Column(
             children: [
               Expanded(
-                child: SizedBox(),
                 flex: 1,
-              ),
-              Expanded(
-                flex: 6,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Flexible(
-                      child: Image.asset(
-                        'images/gordos_logo.png',
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 30, bottom: 15),
+                        child: Image.asset(
+                          'images/gordos_logo.png',
+                        ),
                       ),
                       fit: FlexFit.loose,
                       flex: 2,
@@ -68,14 +67,14 @@ class _InitialScreenState extends State<InitialScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     Flexible(
                       fit: FlexFit.loose,
                       flex: 2,
                       child: RedRoundedButton(
-                        buttonText: 'Nuevos Usuarios',
+                        buttonText: 'Ingresar',
                         onTapFunction: () {
                           cbs.showModalBottomSheet(
                               isScrollControlled: true,
@@ -90,6 +89,35 @@ class _InitialScreenState extends State<InitialScreen> {
                                     child: NewUserScreen());
                               });
                         },
+                      ),
+                    ),
+                    Divider(
+                      color: k_redColor,
+                      thickness: 1.5,
+                    ),
+                    Container(
+                      height: 30,
+                      width: 100,
+                      color: Colors.lightBlueAccent,
+                      child: Text('Facebook'),
+                    ),
+                    Container(
+                      height: 30,
+                      width: 100,
+                      color: Colors.grey,
+                      child: Text('google'),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        // TODO send users to get new password
+                      },
+                      child: Text(
+                        'Crear una cuenta aquí',
+                        style: TextStyle(
+                          color: k_redColor,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],

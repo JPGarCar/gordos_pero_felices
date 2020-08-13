@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gordos_pero_felizes/models/category.dart';
 import 'package:gordos_pero_felizes/screens/business_screen.dart';
+import 'package:gordos_pero_felizes/screens/categories_screen.dart';
 import 'package:gordos_pero_felizes/screens/category_screen.dart';
 import 'package:gordos_pero_felizes/screens/initial_screen.dart';
 
@@ -14,6 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Gordos Pero Felizes',
       theme: ThemeData(
+        fontFamily: 'Montserrat',
         primarySwatch: Colors.red,
       ),
       routes: {
@@ -21,8 +24,9 @@ class MyApp extends StatelessWidget {
         CategoryScreen.screenId: (context) => CategoryScreen(),
         BusinessScreen.screenId: (context) => BusinessScreen(),
         InitialScreen.screenId: (context) => InitialScreen(),
+        CategoriesScreen.screenId: (context) => CategoriesScreen(),
       },
-      initialRoute: HomeScreen.screenId,
+      initialRoute: CategoryScreen.screenId,
     );
   }
 }

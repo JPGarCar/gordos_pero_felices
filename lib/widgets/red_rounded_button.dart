@@ -20,7 +20,7 @@ class RedRoundedButton extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: k_redColorLight,
-              offset: Offset.fromDirection(.8, 10),
+              offset: Offset.fromDirection(.8, 8),
             ),
           ],
         ),

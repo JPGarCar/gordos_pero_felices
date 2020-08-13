@@ -18,8 +18,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-const Duration _bottomSheetEnterDuration = Duration(milliseconds: 400);
-const Duration _bottomSheetExitDuration = Duration(milliseconds: 300);
+const Duration _bottomSheetEnterDuration = Duration(milliseconds: 500);
+const Duration _bottomSheetExitDuration = Duration(milliseconds: 350);
 const Curve _modalBottomSheetCurve = Curves.decelerate;
 const double _minFlingVelocity = 700.0;
 const double _closeProgressThreshold = 0.5;
@@ -293,7 +293,7 @@ class _ModalBottomSheetLayout extends SingleChildLayoutDelegate {
       maxWidth: constraints.maxWidth,
       minHeight: 0.0,
       maxHeight: isScrollControlled
-          ? constraints.maxHeight * 19.5 / 20.0
+          ? constraints.maxHeight * 18.5 / 20.0
           : constraints.maxHeight * 9.0 / 16.0,
     );
   }
