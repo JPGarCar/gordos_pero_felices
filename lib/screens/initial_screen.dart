@@ -6,6 +6,7 @@ import 'package:gordos_pero_felizes/screens/new_user_screen.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded_text_field.dart';
 import 'package:gordos_pero_felizes/widgets/custom_bottom_sheet.dart' as cbs;
+import 'package:gordos_pero_felizes/widgets/simple_text_button.dart';
 
 class InitialScreen extends StatefulWidget {
   static final String screenId = 'initialScreen';
@@ -55,17 +56,13 @@ class _InitialScreenState extends State<InitialScreen> {
                           isPassword: true,
                           textEditingController: passwordController,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            // TODO send users to get new password
-                          },
-                          child: Text(
-                            'olvidaste tu contraseña?',
-                            style: TextStyle(
-                              color: k_redColor,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        SimpleTextButton(
+                          verticalPadding: 0,
+                          text: 'olvidaste tu contraseña?',
+                          textStyle: TextStyle(
+                            color: k_redColor,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
@@ -76,18 +73,7 @@ class _InitialScreenState extends State<InitialScreen> {
                       child: RedRoundedButton(
                         buttonText: 'Ingresar',
                         onTapFunction: () {
-                          cbs.showModalBottomSheet(
-                              isScrollControlled: true,
-                              context: context,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(20),
-                                ),
-                              ),
-                              builder: (context) {
-                                return SingleChildScrollView(
-                                    child: NewUserScreen());
-                              });
+                          // TODO
                         },
                       ),
                     ),
@@ -95,36 +81,115 @@ class _InitialScreenState extends State<InitialScreen> {
                       color: k_redColor,
                       thickness: 1.5,
                     ),
-                    Container(
-                      height: 30,
-                      width: 100,
-                      color: Colors.lightBlueAccent,
-                      child: Text('Facebook'),
-                    ),
-                    Container(
-                      height: 30,
-                      width: 100,
-                      color: Colors.grey,
-                      child: Text('google'),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        // TODO send users to get new password
-                      },
-                      child: Text(
-                        'Crear una cuenta aquí',
-                        style: TextStyle(
-                          color: k_redColor,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
+                    FacebookLogInButton(),
+                    GoogleLoginButton(),
+                    SimpleTextButton(
+                      verticalPadding: 0,
+                      text: 'Crear una cuenta aquí',
+                      textStyle: TextStyle(
+                        color: k_redColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
                       ),
+                      onTapCallBack: () {
+                        cbs.showModalBottomSheet(
+                            isScrollControlled: true,
+                            context: context,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(k_circularBorderRadius),
+                              ),
+                            ),
+                            builder: (context) {
+                              return SingleChildScrollView(
+                                  child: NewUserScreen());
+                            });
+                      },
                     ),
                   ],
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class GoogleLoginButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return OutlineButton(
+      splashColor: Colors.lightBlueAccent,
+      highlightedBorderColor: Colors.blueAccent,
+      onPressed: () {},
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(k_circularBorderRadius),
+      ),
+      highlightElevation: 0,
+      borderSide: BorderSide(color: Colors.grey),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: Image.asset(
+                'images/google_logo.png',
+                height: 30.0,
+              ),
+            ),
+            Text(
+              'Ingresa con Google',
+              style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.grey.shade800,
+                  fontWeight: FontWeight.w700),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class FacebookLogInButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return OutlineButton(
+      splashColor: Colors.white,
+      highlightedBorderColor: Colors.blue,
+      color: Colors.blue,
+      onPressed: () {},
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(k_circularBorderRadius),
+      ),
+      highlightElevation: 0,
+      borderSide: BorderSide(color: Colors.blue),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(right: 10),
+              child: Image.asset(
+                'images/facebook_logo.png',
+                height: 30,
+              ),
+            ),
+            Text(
+              'Ingresa con Facebook',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.blue),
+            )
+          ],
         ),
       ),
     );
