@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1059083537070",
+    "firebase_url": "https://gpf-app-14b6d.firebaseio.com",
+    "project_id": "gpf-app-14b6d",
+    "storage_bucket": "gpf-app-14b6d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1059083537070:android:9420164d4bb8ce1beebb3f",
+        "android_client_info": {
+          "package_name": "com.juanpablogarcar.gordos_pero_felizes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1059083537070-d67fauvv2c9pmlrkvenfdejfddl0mmov.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDleevRPcMkYshI8TnCsUC1KzQ8k8Sl2cc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1059083537070-d67fauvv2c9pmlrkvenfdejfddl0mmov.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
