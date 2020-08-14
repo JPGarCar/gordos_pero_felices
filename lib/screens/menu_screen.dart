@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gordos_pero_felizes/screens/categories_screen.dart';
+import 'package:gordos_pero_felizes/screens/initial_screen.dart';
 import 'package:gordos_pero_felizes/widgets/simple_text_button.dart';
 
 import '../constants.dart';
@@ -9,6 +12,8 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
+  final _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,9 +24,11 @@ class _MenuScreenState extends State<MenuScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text(
-                'Cerrar',
-                style: TextStyle(
+              SimpleTextButton(
+                verticalPadding: 0,
+                onTapCallBack: () => Navigator.pop(context),
+                text: 'Cerrar',
+                textStyle: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                 ),
@@ -53,12 +60,19 @@ class _MenuScreenState extends State<MenuScreen> {
                 text: 'Gordos Pero Felices Favoritos',
               ),
               SimpleTextButton(
+                onTapCallBack: () =>
+                    Navigator.pushNamed(context, CategoriesScreen.screenId),
                 text: 'Restaurantes por Categoría',
               ),
               SimpleTextButton(
                 text: 'Restaurantes por Ubicación',
               ),
               SimpleTextButton(
+                onTapCallBack: () {
+                  _auth.signOut();
+                  Navigator.popUntil(
+                      context, ModalRoute.withName(InitialScreen.screenId));
+                },
                 text: 'Cerrar Sesión',
               ),
             ],
