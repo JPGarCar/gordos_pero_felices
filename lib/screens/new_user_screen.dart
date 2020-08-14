@@ -2,14 +2,13 @@ import 'dart:async';
 
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:gordos_pero_felizes/widgets/error_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded_text_field.dart';
 import 'package:gordos_pero_felizes/widgets/simple_text_button.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 import '../constants.dart';
-
-List<String> errors = [];
 
 /// Uses Form validation to validate but we will use our own way of showing an error,
 /// we will use a AlertDialog, not the regular way of doing things.
@@ -46,6 +45,8 @@ class _NewUserScreenState extends State<NewUserScreen> {
   ];
 
   double pixelTo = 0;
+
+  List<String> errors = [];
 
   @override
   void dispose() {
@@ -287,6 +288,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
                           barrierDismissible: false,
                           builder: (context) {
                             return ErrorDialog(
+                              cleanUp: () => errors.clear(),
                               stringErrors: errors,
                             );
                           },
@@ -300,65 +302,6 @@ class _NewUserScreenState extends State<NewUserScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ErrorDialog extends StatelessWidget {
-  final List<String> stringErrors;
-
-  ErrorDialog({this.stringErrors});
-
-  List<Widget> getErrors() {
-    List<Widget> errorList = [];
-    for (String e in stringErrors) {
-      errorList.add(
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 6.0),
-          child: Text(
-            e,
-            style: TextStyle(
-              fontSize: 15,
-            ),
-          ),
-        ),
-      );
-    }
-    return errorList;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      child: Padding(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Porfavor corriga los errores!',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 18,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.0),
-              child: Column(
-                children: getErrors(),
-              ),
-            ),
-            RedRoundedButton(
-              onTapFunction: () {
-                Navigator.pop(context);
-                errors.clear();
-              },
-              buttonText: 'Okay',
-            ),
-          ],
-        ),
       ),
     );
   }
