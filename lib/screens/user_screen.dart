@@ -45,17 +45,28 @@ class _UserScreenState extends State<UserScreen> {
                   ),
                 ],
               ),
+              // TODO change this to user image
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 25),
+                padding: EdgeInsets.symmetric(vertical: 25),
                 child: Container(
                   height: 80,
                   child: Image.asset('images/gordos_logo.png'),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 15),
+                padding: EdgeInsets.only(bottom: 15),
                 child: Text(
-                  'Categorias',
+                  'Nombre Usuario',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 24,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 15),
+                child: Text(
+                  'Tus Favoritos',
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     color: Colors.black,
