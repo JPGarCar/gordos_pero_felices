@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gordos_pero_felizes/screens/home_screen.dart';
 import 'package:gordos_pero_felizes/widgets/error_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded_text_field.dart';
@@ -23,6 +25,10 @@ class NewUserScreen extends StatefulWidget {
 
 class _NewUserScreenState extends State<NewUserScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _auth = FirebaseAuth.instance;
+
+  String email;
+  String password;
 
   final nameController = TextEditingController();
   final lastNameController = TextEditingController();
@@ -47,6 +53,23 @@ class _NewUserScreenState extends State<NewUserScreen> {
   double pixelTo = 0;
 
   List<String> errors = [];
+
+  /// Will try to register the user with email and password, if there are any
+  /// errors it will return the error as a string, else null.
+  Future<String> singUpUser({String email, String password}) async {
+    try {
+      var authResult = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+    } catch (e) {
+      var errorCode = e.code;
+      if (errorCode == 'ERROR_EMAIL_ALREADY_IN_USE') {
+        return 'Este correo electronico ya esta registrado.';
+      } else {
+        return 'Se ha producido un error, porfavor intente de nuevo.';
+      }
+    }
+    return null;
+  }
 
   @override
   void dispose() {
@@ -276,22 +299,40 @@ class _NewUserScreenState extends State<NewUserScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20),
+                  padding: EdgeInsets.only(top: 20),
                   child: RedRoundedButton(
-                    onTapFunction: () {
+                    onTapFunction: () async {
+                      /// Validate form
                       _formKey.currentState.validate();
+
+                      /// Check for any errors present
                       if (errors.isEmpty) {
-                        // TODO
+                        /// try to register the user
+                        String error = await singUpUser(
+                            email: emailController.text,
+                            password: passwordController.text);
+
+                        /// if no return error then proceed.
+                        if (error == null) {
+                          Navigator.pushNamed(context, HomeScreen.screenId);
+                        } else {
+                          /// show dialog with the error
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) => ErrorDialog(
+                              stringErrors: [error],
+                            ),
+                          );
+                        }
                       } else {
                         showDialog(
                           context: context,
                           barrierDismissible: false,
-                          builder: (context) {
-                            return ErrorDialog(
-                              cleanUp: () => errors.clear(),
-                              stringErrors: errors,
-                            );
-                          },
+                          builder: (context) => ErrorDialog(
+                            cleanUp: () => errors.clear(),
+                            stringErrors: errors,
+                          ),
                         );
                       }
                     },

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
+import 'package:gordos_pero_felizes/screens/home_screen.dart';
 import 'package:gordos_pero_felizes/screens/new_user_screen.dart';
 import 'package:gordos_pero_felizes/widgets/error_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded_button.dart';
@@ -40,17 +41,28 @@ class _InitialScreenState extends State<InitialScreen> {
     super.dispose();
   }
 
-  Future<bool> emailSignIn(String email, String password) async {
-    var user = await _auth.signInWithEmailAndPassword(
-        email: email, password: password);
-    if (user != null) {
-      return true;
-    } else {
-      return false;
+  Future<String> emailLogIn(String email, String password) async {
+    try {
+      var user = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      if (user != null) {
+        return null;
+      } else {
+        return 'Se ha producido un error, favor de intentar de nuevo.';
+      }
+    } catch (e) {
+      switch (e.code) {
+        case 'ERROR_WRONG_PASSWORD':
+          return 'Tu contraseña es incorrecta!';
+        case 'ERROR_USER_NOT_FOUND':
+          return 'Este correo no esta en nuestro sistema, favor de crear una cuenta nueva.';
+        default:
+          return 'Se ha producido un error, favor de intentar de nuevo.';
+      }
     }
   }
 
-  Future<bool> googleSignIn() async {
+  Future<bool> googleLogIn() async {
     FirebaseUser user;
     try {
       final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
@@ -64,13 +76,12 @@ class _InitialScreenState extends State<InitialScreen> {
         print('signed in user ${user.displayName}');
         if (user != null) {
           return true;
-        } else {
-          return false;
         }
       }
     } catch (e) {
       print(e);
     }
+    return false;
   }
 
   Future<bool> facebookLogIn() async {
@@ -100,10 +111,9 @@ class _InitialScreenState extends State<InitialScreen> {
         var firebaseUser = await _auth.signInWithCredential(credential);
         if (firebaseUser != null) {
           return true;
-        } else {
-          return false;
         }
     }
+    return false;
   }
 
   @override
@@ -176,10 +186,11 @@ class _InitialScreenState extends State<InitialScreen> {
                         flex: 2,
                         child: RedRoundedButton(
                           buttonText: 'Ingresar',
-                          onTapFunction: () {
+                          onTapFunction: () async {
                             _key.currentState.validate();
                             if (errors.isNotEmpty) {
                               showDialog(
+                                barrierDismissible: false,
                                 context: context,
                                 builder: (context) => ErrorDialog(
                                   stringErrors: errors,
@@ -187,8 +198,20 @@ class _InitialScreenState extends State<InitialScreen> {
                                 ),
                               );
                             } else {
-                              emailSignIn(emailController.text,
+                              String error = await emailLogIn(
+                                  emailController.text,
                                   passwordController.text);
+                              if (error == null) {
+                                Navigator.pushNamed(
+                                    context, HomeScreen.screenId);
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => ErrorDialog(
+                                    stringErrors: [error],
+                                  ),
+                                );
+                              }
                             }
                           },
                         ),
@@ -200,10 +223,20 @@ class _InitialScreenState extends State<InitialScreen> {
                       Column(
                         children: [
                           FacebookLogInButton(
-                            onTapFunction: () => facebookLogIn(),
+                            onTapFunction: () async {
+                              if (await facebookLogIn()) {
+                                Navigator.pushNamed(
+                                    context, HomeScreen.screenId);
+                              }
+                            },
                           ),
                           GoogleLoginButton(
-                            onTapFunction: () => googleSignIn(),
+                            onTapFunction: () async {
+                              if (await googleLogIn()) {
+                                Navigator.pushNamed(
+                                    context, HomeScreen.screenId);
+                              }
+                            },
                           ),
                         ],
                       ),
