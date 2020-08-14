@@ -18,6 +18,14 @@ class InitialScreen extends StatefulWidget {
 class _InitialScreenState extends State<InitialScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  ScrollController scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +43,7 @@ class _InitialScreenState extends State<InitialScreen> {
                   children: [
                     Flexible(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 30, bottom: 15),
+                        padding: EdgeInsets.only(top: 30, bottom: 15),
                         child: Image.asset(
                           'images/gordos_logo.png',
                         ),
@@ -106,7 +114,10 @@ class _InitialScreenState extends State<InitialScreen> {
                             ),
                             builder: (context) {
                               return SingleChildScrollView(
-                                  child: NewUserScreen());
+                                  controller: scrollController,
+                                  child: new NewUserScreen(
+                                    scrollController: scrollController,
+                                  ));
                             });
                       },
                     ),
