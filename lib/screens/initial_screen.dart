@@ -250,20 +250,22 @@ class _InitialScreenState extends State<InitialScreen> {
                         ),
                         onTapCallBack: () {
                           cbs.showModalBottomSheet(
-                              isScrollControlled: true,
-                              context: context,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(k_circularBorderRadius),
-                                ),
+                            isScrollControlled: true,
+                            context: context,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(k_circularBorderRadius),
                               ),
-                              builder: (context) {
-                                return SingleChildScrollView(
-                                    controller: scrollController,
-                                    child: new NewUserScreen(
-                                      scrollController: scrollController,
-                                    ));
-                              });
+                            ),
+                            builder: (context) {
+                              return SingleChildScrollView(
+                                controller: scrollController,
+                                child: new NewUserScreen(
+                                  scrollController: scrollController,
+                                ),
+                              );
+                            },
+                          );
                         },
                       ),
                     ],

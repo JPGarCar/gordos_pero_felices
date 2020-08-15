@@ -481,18 +481,19 @@ class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
     // By definition, the bottom sheet is aligned to the bottom of the page
     // and isn't exposed to the top padding of the MediaQuery.
     Widget bottomSheet = SafeArea(
-        child: _ModalBottomSheet<T>(
-      route: this,
-      backgroundColor: backgroundColor ??
-          sheetTheme?.modalBackgroundColor ??
-          sheetTheme?.backgroundColor,
-      elevation:
-          elevation ?? sheetTheme?.modalElevation ?? sheetTheme?.elevation,
-      shape: shape,
-      clipBehavior: clipBehavior,
-      isScrollControlled: isScrollControlled,
-      enableDrag: enableDrag,
-    ));
+      child: _ModalBottomSheet<T>(
+        route: this,
+        backgroundColor: backgroundColor ??
+            sheetTheme?.modalBackgroundColor ??
+            sheetTheme?.backgroundColor,
+        elevation:
+            elevation ?? sheetTheme?.modalElevation ?? sheetTheme?.elevation,
+        shape: shape,
+        clipBehavior: clipBehavior,
+        isScrollControlled: isScrollControlled,
+        enableDrag: enableDrag,
+      ),
+    );
     if (theme != null) bottomSheet = Theme(data: theme, child: bottomSheet);
     return bottomSheet;
   }

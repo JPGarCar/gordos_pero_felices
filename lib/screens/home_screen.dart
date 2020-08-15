@@ -7,6 +7,7 @@ import 'package:gordos_pero_felizes/screens/menu_screen.dart';
 import 'package:gordos_pero_felizes/widgets/business_card.dart';
 import 'package:gordos_pero_felizes/widgets/category_card.dart';
 import 'package:gordos_pero_felizes/widgets/custom_bottom_sheet.dart' as cbs;
+import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String screenId = 'homeScreen';
@@ -27,82 +28,26 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    child: Icon(
-                      Icons.list,
-                      color: k_redColor,
-                      size: k_iconSize,
+              TitleWidget(
+                isSearchBar: true,
+                mainText: 'Restaurante para cualquiér ocasión',
+                rightIcon: Icons.account_circle,
+                leftIcon: Icons.list,
+                onPressedLeftIcon: () {
+                  return cbs.showModalBottomSheet(
+                    isScrollControlled: true,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(k_circularBorderRadius),
+                        topRight: Radius.circular(k_circularBorderRadius),
+                      ),
                     ),
-                    onTap: () {
-                      return cbs.showModalBottomSheet(
-                          isScrollControlled: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(k_circularBorderRadius),
-                              topRight: Radius.circular(k_circularBorderRadius),
-                            ),
-                          ),
-                          context: context,
-                          builder: (context) {
-                            return MenuScreen();
-                          });
+                    context: context,
+                    builder: (context) {
+                      return MenuScreen();
                     },
-                  ),
-                  Icon(
-                    Icons.account_circle,
-                    color: k_redColor,
-                    size: k_iconSize,
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 25),
-                child: Container(
-                  height: 80,
-                  child: Image.asset('images/gordos_logo.png'),
-                ),
-              ),
-              Text(
-                'Restaurante para cualquiér ocasión',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  fontSize: 18,
-                ),
-              ),
-              Padding(
-                padding:
-                    EdgeInsets.only(top: 10, left: 25, right: 25, bottom: 30),
-                child: Container(
-                  padding: EdgeInsets.only(left: 20),
-                  decoration: BoxDecoration(
-                    color: k_redColor,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: TextField(
-                    textCapitalization: TextCapitalization.words,
-                    style: TextStyle(
-                      color: k_whiteColor,
-                      fontSize: 18,
-                    ),
-                    decoration: InputDecoration(
-                      icon: Icon(
-                        Icons.search,
-                        color: k_whiteColor,
-                      ),
-                      hintStyle: TextStyle(
-                        color: k_whiteColor,
-                        fontSize: 16,
-                      ),
-                      hintText: 'Busca restaurantes...',
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
+                  );
+                },
               ),
               Expanded(
                 child: ListView.builder(
