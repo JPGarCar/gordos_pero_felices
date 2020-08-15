@@ -60,8 +60,8 @@ class _MenuScreenState extends State<MenuScreen> {
                 text: 'Gordos Pero Felices Favoritos',
               ),
               SimpleTextButton(
-                onTapCallBack: () =>
-                    Navigator.pushNamed(context, CategoriesScreen.screenId),
+                onTapCallBack: () => Navigator.popAndPushNamed(
+                    context, CategoriesScreen.screenId),
                 text: 'Restaurantes por Categoría',
               ),
               SimpleTextButton(

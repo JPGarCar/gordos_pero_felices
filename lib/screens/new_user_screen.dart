@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class NewUserScreen extends StatefulWidget {
 class _NewUserScreenState extends State<NewUserScreen> {
   final _formKey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
+  final Firestore _firestore = Firestore.instance;
 
   String email;
   String password;
@@ -55,10 +57,11 @@ class _NewUserScreenState extends State<NewUserScreen> {
   List<String> errors = [];
 
   /// Will try to register the user with email and password, if there are any
-  /// errors it will return the error as a string, else null.
-  Future<String> singUpUser({String email, String password}) async {
+  /// errors it will return the error as a string, else will return a FirebaseUser
+  Future<dynamic> singUpUser({String email, String password}) async {
+    AuthResult authResult;
     try {
-      var authResult = await _auth.createUserWithEmailAndPassword(
+      authResult = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
     } catch (e) {
       var errorCode = e.code;
@@ -68,7 +71,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
         return 'Se ha producido un error, porfavor intente de nuevo.';
       }
     }
-    return null;
+    return authResult.user;
   }
 
   @override
@@ -308,22 +311,33 @@ class _NewUserScreenState extends State<NewUserScreen> {
                       /// Check for any errors present
                       if (errors.isEmpty) {
                         /// try to register the user
-                        String error = await singUpUser(
+                        dynamic signUpResponse = await singUpUser(
                             email: emailController.text,
                             password: passwordController.text);
 
-                        /// if no return error then proceed.
-                        if (error == null) {
-                          Navigator.pushNamed(context, HomeScreen.screenId);
-                        } else {
+                        if (signUpResponse.runtimeType == String) {
                           /// show dialog with the error
                           showDialog(
                             context: context,
                             barrierDismissible: false,
                             builder: (context) => ErrorDialog(
-                              stringErrors: [error],
+                              stringErrors: [signUpResponse],
                             ),
                           );
+                        } else {
+                          /// if no return error then add user to db
+                          _firestore.collection('users').add({
+                            'name': nameController.text,
+                            'lastName': lastNameController.text,
+                            'email': emailController.text,
+                            'city': cityController.text,
+                            'uid': signUpResponse.uid,
+                            'day': dayController.text,
+                            'month': monthController.text,
+                            'year': yearController.text,
+                          });
+                          Navigator.popAndPushNamed(
+                              context, HomeScreen.screenId);
                         }
                       } else {
                         showDialog(

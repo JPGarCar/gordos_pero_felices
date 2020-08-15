@@ -90,7 +90,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   },
                   itemCount: 3,
                 ),
-              )
+              ),
             ],
           ),
         ),

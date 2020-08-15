@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/models/business.dart';
 import 'package:gordos_pero_felizes/models/category.dart';
+import 'package:gordos_pero_felizes/screens/category_screen.dart';
 
 import '../constants.dart';
 
@@ -12,7 +13,9 @@ class CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {}, // TODO send to category page
+      onTap: () {
+        Navigator.pushNamed(context, CategoryScreen.screenId);
+      }, // TODO send to category page
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
         child: Container(
