@@ -9,6 +9,7 @@ class TitleWidget extends StatelessWidget {
   final Function onPressedRightIcon;
   final String mainText;
   final bool isSearchBar;
+  final TextStyle textStyle;
 
   TitleWidget(
       {this.leftIcon,
@@ -16,7 +17,8 @@ class TitleWidget extends StatelessWidget {
       this.rightIcon,
       this.onPressedRightIcon,
       this.mainText = '',
-      this.isSearchBar = false});
+      this.isSearchBar = false,
+      this.textStyle});
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +41,7 @@ class TitleWidget extends StatelessWidget {
           ),
           Text(
             mainText,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-              fontSize: 16,
-            ),
+            style: textStyle,
           ),
           isSearchBar
               ? Padding(

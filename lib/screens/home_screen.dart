@@ -29,6 +29,11 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               TitleWidget(
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
                 isSearchBar: true,
                 mainText: 'Restaurante para cualquiér ocasión',
                 rightIcon: Icons.account_circle,
