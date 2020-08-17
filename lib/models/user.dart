@@ -9,6 +9,9 @@ class User {
   int year;
   int age;
 
+  /// will use business name's to id them from db
+  List<String> favoriteBusinessList;
+
   // TODO see what I can use to connect to a firebase user authenticator
 
   User(
@@ -24,6 +27,7 @@ class User {
     } else {
       age = 0;
     }
+    favoriteBusinessList = [];
   }
 
   /// Sets the users age by time difference to user's birth year
