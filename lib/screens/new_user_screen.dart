@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gordos_pero_felizes/models/user.dart';
 import 'package:gordos_pero_felizes/screens/home_screen.dart';
 import 'package:gordos_pero_felizes/widgets/error_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded_button.dart';
@@ -89,6 +90,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
     super.dispose();
   }
 
+  /// used to scroll the scrollView all the way down
   void scrollDown() {
     for (FocusNode focusNode in focusNodes) {
       if (focusNode.hasFocus) {
@@ -102,6 +104,10 @@ class _NewUserScreenState extends State<NewUserScreen> {
   @override
   void initState() {
     super.initState();
+
+    /// for loop and KeyBoard... will move scrollView down once we reach the
+    /// middle textField or click on any of the textFields bellow the middle
+    /// textField.
     for (FocusNode focusNode in focusNodes) {
       focusNode.addListener(scrollDown);
     }
@@ -304,52 +310,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
                 Padding(
                   padding: EdgeInsets.only(top: 20),
                   child: RedRoundedButton(
-                    onTapFunction: () async {
-                      /// Validate form
-                      _formKey.currentState.validate();
-
-                      /// Check for any errors present
-                      if (errors.isEmpty) {
-                        /// try to register the user
-                        dynamic signUpResponse = await singUpUser(
-                            email: emailController.text,
-                            password: passwordController.text);
-
-                        if (signUpResponse.runtimeType == String) {
-                          /// show dialog with the error
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (context) => ErrorDialog(
-                              stringErrors: [signUpResponse],
-                            ),
-                          );
-                        } else {
-                          /// if no return error then add user to db
-                          _firestore.collection('users').add({
-                            'name': nameController.text,
-                            'lastName': lastNameController.text,
-                            'email': emailController.text,
-                            'city': cityController.text,
-                            'uid': signUpResponse.uid,
-                            'day': dayController.text,
-                            'month': monthController.text,
-                            'year': yearController.text,
-                          });
-                          Navigator.popAndPushNamed(
-                              context, HomeScreen.screenId);
-                        }
-                      } else {
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) => ErrorDialog(
-                            cleanUp: () => errors.clear(),
-                            stringErrors: errors,
-                          ),
-                        );
-                      }
-                    },
+                    onTapFunction: submitButtonFunction,
                     buttonText: 'Crear Usuario',
                   ),
                 ),
@@ -359,5 +320,55 @@ class _NewUserScreenState extends State<NewUserScreen> {
         ],
       ),
     );
+  }
+
+  void submitButtonFunction() async {
+    /// Validate form
+    _formKey.currentState.validate();
+
+    /// Check for any errors present
+    if (errors.isEmpty) {
+      /// try to register the user
+      dynamic signUpResponse = await singUpUser(
+          email: emailController.text, password: passwordController.text);
+
+      if (signUpResponse.runtimeType == String) {
+        /// show dialog with the error
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => ErrorDialog(
+            stringErrors: [signUpResponse],
+          ),
+        );
+      } else {
+        /// if no return error then create user object
+        User user = new User(
+          uid: signUpResponse.uid,
+          name: nameController.text,
+          lastName: lastNameController.text,
+          email: emailController.text,
+          city: cityController.text,
+          day: int.parse(dayController.text),
+          month: int.parse(monthController.text),
+          year: int.parse(yearController.text),
+        );
+
+        /// add user object to db
+        user.addUserToDB(_firestore);
+
+        /// push on to home page
+        Navigator.popAndPushNamed(context, HomeScreen.screenId);
+      }
+    } else {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => ErrorDialog(
+          cleanUp: () => errors.clear(),
+          stringErrors: errors,
+        ),
+      );
+    }
   }
 }

@@ -48,6 +48,7 @@ class Business {
     imageAssetList ??= [];
   }
 
+  /// Will return x amount of given iconsData as a list.
   List<Widget> grabIcons(int amount, IconData iconData) {
     List<Widget> iconList = [];
     for (int i = 0; i < amount; i++) {
