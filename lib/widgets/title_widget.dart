@@ -22,7 +22,7 @@ class TitleWidget extends StatelessWidget {
       this.mainText = '',
       this.isSearchBar = false,
       this.textStyle,
-      this.isSecondaryText,
+      this.isSecondaryText = false,
       this.secondaryText,
       this.secondaryTextStyle});
 

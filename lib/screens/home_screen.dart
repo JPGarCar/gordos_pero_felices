@@ -4,6 +4,7 @@ import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/models/business.dart';
 import 'package:gordos_pero_felizes/models/category.dart';
 import 'package:gordos_pero_felizes/screens/menu_screen.dart';
+import 'package:gordos_pero_felizes/screens/user_screen.dart';
 import 'package:gordos_pero_felizes/widgets/business_card.dart';
 import 'package:gordos_pero_felizes/widgets/category_card.dart';
 import 'package:gordos_pero_felizes/widgets/custom_bottom_sheet.dart' as cbs;
@@ -15,6 +16,22 @@ class HomeScreen extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _HomeScreenState();
   }
+}
+
+/// will show the custom modal bottom sheet
+dynamic showCustomModalBottomSheet(BuildContext context) {
+  return cbs.showModalBottomSheet(
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(k_circularBorderRadius),
+          topRight: Radius.circular(k_circularBorderRadius),
+        ),
+      ),
+      context: context,
+      builder: (context) {
+        return MenuScreen();
+      });
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -37,22 +54,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 isSearchBar: true,
                 mainText: 'Restaurante para cualquiér ocasión',
                 rightIcon: Icons.account_circle,
+                onPressedRightIcon: () =>
+                    Navigator.pushNamed(context, UserScreen.screenId),
                 leftIcon: Icons.list,
-                onPressedLeftIcon: () {
-                  return cbs.showModalBottomSheet(
-                    isScrollControlled: true,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(k_circularBorderRadius),
-                        topRight: Radius.circular(k_circularBorderRadius),
-                      ),
-                    ),
-                    context: context,
-                    builder: (context) {
-                      return MenuScreen();
-                    },
-                  );
-                },
+                onPressedLeftIcon: () => showCustomModalBottomSheet(context),
               ),
               Expanded(
                 child: ListView.builder(
