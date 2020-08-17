@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/models/category.dart';
+import 'package:gordos_pero_felizes/screens/user_screen.dart';
 import 'package:gordos_pero_felizes/widgets/category_card.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 
 import '../constants.dart';
 
+/// This screen holds all the available categories!
 class CategoriesScreen extends StatefulWidget {
   static final String screenId = 'categoriesScreen';
 
@@ -24,8 +26,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               TitleWidget(
-                leftIcon: Icons.list,
+                leftIcon: Icons.arrow_back,
+                onPressedLeftIcon: () => Navigator.pop(context),
                 rightIcon: Icons.account_circle,
+                onPressedRightIcon: () =>
+                    Navigator.pushNamed(context, UserScreen.screenId),
                 mainText: 'Categorias',
                 textStyle: TextStyle(
                   fontWeight: FontWeight.w500,

@@ -2,11 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:gordos_pero_felizes/models/business.dart';
+import 'package:gordos_pero_felizes/screens/user_screen.dart';
 import 'package:gordos_pero_felizes/widgets/business_card.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 
 import '../constants.dart';
 
+/// This screen holds all the businesses in one category!
 class CategoryScreen extends StatefulWidget {
   static final String screenId = 'categoryScreen';
   @override
@@ -38,8 +40,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               TitleWidget(
-                leftIcon: Icons.list,
+                leftIcon: Icons.arrow_back,
+                onPressedLeftIcon: () => Navigator.pop(context),
                 rightIcon: Icons.account_circle,
+                onPressedRightIcon: () =>
+                    Navigator.pushNamed(context, UserScreen.screenId),
                 mainText: 'Restauratnes Americandos',
                 textStyle: TextStyle(
                   fontWeight: FontWeight.w500,
