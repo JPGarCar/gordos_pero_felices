@@ -70,8 +70,8 @@ class _MenuScreenState extends State<MenuScreen> {
               SimpleTextButton(
                 onTapCallBack: () {
                   _auth.signOut();
-                  Navigator.popUntil(
-                      context, ModalRoute.withName(InitialScreen.screenId));
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, InitialScreen.screenId, (route) => false);
                 },
                 text: 'Cerrar Sesión',
               ),

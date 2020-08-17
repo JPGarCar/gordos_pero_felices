@@ -41,6 +41,7 @@ class _InitialScreenState extends State<InitialScreen> {
     super.dispose();
   }
 
+  /// Deals with the email login
   Future<String> emailLogIn(String email, String password) async {
     try {
       var user = await _auth.signInWithEmailAndPassword(
@@ -62,6 +63,7 @@ class _InitialScreenState extends State<InitialScreen> {
     }
   }
 
+  /// Deals with the google login
   Future<bool> googleLogIn() async {
     FirebaseUser user;
     try {
@@ -84,6 +86,7 @@ class _InitialScreenState extends State<InitialScreen> {
     return false;
   }
 
+  /// Deals with the facebook login
   Future<bool> facebookLogIn() async {
     final result = await _facebookLogin.logInWithReadPermissions([
       'email',
@@ -114,6 +117,36 @@ class _InitialScreenState extends State<InitialScreen> {
         }
     }
     return false;
+  }
+
+  /// email and password submit button function
+  dynamic submitButtonFunction() async {
+    {
+      _key.currentState.validate();
+      if (errors.isNotEmpty) {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => ErrorDialog(
+            stringErrors: errors,
+            cleanUp: () => errors.clear(),
+          ),
+        );
+      } else {
+        String error =
+            await emailLogIn(emailController.text, passwordController.text);
+        if (error == null) {
+          Navigator.popAndPushNamed(context, HomeScreen.screenId);
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => ErrorDialog(
+              stringErrors: [error],
+            ),
+          );
+        }
+      }
+    }
   }
 
   @override
@@ -186,34 +219,7 @@ class _InitialScreenState extends State<InitialScreen> {
                         flex: 2,
                         child: RedRoundedButton(
                           buttonText: 'Ingresar',
-                          onTapFunction: () async {
-                            _key.currentState.validate();
-                            if (errors.isNotEmpty) {
-                              showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                builder: (context) => ErrorDialog(
-                                  stringErrors: errors,
-                                  cleanUp: () => errors.clear(),
-                                ),
-                              );
-                            } else {
-                              String error = await emailLogIn(
-                                  emailController.text,
-                                  passwordController.text);
-                              if (error == null) {
-                                Navigator.pushNamed(
-                                    context, HomeScreen.screenId);
-                              } else {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => ErrorDialog(
-                                    stringErrors: [error],
-                                  ),
-                                );
-                              }
-                            }
-                          },
+                          onTapFunction: submitButtonFunction,
                         ),
                       ),
                       Divider(
@@ -225,7 +231,7 @@ class _InitialScreenState extends State<InitialScreen> {
                           FacebookLogInButton(
                             onTapFunction: () async {
                               if (await facebookLogIn()) {
-                                Navigator.pushNamed(
+                                Navigator.popAndPushNamed(
                                     context, HomeScreen.screenId);
                               }
                             },
@@ -233,7 +239,7 @@ class _InitialScreenState extends State<InitialScreen> {
                           GoogleLoginButton(
                             onTapFunction: () async {
                               if (await googleLogIn()) {
-                                Navigator.pushNamed(
+                                Navigator.popAndPushNamed(
                                     context, HomeScreen.screenId);
                               }
                             },
