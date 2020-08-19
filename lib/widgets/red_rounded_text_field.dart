@@ -29,47 +29,45 @@ class RedRoundedTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(10.0),
-      child: SizedBox(
+      child: Container(
         height: 35,
-        child: Container(
-          decoration: BoxDecoration(
-            color: k_redColor,
-            borderRadius: BorderRadius.circular(k_circularBorderRadius),
-            boxShadow: [
-              BoxShadow(
-                color: k_redColorLight,
-                offset: Offset.fromDirection(.8, 8),
-              ),
-            ],
+        decoration: BoxDecoration(
+          color: k_redColor,
+          borderRadius: BorderRadius.circular(k_circularBorderRadius),
+          boxShadow: [
+            BoxShadow(
+              color: k_redColorLight,
+              offset: Offset.fromDirection(.8, 8),
+            ),
+          ],
+        ),
+        child: TextFormField(
+          onTap: onTapFunciton,
+          focusNode: focusNode,
+          textInputAction:
+              isTextInputDone ? TextInputAction.done : TextInputAction.next,
+          onFieldSubmitted: isTextInputDone
+              ? (_) => FocusScope.of(context).unfocus()
+              : (_) => FocusScope.of(context).nextFocus(),
+          validator: validatorCallBack,
+          textAlign: isCenterText ? TextAlign.center : TextAlign.start,
+          controller: textEditingController,
+          style: TextStyle(
+            color: k_whiteColor,
+            fontSize: 16,
           ),
-          child: TextFormField(
-            onTap: onTapFunciton,
-            focusNode: focusNode,
-            textInputAction:
-                isTextInputDone ? TextInputAction.done : TextInputAction.next,
-            onFieldSubmitted: isTextInputDone
-                ? (_) => FocusScope.of(context).unfocus()
-                : (_) => FocusScope.of(context).nextFocus(),
-            validator: validatorCallBack,
-            textAlign: isCenterText ? TextAlign.center : TextAlign.start,
-            controller: textEditingController,
-            style: TextStyle(
+          keyboardType: isEmail
+              ? TextInputType.emailAddress
+              : isNumber ? TextInputType.number : TextInputType.text,
+          obscureText: isPassword,
+          decoration: InputDecoration(
+            hintStyle: TextStyle(
               color: k_whiteColor,
-              fontSize: 16,
+              fontSize: 14,
             ),
-            keyboardType: isEmail
-                ? TextInputType.emailAddress
-                : isNumber ? TextInputType.number : TextInputType.text,
-            obscureText: isPassword,
-            decoration: InputDecoration(
-              hintStyle: TextStyle(
-                color: k_whiteColor,
-                fontSize: 14,
-              ),
-              hintText: hint,
-              contentPadding: EdgeInsets.only(right: 20, left: 20, bottom: 15),
-              border: InputBorder.none,
-            ),
+            hintText: hint,
+            contentPadding: EdgeInsets.only(right: 20, left: 20, bottom: 15),
+            border: InputBorder.none,
           ),
         ),
       ),

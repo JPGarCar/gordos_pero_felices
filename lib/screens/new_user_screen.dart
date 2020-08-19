@@ -8,9 +8,11 @@ import 'package:gordos_pero_felizes/models/user.dart';
 import 'package:gordos_pero_felizes/screens/home_screen.dart';
 import 'package:gordos_pero_felizes/widgets/error_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded_button.dart';
+import 'package:gordos_pero_felizes/widgets/red_rounded_dropdown.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded_text_field.dart';
 import 'package:gordos_pero_felizes/widgets/simple_text_button.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:gordos_pero_felizes/models/sex_enum.dart';
 
 import '../constants.dart';
 
@@ -30,8 +32,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
   final _auth = FirebaseAuth.instance;
   final Firestore _firestore = Firestore.instance;
 
-  String email;
-  String password;
+  var _selectedGender;
 
   final nameController = TextEditingController();
   final lastNameController = TextEditingController();
@@ -220,6 +221,15 @@ class _NewUserScreenState extends State<NewUserScreen> {
                   hint: 'Ciudad',
                   textEditingController: cityController,
                 ),
+                RedRoundedDropDown(
+                  hint: 'Genero',
+                  value: _selectedGender,
+                  onChangeFunction: (value) {
+                    setState(() {
+                      _selectedGender = value;
+                    });
+                  },
+                ),
                 Padding(
                   padding: EdgeInsets.only(top: 15),
                   child: Column(
@@ -232,11 +242,11 @@ class _NewUserScreenState extends State<NewUserScreen> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        padding: EdgeInsets.symmetric(horizontal: 15),
                         child: Row(
                           children: [
                             Expanded(
-                              flex: 4,
+                              flex: 7,
                               child: RedRoundedTextField(
                                 focusNode: focusNodes[3],
                                 hint: 'DD',
@@ -260,7 +270,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
                               ),
                             ),
                             Expanded(
-                              flex: 4,
+                              flex: 7,
                               child: RedRoundedTextField(
                                 focusNode: focusNodes[4],
                                 hint: 'MM',
@@ -284,7 +294,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
                               ),
                             ),
                             Expanded(
-                              flex: 5,
+                              flex: 8,
                               child: RedRoundedTextField(
                                 focusNode: focusNodes[5],
                                 hint: 'YYYY',
@@ -352,6 +362,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
           day: int.parse(dayController.text),
           month: int.parse(monthController.text),
           year: int.parse(yearController.text),
+          sex: _selectedGender,
         );
 
         /// add user object to db
