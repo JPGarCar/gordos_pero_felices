@@ -31,7 +31,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 rightIcon: Icons.account_circle,
                 onPressedRightIcon: () =>
                     Navigator.pushNamed(context, UserScreen.screenId),
-                mainText: 'Categorias',
+                mainText: 'Categorías',
                 textStyle: TextStyle(
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
