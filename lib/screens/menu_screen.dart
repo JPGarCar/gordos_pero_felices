@@ -17,7 +17,7 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+      margin: k_appPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -38,7 +38,7 @@ class _MenuScreenState extends State<MenuScreen> {
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 20),
+                padding: EdgeInsets.only(top: 20, bottom: 20),
                 child: Container(
                   height: 90,
                   child: Image.asset(
@@ -47,7 +47,7 @@ class _MenuScreenState extends State<MenuScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 30),
+                padding: const EdgeInsets.only(bottom: 15),
                 child: SimpleTextButton(
                   text: 'GORDOS PERO FELICES',
                   textStyle: TextStyle(
@@ -57,15 +57,21 @@ class _MenuScreenState extends State<MenuScreen> {
                 ),
               ),
               SimpleTextButton(
-                text: 'Gordos Pero Felices Favoritos',
-              ),
-              SimpleTextButton(
                 onTapCallBack: () => Navigator.popAndPushNamed(
                     context, CategoriesScreen.screenId),
                 text: 'Restaurantes por Categoría',
               ),
               SimpleTextButton(
                 text: 'Restaurantes por Ubicación',
+              ),
+              SimpleTextButton(
+                text: 'Juega con la Ruleta Gordos',
+              ),
+              SimpleTextButton(
+                text: 'Toma nuestro Gordo Quiz',
+              ),
+              SimpleTextButton(
+                text: 'Antojate con el Gordo Date',
               ),
               SimpleTextButton(
                 onTapCallBack: () {

@@ -12,7 +12,7 @@ class SimpleTextButton extends StatelessWidget {
       {@required this.text,
       this.onTapCallBack,
       this.textStyle = k_defaultTextButtonStyle,
-      this.verticalPadding = 20.0});
+      this.verticalPadding = 17.0});
 
   @override
   Widget build(BuildContext context) {
