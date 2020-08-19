@@ -6,15 +6,15 @@ enum Sex {
 String getSexValue(Sex sex) {
   switch (sex) {
     case Sex.male:
-      return 'Male';
+      return 'Hombre';
       break;
     case Sex.female:
-      return 'Female';
+      return 'Mujer';
       break;
     case Sex.other:
-      return 'Other';
+      return 'Otro';
       break;
     default:
-      return 'Other';
+      return 'Otro';
   }
 }
