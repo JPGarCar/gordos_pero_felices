@@ -13,7 +13,8 @@ class RedRoundedButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTapFunction,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        height: 35,
+        padding: EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 8),
         decoration: BoxDecoration(
           color: k_redColor,
           borderRadius: BorderRadius.circular(15),
@@ -28,7 +29,7 @@ class RedRoundedButton extends StatelessWidget {
           buttonText,
           style: TextStyle(
             color: k_whiteColor,
-            fontSize: 18,
+            fontSize: 16,
           ),
         ),
       ),

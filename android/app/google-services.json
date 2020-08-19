@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1059083537070-mu7nutgag161koqed4h9f7hsbie1rkcv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.juanpablogarcar.gordos_pero_felizes",
+            "certificate_hash": "a9148a213f57bfd66e61cb35aa70f549a82c9563"
+          }
+        },
+        {
           "client_id": "1059083537070-d67fauvv2c9pmlrkvenfdejfddl0mmov.apps.googleusercontent.com",
           "client_type": 3
         }

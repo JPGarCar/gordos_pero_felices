@@ -13,6 +13,8 @@ import 'package:gordos_pero_felizes/widgets/simple_text_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gordos_pero_felizes/models/user.dart';
 
 class InitialScreen extends StatefulWidget {
   static final String screenId = 'initialScreen';
@@ -22,8 +24,12 @@ class InitialScreen extends StatefulWidget {
 }
 
 class _InitialScreenState extends State<InitialScreen> {
+  final Firestore _firestore = Firestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: [
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/userinfo.email	',
+  ]);
   final _facebookLogin = FacebookLogin();
 
   TextEditingController emailController = TextEditingController();
@@ -65,18 +71,28 @@ class _InitialScreenState extends State<InitialScreen> {
 
   /// Deals with the google login
   Future<bool> googleLogIn() async {
-    FirebaseUser user;
+    print('Singing in with google ##########');
     try {
       final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
       final GoogleSignInAuthentication googleAuth =
           await googleUser?.authentication;
+      print('google done checking googleAuth: $googleAuth');
       if (googleAuth != null) {
         AuthCredential credential = GoogleAuthProvider.getCredential(
             idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
-        user = (await _auth.signInWithCredential(credential)).user;
+        AuthResult authResult = (await _auth.signInWithCredential(credential));
+        FirebaseUser firebaseUser = authResult.user;
 
-        print('signed in user ${user.displayName}');
-        if (user != null) {
+        /// Checking if this is the first time the user enters, if so create
+        /// user in db
+/*        if (authResult.additionalUserInfo.isNewUser){
+          print(authResult.additionalUserInfo.profile);
+        }*/
+
+        print(authResult.additionalUserInfo.profile);
+
+        print('signed in user ${firebaseUser.displayName}');
+        if (firebaseUser != null) {
           return true;
         }
       }
