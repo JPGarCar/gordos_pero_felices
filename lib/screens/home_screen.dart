@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemBuilder: (context, index) {
                     return cardList[index];
                   },
-                  itemCount: 4,
+                  itemCount: cardList.length,
                 ),
               ),
             ],
