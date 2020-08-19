@@ -21,3 +21,5 @@ const k_cbsHeightRatio = 18.5 / 20.0;
 const k_defaultTextButtonStyle = TextStyle(
   fontSize: 18,
 );
+
+const double k_cardHeight = 210;

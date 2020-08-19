@@ -8,6 +8,7 @@ import 'package:gordos_pero_felizes/screens/user_screen.dart';
 import 'package:gordos_pero_felizes/widgets/business_card.dart';
 import 'package:gordos_pero_felizes/widgets/category_card.dart';
 import 'package:gordos_pero_felizes/widgets/custom_bottom_sheet.dart' as cbs;
+import 'package:gordos_pero_felizes/widgets/custom_card.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,6 +34,25 @@ dynamic showCustomModalBottomSheet(BuildContext context) {
         return MenuScreen();
       });
 }
+
+List<CustomCard> cardList = [
+  CustomCard(
+    name: 'Las Tres Bs',
+    imageAssetPath: 'images/gourmet_burger.jpg',
+  ),
+  CustomCard(
+    name: 'Date Favorites',
+    imageAssetPath: 'images/gourmet_burger.jpg',
+  ),
+  CustomCard(
+    name: 'Los Gordo Favoritos',
+    imageAssetPath: 'images/gourmet_burger.jpg',
+  ),
+  CustomCard(
+    name: 'Los Más Buscados',
+    imageAssetPath: 'images/gourmet_burger.jpg',
+  ),
+];
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
@@ -62,14 +82,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: ListView.builder(
                   itemBuilder: (context, index) {
-                    return CategoryCard(
-                      category: Category(
-                        name: 'Burgers',
-                        imageAssetPath: 'images/gourmet_burger.jpg',
-                      ),
-                    );
+                    return cardList[index];
                   },
-                  itemCount: 3,
+                  itemCount: 4,
                 ),
               ),
             ],
