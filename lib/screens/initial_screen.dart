@@ -36,7 +36,6 @@ class _InitialScreenState extends State<InitialScreen> {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  ScrollController scrollController = ScrollController();
 
   final _key = GlobalKey<FormState>();
 
@@ -284,6 +283,7 @@ class _InitialScreenState extends State<InitialScreen> {
                         ),
                         onTapCallBack: () {
                           cbs.showModalBottomSheet(
+                            backgroundColor: k_whiteColor,
                             isScrollControlled: true,
                             context: context,
                             shape: RoundedRectangleBorder(
@@ -292,12 +292,7 @@ class _InitialScreenState extends State<InitialScreen> {
                               ),
                             ),
                             builder: (context) {
-                              return SingleChildScrollView(
-                                controller: scrollController,
-                                child: new NewUserScreen(
-                                  scrollController: scrollController,
-                                ),
-                              );
+                              return new NewUserScreen();
                             },
                           );
                         },

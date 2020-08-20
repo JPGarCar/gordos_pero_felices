@@ -22,9 +22,6 @@ import '../constants.dart';
 /// we will use a AlertDialog, not the regular way of doing things.
 class NewUserScreen extends StatefulWidget {
   static final String screenId = 'newUserScreen';
-  final ScrollController scrollController;
-  NewUserScreen({this.scrollController});
-
   @override
   _NewUserScreenState createState() => _NewUserScreenState();
 }
@@ -33,6 +30,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
   final _formKey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
   final Firestore _firestore = Firestore.instance;
+  ScrollController scrollController = ScrollController();
 
   var _selectedGender;
 
@@ -93,10 +91,16 @@ class _NewUserScreenState extends State<NewUserScreen> {
 
   /// used to scroll the scrollView all the way down
   void scrollDown() {
+    var scrollPosition = scrollController.position;
     for (FocusNode focusNode in focusNodes) {
-      if (focusNode.hasFocus) {
-        var scrollPosition = this.widget.scrollController.position;
-        this.widget.scrollController.animateTo(scrollPosition.maxScrollExtent,
+      if (focusNode.hasFocus && focusNodes.indexOf(focusNode) < 3) {
+        scrollController.animateTo(
+            scrollPosition.maxScrollExtent -
+                (MediaQuery.of(context).size.height / 4),
+            duration: Duration(milliseconds: 400),
+            curve: Curves.easeOut);
+      } else if (focusNode.hasFocus && focusNodes.indexOf(focusNode) > 3) {
+        scrollController.animateTo(scrollPosition.maxScrollExtent,
             duration: Duration(milliseconds: 400), curve: Curves.easeOut);
       }
     }
@@ -121,211 +125,233 @@ class _NewUserScreenState extends State<NewUserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return StickyHeader(
-      header: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.vertical(
-              top: Radius.circular(k_circularBorderRadius)),
-          color: k_whiteColor,
-        ),
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-        constraints: BoxConstraints.expand(height: 40),
-        child: SimpleTextButton(
-          onTapCallBack: () {
-            Navigator.pop(context);
-          },
-          text: 'Regresar',
-          textStyle: TextStyle(
-            color: k_redColor,
-            fontWeight: FontWeight.w700,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.vertical(
+                top: Radius.circular(k_circularBorderRadius)),
+            color: k_whiteColor,
           ),
-          verticalPadding: 0,
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          constraints: BoxConstraints.expand(height: 40),
+          child: SimpleTextButton(
+            onTapCallBack: () {
+              Navigator.pop(context);
+            },
+            text: 'Regresar',
+            textStyle: TextStyle(
+              color: k_redColor,
+              fontWeight: FontWeight.w700,
+            ),
+            verticalPadding: 0,
+          ),
         ),
-      ),
-      content: Container(
-        padding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        margin: EdgeInsets.only(left: 15, right: 15, bottom: 20),
-        color: k_whiteColor,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 15, bottom: 10),
-                child: Container(
-                  height: 90,
-                  child: Image.asset(
-                    'images/gordos_logo.png',
-                  ),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Expanded(
-                    child: RedRoundedTextField(
-                        hint: 'Nombre', textEditingController: nameController),
-                  ),
-                  Expanded(
-                    child: RedRoundedTextField(
-                        hint: 'Apellido',
-                        textEditingController: lastNameController),
-                  ),
-                ],
-              ),
-              RedRoundedTextField(
-                hint: 'Correo Electrónico',
-                textEditingController: emailController,
-                isEmail: true,
-                validatorCallBack: (String value) {
-                  if (!EmailValidator.validate(value))
-                    errors.add('Porfavor escriba un correo electronico valido');
-                  return null;
-                },
-              ),
-              RedRoundedTextField(
-                hint: 'Confirmar Correo',
-                textEditingController: confEmailController,
-                isEmail: true,
-                validatorCallBack: (String value) {
-                  if (emailController.text != value)
-                    errors.add(
-                        'Asegurese que su correo electronico sea correcto.');
-                  return null;
-                },
-              ),
-              RedRoundedTextField(
-                focusNode: focusNodes[0],
-                hint: 'Contraseña',
-                textEditingController: passwordController,
-                isPassword: true,
-                validatorCallBack: (String value) {
-                  if (value.length < 6)
-                    errors.add(
-                        'Porfavor escriba una contraseña de más de 6 characteres.');
-                  return null;
-                },
-              ),
-              RedRoundedTextField(
-                focusNode: focusNodes[1],
-                hint: 'Confirmar Contraseña',
-                textEditingController: confPasswordController,
-                isPassword: true,
-                validatorCallBack: (String value) {
-                  if (passwordController.text != value)
-                    errors.add('Asegurese que la contraseña sea correcta!');
-                  return null;
-                },
-              ),
-              RedRoundedTextField(
-                focusNode: focusNodes[2],
-                hint: 'Ciudad',
-                textEditingController: cityController,
-              ),
-              RedRoundedDropDown(
-                hint: 'Genero',
-                value: _selectedGender,
-                onChangeFunction: (value) {
-                  setState(() {
-                    _selectedGender = value;
-                  });
-                },
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 15),
+        Flexible(
+          fit: FlexFit.loose,
+          child: SingleChildScrollView(
+            controller: scrollController,
+            child: Container(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              margin: EdgeInsets.only(left: 15, right: 15, bottom: 20),
+              color: k_whiteColor,
+              child: Form(
+                key: _formKey,
                 child: Column(
                   children: [
-                    Text(
-                      'Fecha de Nacimiento',
-                      style: TextStyle(
-                        color: k_redColor,
-                        fontSize: 16,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15, bottom: 10),
+                      child: Container(
+                        height: 90,
+                        child: Image.asset(
+                          'images/gordos_logo.png',
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Expanded(
+                          child: RedRoundedTextField(
+                            hint: 'Nombre',
+                            textEditingController: nameController,
+                            isCapitalize: true,
+                          ),
+                        ),
+                        Expanded(
+                          child: RedRoundedTextField(
+                            hint: 'Apellido',
+                            textEditingController: lastNameController,
+                            isCapitalize: true,
+                          ),
+                        ),
+                      ],
+                    ),
+                    RedRoundedTextField(
+                      hint: 'Correo Electrónico',
+                      textEditingController: emailController,
+                      isEmail: true,
+                      validatorCallBack: (String value) {
+                        if (!EmailValidator.validate(value))
+                          errors.add(
+                              'Porfavor escriba un correo electronico valido');
+                        return null;
+                      },
+                    ),
+                    RedRoundedTextField(
+                      hint: 'Confirmar Correo',
+                      textEditingController: confEmailController,
+                      isEmail: true,
+                      validatorCallBack: (String value) {
+                        if (emailController.text != value)
+                          errors.add(
+                              'Asegurese que su correo electronico sea correcto.');
+                        return null;
+                      },
+                    ),
+                    RedRoundedTextField(
+                      focusNode: focusNodes[0],
+                      hint: 'Contraseña',
+                      textEditingController: passwordController,
+                      isPassword: true,
+                      validatorCallBack: (String value) {
+                        if (value.length < 6)
+                          errors.add(
+                              'Porfavor escriba una contraseña de más de 6 characteres.');
+                        return null;
+                      },
+                    ),
+                    RedRoundedTextField(
+                      focusNode: focusNodes[1],
+                      hint: 'Confirmar Contraseña',
+                      textEditingController: confPasswordController,
+                      isPassword: true,
+                      validatorCallBack: (String value) {
+                        if (passwordController.text != value)
+                          errors
+                              .add('Asegurese que la contraseña sea correcta!');
+                        return null;
+                      },
+                    ),
+                    RedRoundedTextField(
+                      focusNode: focusNodes[2],
+                      hint: 'Ciudad',
+                      textEditingController: cityController,
+                      isCapitalize: true,
+                    ),
+                    RedRoundedDropDown(
+                      hint: 'Genero',
+                      value: _selectedGender,
+                      onChangeFunction: (value) {
+                        setState(() {
+                          _selectedGender = value;
+                        });
+                        focusNodes[3].requestFocus();
+                      },
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 15),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Fecha de Nacimiento',
+                            style: TextStyle(
+                              color: k_redColor,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 8,
+                                  child: RedRoundedTextField(
+                                    focusNode: focusNodes[3],
+                                    hint: 'DD',
+                                    isNumber: true,
+                                    textEditingController: dayController,
+                                    isCenterText: true,
+                                    validatorCallBack: (String value) {
+                                      if (!value.contains(
+                                          new RegExp('^[1-3]*[0-9]\$')))
+                                        errors.add(
+                                            'Porfavor escriba un dia valido.');
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                                Text(
+                                  '/',
+                                  style: TextStyle(
+                                    color: k_redColor,
+                                    fontSize: 40,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 8,
+                                  child: RedRoundedTextField(
+                                    focusNode: focusNodes[4],
+                                    hint: 'MM',
+                                    isNumber: true,
+                                    textEditingController: monthController,
+                                    isCenterText: true,
+                                    validatorCallBack: (String value) {
+                                      if (!value.contains(
+                                          new RegExp('^[1-9]\$|(^1[0-2]\$)')))
+                                        errors.add(
+                                            'Porfavor excriba un mes valido!');
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                                Text(
+                                  '/',
+                                  style: TextStyle(
+                                    color: k_redColor,
+                                    fontSize: 40,
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 9,
+                                  child: RedRoundedTextField(
+                                    focusNode: focusNodes[5],
+                                    hint: 'YYYY',
+                                    isTextInputDone: true,
+                                    isNumber: true,
+                                    textEditingController: yearController,
+                                    isCenterText: true,
+                                    validatorCallBack: (String value) {
+                                      if (!value
+                                          .contains(new RegExp('^[0-9]{4}\$')))
+                                        errors.add(
+                                            'Porfavor escriba un año valido!');
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 7,
-                            child: RedRoundedTextField(
-                              focusNode: focusNodes[3],
-                              hint: 'DD',
-                              isNumber: true,
-                              textEditingController: dayController,
-                              isCenterText: true,
-                              validatorCallBack: (String value) {
-                                if (!value
-                                    .contains(new RegExp('^[1-3]*[0-9]\$')))
-                                  errors.add('Porfavor escriba un dia valido.');
-                                return null;
-                              },
-                            ),
-                          ),
-                          Text(
-                            '/',
-                            style: TextStyle(
-                              color: k_redColor,
-                              fontSize: 40,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 7,
-                            child: RedRoundedTextField(
-                              focusNode: focusNodes[4],
-                              hint: 'MM',
-                              isNumber: true,
-                              textEditingController: monthController,
-                              isCenterText: true,
-                              validatorCallBack: (String value) {
-                                if (!value.contains(
-                                    new RegExp('^[1-9]\$|(^1[0-2]\$)')))
-                                  errors.add('Porfavor excriba un mes valido!');
-                                return null;
-                              },
-                            ),
-                          ),
-                          Text(
-                            '/',
-                            style: TextStyle(
-                              color: k_redColor,
-                              fontSize: 40,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 8,
-                            child: RedRoundedTextField(
-                              focusNode: focusNodes[5],
-                              hint: 'YYYY',
-                              isTextInputDone: true,
-                              isNumber: true,
-                              textEditingController: yearController,
-                              isCenterText: true,
-                              validatorCallBack: (String value) {
-                                if (!value.contains(new RegExp('^[0-9]{4}\$')))
-                                  errors.add('Porfavor escriba un año valido!');
-                                return null;
-                              },
-                            ),
-                          ),
-                        ],
+                      padding: EdgeInsets.only(top: 20),
+                      child: RedRoundedButton(
+                        onTapFunction: submitButtonFunction,
+                        buttonText: 'Crear Usuario',
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 20),
-                child: RedRoundedButton(
-                  onTapFunction: submitButtonFunction,
-                  buttonText: 'Crear Usuario',
-                ),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 

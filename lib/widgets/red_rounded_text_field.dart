@@ -12,6 +12,7 @@ class RedRoundedTextField extends StatelessWidget {
   final bool isTextInputDone;
   final FocusNode focusNode;
   final Function onTapFunciton;
+  final bool isCapitalize;
 
   RedRoundedTextField(
       {this.isEmail = false,
@@ -19,6 +20,7 @@ class RedRoundedTextField extends StatelessWidget {
       this.isCenterText = false,
       this.isNumber = false,
       this.isTextInputDone = false,
+      this.isCapitalize = false,
       this.onTapFunciton,
       this.focusNode,
       this.validatorCallBack,
@@ -42,6 +44,8 @@ class RedRoundedTextField extends StatelessWidget {
           ],
         ),
         child: TextFormField(
+          textCapitalization:
+              isCapitalize ? TextCapitalization.words : TextCapitalization.none,
           onTap: onTapFunciton,
           focusNode: focusNode,
           textInputAction:
