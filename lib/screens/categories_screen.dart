@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/models/category.dart';
+import 'package:gordos_pero_felizes/models/user.dart';
 import 'package:gordos_pero_felizes/screens/user_screen.dart';
 import 'package:gordos_pero_felizes/widgets/category_card.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';

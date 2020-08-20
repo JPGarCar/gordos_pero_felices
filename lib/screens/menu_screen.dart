@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gordos_pero_felizes/models/user.dart';
 import 'package:gordos_pero_felizes/screens/categories_screen.dart';
 import 'package:gordos_pero_felizes/screens/initial_screen.dart';
 import 'package:gordos_pero_felizes/widgets/simple_text_button.dart';

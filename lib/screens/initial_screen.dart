@@ -15,6 +15,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gordos_pero_felizes/models/user.dart';
+import 'package:gordos_pero_felizes/models/user.dart';
+import 'package:provider/provider.dart';
 
 class InitialScreen extends StatefulWidget {
   static final String screenId = 'initialScreen';
@@ -47,28 +49,6 @@ class _InitialScreenState extends State<InitialScreen> {
     super.dispose();
   }
 
-  /// Deals with the email login
-  Future<String> emailLogIn(String email, String password) async {
-    try {
-      var user = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      if (user != null) {
-        return null;
-      } else {
-        return 'Se ha producido un error, favor de intentar de nuevo.';
-      }
-    } catch (e) {
-      switch (e.code) {
-        case 'ERROR_WRONG_PASSWORD':
-          return 'Tu contraseña es incorrecta!';
-        case 'ERROR_USER_NOT_FOUND':
-          return 'Este correo no esta en nuestro sistema, favor de crear una cuenta nueva.';
-        default:
-          return 'Se ha producido un error, favor de intentar de nuevo.';
-      }
-    }
-  }
-
   /// Deals with the google login
   Future<bool> googleLogIn() async {
     print('Singing in with google ##########');
@@ -93,6 +73,9 @@ class _InitialScreenState extends State<InitialScreen> {
 
         print('signed in user ${firebaseUser.displayName}');
         if (firebaseUser != null) {
+          // TODO check if first time logging in!
+          User.setUserFromDB(
+              _firestore, firebaseUser.uid, Provider.of<User>(context));
           return true;
         }
       }
@@ -127,12 +110,40 @@ class _InitialScreenState extends State<InitialScreen> {
         /// calling the auth method and getting the logged user
         var credential = FacebookAuthProvider.getCredential(
             accessToken: result.accessToken.token);
-        var firebaseUser = await _auth.signInWithCredential(credential);
-        if (firebaseUser != null) {
+        var authResult = await _auth.signInWithCredential(credential);
+        if (authResult != null) {
+          // TODO check if first time logging in!
+          User.setUserFromDB(
+              _firestore, authResult.user.uid, Provider.of<User>(context));
           return true;
         }
     }
     return false;
+  }
+
+  /// Deals with the email login
+  Future<String> emailLogIn(String email, String password) async {
+    try {
+      var user = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      if (user != null) {
+        /// update provider User object
+        User.setUserFromDB(
+            _firestore, user.user.uid, Provider.of<User>(context));
+        return null;
+      } else {
+        return 'Se ha producido un error, favor de intentar de nuevo.';
+      }
+    } catch (e) {
+      switch (e.code) {
+        case 'ERROR_WRONG_PASSWORD':
+          return 'Tu contraseña es incorrecta!';
+        case 'ERROR_USER_NOT_FOUND':
+          return 'Este correo no esta en nuestro sistema, favor de crear una cuenta nueva.';
+        default:
+          return 'Se ha producido un error, favor de intentar de nuevo.';
+      }
+    }
   }
 
   /// email and password submit button function
@@ -152,6 +163,7 @@ class _InitialScreenState extends State<InitialScreen> {
         String error =
             await emailLogIn(emailController.text, passwordController.text);
         if (error == null) {
+          /// Navigate to home screen with the User object
           Navigator.popAndPushNamed(context, HomeScreen.screenId);
         } else {
           showDialog(

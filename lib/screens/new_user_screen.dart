@@ -13,6 +13,7 @@ import 'package:gordos_pero_felizes/widgets/red_rounded_text_field.dart';
 import 'package:gordos_pero_felizes/widgets/simple_text_button.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:gordos_pero_felizes/models/sex_enum.dart';
+import 'package:provider/provider.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
 import '../constants.dart';
@@ -350,8 +351,8 @@ class _NewUserScreenState extends State<NewUserScreen> {
           ),
         );
       } else {
-        /// if no return error then create user object
-        User user = new User(
+        /// Set provider User object data
+        Provider.of<User>(context).setValues(
           uid: signUpResponse.uid,
           name: nameController.text,
           lastName: lastNameController.text,
@@ -364,7 +365,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
         );
 
         /// add user object to db
-        user.addUserToDB(_firestore);
+        Provider.of<User>(context).addUserToDB(_firestore);
 
         /// push on to home page
         Navigator.popAndPushNamed(context, HomeScreen.screenId);

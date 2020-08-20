@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/models/category.dart';
+import 'package:gordos_pero_felizes/models/user.dart';
 import 'package:gordos_pero_felizes/widgets/category_card.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
+import 'package:provider/provider.dart';
 
 class UserScreen extends StatefulWidget {
   static final String screenId = 'userScreen';
@@ -12,8 +14,12 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
+
+  User _appUser;
+
   @override
   Widget build(BuildContext context) {
+    _appUser = Provider.of<User>(context);
     return SafeArea(
       child: Scaffold(
         backgroundColor: k_whiteColor,
@@ -51,7 +57,7 @@ class _UserScreenState extends State<UserScreen> {
                       ),
                     );
                   },
-                  itemCount: 12,
+                  itemCount: _appUser.favoriteBusinessList.length,
                 ),
               ),
             ],

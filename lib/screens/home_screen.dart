@@ -10,6 +10,7 @@ import 'package:gordos_pero_felizes/widgets/category_card.dart';
 import 'package:gordos_pero_felizes/widgets/custom_bottom_sheet.dart' as cbs;
 import 'package:gordos_pero_felizes/widgets/custom_card.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
+import 'package:gordos_pero_felizes/models/user.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String screenId = 'homeScreen';
@@ -19,42 +20,42 @@ class HomeScreen extends StatefulWidget {
   }
 }
 
-/// will show the custom modal bottom sheet
-dynamic showCustomModalBottomSheet(BuildContext context) {
-  return cbs.showModalBottomSheet(
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(k_circularBorderRadius),
-          topRight: Radius.circular(k_circularBorderRadius),
-        ),
-      ),
-      context: context,
-      builder: (context) {
-        return MenuScreen();
-      });
-}
-
-List<CustomCard> cardList = [
-  CustomCard(
-    name: 'Las Tres Bs',
-    imageAssetPath: 'images/gourmet_burger.jpg',
-  ),
-  CustomCard(
-    name: 'Date Favorites',
-    imageAssetPath: 'images/gourmet_burger.jpg',
-  ),
-  CustomCard(
-    name: 'Los Gordo Favoritos',
-    imageAssetPath: 'images/gourmet_burger.jpg',
-  ),
-  CustomCard(
-    name: 'Los Más Buscados',
-    imageAssetPath: 'images/gourmet_burger.jpg',
-  ),
-];
-
 class _HomeScreenState extends State<HomeScreen> {
+  /// will show the custom modal bottom sheet
+  dynamic showCustomModalBottomSheet(BuildContext context) {
+    return cbs.showModalBottomSheet(
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(k_circularBorderRadius),
+            topRight: Radius.circular(k_circularBorderRadius),
+          ),
+        ),
+        context: context,
+        builder: (context) {
+          return MenuScreen();
+        });
+  }
+
+  List<CustomCard> cardList = [
+    CustomCard(
+      name: 'Las Tres Bs',
+      imageAssetPath: 'images/gourmet_burger.jpg',
+    ),
+    CustomCard(
+      name: 'Date Favorites',
+      imageAssetPath: 'images/gourmet_burger.jpg',
+    ),
+    CustomCard(
+      name: 'Los Gordo Favoritos',
+      imageAssetPath: 'images/gourmet_burger.jpg',
+    ),
+    CustomCard(
+      name: 'Los Más Buscados',
+      imageAssetPath: 'images/gourmet_burger.jpg',
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
