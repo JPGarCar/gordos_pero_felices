@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/models/sex_enum.dart';
@@ -11,17 +9,17 @@ class User {
     var dbUserData = dbUser.data;
 
     return User(
-      name: dbUserData['name'],
-      lastName: dbUserData['lastName'],
-      email: dbUserData['email'],
-      city: dbUserData['city'],
-      day: dbUserData['day'],
-      month: dbUserData['month'],
-      year: dbUserData['year'],
-      age: dbUserData['age'],
-      sex: getSexEnum(dbUserData['sex']),
-      uid: dbUser.documentID,
-    );
+        name: dbUserData['name'],
+        lastName: dbUserData['lastName'],
+        email: dbUserData['email'],
+        city: dbUserData['city'],
+        day: dbUserData['day'],
+        month: dbUserData['month'],
+        year: dbUserData['year'],
+        age: dbUserData['age'],
+        sex: getSexEnum(dbUserData['sex']),
+        uid: dbUser.documentID,
+        favoriteBusinessList: dbUserData['favorites']);
   }
 
   static void setUserFromDB(Firestore firestore, String uid, User user) async {
@@ -59,7 +57,9 @@ class User {
   /// will use business name's to id them from db
   List<String> favoriteBusinessList;
 
-  User.empty();
+  User.empty() {
+    favoriteBusinessList = [];
+  }
 
   User(
       {this.name,
@@ -71,7 +71,8 @@ class User {
       this.year,
       this.sex,
       this.age,
-      @required this.uid}) {
+      @required this.uid,
+      this.favoriteBusinessList}) {
     /// set age using year if year is not null
     if (age == null && year != null) {
       setAge();
@@ -83,7 +84,9 @@ class User {
     if (sex == null) {
       sex = Sex.other;
     }
-    favoriteBusinessList = [];
+    if (favoriteBusinessList == null) {
+      favoriteBusinessList = [];
+    }
   }
 
   void setValues({
@@ -99,17 +102,21 @@ class User {
     String uid,
     List<String> favoriteBusinessList,
   }) {
-    this.name = name;
-    this.lastName = lastName;
-    this.email = email;
-    this.city = city;
-    this.day = day;
-    this.month = month;
-    this.year = year;
-    this.age = age;
-    this.sex = sex;
-    this.uid = uid;
-    this.favoriteBusinessList = favoriteBusinessList;
+    this.name = name ?? this.name;
+    this.lastName = lastName ?? this.lastName;
+    this.email = email ?? this.email;
+    this.city = city ?? this.city;
+    this.day = day ?? this.day;
+    this.month = month ?? this.month;
+    this.year = year ?? this.year;
+    this.age = age ?? this.age;
+    this.sex = sex ?? this.sex;
+    this.uid = uid ?? this.uid;
+    this.favoriteBusinessList =
+        favoriteBusinessList ?? this.favoriteBusinessList;
+    if (age == null) {
+      setAge();
+    }
   }
 
   /// Sets the users age by time difference to user's birth year
@@ -132,6 +139,7 @@ class User {
       'year': year,
       'age': age,
       'sex': getSexValue(sex),
+      'favorites': favoriteBusinessList,
     });
   }
 }

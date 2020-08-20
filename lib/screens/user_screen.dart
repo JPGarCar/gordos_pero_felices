@@ -3,6 +3,7 @@ import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/models/category.dart';
 import 'package:gordos_pero_felizes/models/user.dart';
 import 'package:gordos_pero_felizes/widgets/category_card.dart';
+import 'package:gordos_pero_felizes/widgets/custom_card.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -18,8 +19,13 @@ class _UserScreenState extends State<UserScreen> {
   User _appUser;
 
   @override
+  void initState() {
+    _appUser = Provider.of<User>(context, listen: false);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    _appUser = Provider.of<User>(context);
     return SafeArea(
       child: Scaffold(
         backgroundColor: k_whiteColor,
@@ -44,22 +50,26 @@ class _UserScreenState extends State<UserScreen> {
                   fontSize: 18,
                 ),
               ),
-              Expanded(
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),
-                  itemBuilder: (context, index) {
-                    return CategoryCard(
-                      category: Category(
-                        name: 'Burgers',
-                        imageAssetPath: 'images/gourmet_burger.jpg',
+              _appUser.favoriteBusinessList.isNotEmpty
+                  ? Expanded(
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                        ),
+                        itemBuilder: (context, index) {
+                          return CustomCard(
+                            name: _appUser.favoriteBusinessList[index],
+                            imageAssetPath: 'images/gourmet_burger.jpg',
+                          );
+                        },
+                        itemCount: _appUser.favoriteBusinessList.length,
                       ),
-                    );
-                  },
-                  itemCount: _appUser.favoriteBusinessList.length,
-                ),
-              ),
+                    )
+                  : Expanded(
+                      child: Center(
+                        child: Text('Aun no tienes favoritos!'),
+                      ),
+                    ),
             ],
           ),
         ),

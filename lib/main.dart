@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           CategoriesScreen.screenId: (context) => CategoriesScreen(),
           UserScreen.screenId: (context) => UserScreen(),
         },
-        initialRoute: HomeScreen.screenId,
+        initialRoute: InitialScreen.screenId,
       ),
     );
   }

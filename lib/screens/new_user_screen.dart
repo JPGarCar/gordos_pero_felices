@@ -56,8 +56,6 @@ class _NewUserScreenState extends State<NewUserScreen> {
     FocusNode(),
   ];
 
-  double pixelTo = 0;
-
   List<String> errors = [];
 
   /// Will try to register the user with email and password, if there are any
@@ -352,7 +350,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
         );
       } else {
         /// Set provider User object data
-        Provider.of<User>(context).setValues(
+        Provider.of<User>(context, listen: false).setValues(
           uid: signUpResponse.uid,
           name: nameController.text,
           lastName: lastNameController.text,
@@ -365,7 +363,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
         );
 
         /// add user object to db
-        Provider.of<User>(context).addUserToDB(_firestore);
+        Provider.of<User>(context, listen: false).addUserToDB(_firestore);
 
         /// push on to home page
         Navigator.popAndPushNamed(context, HomeScreen.screenId);

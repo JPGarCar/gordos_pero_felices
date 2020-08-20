@@ -74,8 +74,8 @@ class _InitialScreenState extends State<InitialScreen> {
         print('signed in user ${firebaseUser.displayName}');
         if (firebaseUser != null) {
           // TODO check if first time logging in!
-          User.setUserFromDB(
-              _firestore, firebaseUser.uid, Provider.of<User>(context));
+          User.setUserFromDB(_firestore, firebaseUser.uid,
+              Provider.of<User>(context, listen: false));
           return true;
         }
       }
@@ -113,8 +113,8 @@ class _InitialScreenState extends State<InitialScreen> {
         var authResult = await _auth.signInWithCredential(credential);
         if (authResult != null) {
           // TODO check if first time logging in!
-          User.setUserFromDB(
-              _firestore, authResult.user.uid, Provider.of<User>(context));
+          User.setUserFromDB(_firestore, authResult.user.uid,
+              Provider.of<User>(context, listen: false));
           return true;
         }
     }
@@ -128,8 +128,8 @@ class _InitialScreenState extends State<InitialScreen> {
           email: email, password: password);
       if (user != null) {
         /// update provider User object
-        User.setUserFromDB(
-            _firestore, user.user.uid, Provider.of<User>(context));
+        User.setUserFromDB(_firestore, user.user.uid,
+            Provider.of<User>(context, listen: false));
         return null;
       } else {
         return 'Se ha producido un error, favor de intentar de nuevo.';
