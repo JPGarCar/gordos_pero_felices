@@ -57,7 +57,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   itemBuilder: (context, index) {
                     return BusinessCard(
                       business: Business(
-                          businessName: 'Frat Pack',
+                          businessName: 'Ryoshi',
+                          bestPlateList: [
+                            'El bowl',
+                            'La carne',
+                            'El desayuno',
+                          ],
+                          tipList: [
+                            'Pideo mucho chile',
+                            'Toma mucha agua',
+                          ],
                           happyRating: 3,
                           houseRating: 2,
                           moneyRating: 4,

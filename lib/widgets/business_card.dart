@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/models/business.dart';
+import 'package:gordos_pero_felizes/screens/business_screen.dart';
 
 import '../constants.dart';
 import 'custom_card.dart';
@@ -12,7 +13,8 @@ class BusinessCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      onTapFunction: () {}, // TODO send to business page
+      onTapFunction: () => Navigator.pushNamed(context, BusinessScreen.screenId,
+          arguments: business), // TODO send to business page
       imageAssetPath: business.mainImageAsset,
       name: business.businessName,
       overlay: Row(

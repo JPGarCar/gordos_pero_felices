@@ -1,6 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gordos_pero_felizes/constants.dart';
+import 'package:gordos_pero_felizes/models/business.dart';
+import 'package:gordos_pero_felizes/screens/user_screen.dart';
+import 'package:gordos_pero_felizes/widgets/custom_card.dart';
+import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 
 class BusinessScreen extends StatefulWidget {
   static final String screenId = 'businessScreen';
@@ -10,201 +15,149 @@ class BusinessScreen extends StatefulWidget {
   }
 }
 
-class _BusinessScreenState extends State<BusinessScreen> {
-  List<Widget> getIconList(IconData iconData, int amount) {
-    List<Widget> moneyList = new List();
-    for (var i = 0; i < amount; i++) {
-      moneyList.add(Icon(
-        iconData,
-        color: Colors.red,
-      ));
-    }
-    return moneyList;
-  }
+List<Widget> listOf(List<String> list, TextStyle textStyle) {
+  List<Text> texts;
+  texts = list
+      .map((e) => Text(
+            e,
+            style: textStyle,
+          ))
+      .toList();
+  return texts;
+}
 
+class _BusinessScreenState extends State<BusinessScreen> {
   @override
   Widget build(BuildContext context) {
+    final Business business = ModalRoute.of(context).settings.arguments;
+
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("GPF"),
-          centerTitle: true,
-        ),
-        body: ListView(
-          children: <Widget>[
-            CarouselSlider(
-              options: CarouselOptions(height: 300.0),
-              items: [1, 2, 3, 4, 5].map((i) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Center(
-                      child: Image.asset(
-                        "images/ryoshi_img$i.jpg",
-                        width: MediaQuery.of(context).size.width,
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
-            ),
-            // Row with Business Name and Icon Rating
-            Container(
-              height: 40,
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: OverflowBox(
-                      child: Text(
-                        "Ryoshi",
-                        style: TextStyle(fontSize: 50),
-                      ),
-                      alignment: Alignment.bottomLeft,
-                      maxHeight: 100,
-                      minHeight: 20,
-                      maxWidth: 160,
-                    ),
-                    flex: 1,
-                  ), // Business Name
-                  Expanded(
-                    flex: 3,
-                    child: Row(
-                      children: <Widget>[
-                        // Row of $
-                        Padding(
-                          padding: const EdgeInsets.all(2.5),
-                          child:
-                              Row(children: getIconList(Icons.attach_money, 3)),
-                        ),
-
-                        // Row of Happy Faces
-                        Padding(
-                          padding: const EdgeInsets.all(2.5),
-                          child: Row(children: getIconList(Icons.tag_faces, 3)),
-                        ),
-
-                        // Row of Houses
-                        Padding(
-                          padding: const EdgeInsets.all(2.5),
-                          child: Row(children: getIconList(Icons.home, 3)),
-                        )
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.end,
-                    ),
+        backgroundColor: k_whiteColor,
+        body: Container(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                    top: k_appPaddingVertical,
+                    left: k_appPaddingHorizontal,
+                    right: k_appPaddingHorizontal),
+                child: TitleWidget(
+                  leftIcon: Icons.arrow_back,
+                  onPressedLeftIcon: () => Navigator.pop(context),
+                  rightIcon: Icons.account_circle,
+                  onPressedRightIcon: () =>
+                      Navigator.pushNamed(context, UserScreen.screenId),
+                  mainText: business.businessName,
+                  textStyle: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
                   ),
-                ],
+                ),
               ),
-            ),
-            // Carousel with the business images
-
-            // Tabs with information
-            /*
-             * 1- Review
-             * 2- pros
-             * 3- Cons
-             * 4- Final
-             * 5- Menu
-             */
-            // TODO TabBar
-            Container(
-              height: 300,
-              child: DefaultTabController(
-                length: 5,
-                child: Scaffold(
-                  appBar: TabBar(
-                    tabs: <Widget>[
-                      Tab(
-                        text: "Review",
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      CarouselSlider(
+                        options: CarouselOptions(
+                          height: 400,
+                          autoPlay: true,
+                          aspectRatio: 2.0,
+                          enlargeCenterPage: true,
+                        ),
+                        items: [
+                          CustomCard(
+                            imageAssetPath: 'images/ryoshi_img1.jpg',
+                            height: 400,
+                            isColorFilter: false,
+                          ),
+                          CustomCard(
+                            imageAssetPath: 'images/ryoshi_img2.jpg',
+                            height: 400,
+                            isColorFilter: false,
+                          ),
+                          CustomCard(
+                            imageAssetPath: 'images/ryoshi_img3.jpg',
+                            height: 400,
+                            isColorFilter: false,
+                          ),
+                          CustomCard(
+                            imageAssetPath: 'images/ryoshi_img4.jpg',
+                            height: 400,
+                            isColorFilter: false,
+                          ),
+                        ],
                       ),
-                      Tab(
-                        text: "Pros",
-                      ),
-                      Tab(
-                        text: "Cons",
-                      ),
-                      Tab(
-                        text: "Final",
-                      ),
-                      Tab(
-                        text: "Menu",
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: k_appPaddingHorizontal),
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Text(
+                                business.textReview,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            business.bestPlateList.isNotEmpty
+                                ? Container(
+                                    padding: EdgeInsets.symmetric(vertical: 15),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          'Lo que pedimos:',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Column(
+                                          children: listOf(
+                                            business.bestPlateList,
+                                            TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                : SizedBox(),
+                            business.tipList.isNotEmpty
+                                ? Container(
+                                    padding: EdgeInsets.symmetric(vertical: 15),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          'Nuestros Gordo Tips:',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Column(
+                                          children: listOf(
+                                            business.tipList,
+                                            TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                : SizedBox(),
+                          ],
+                        ),
                       ),
                     ],
-                    labelColor: Colors.red,
                   ),
-                  body: TabBarView(children: [
-                    Card(
-                      child: Center(
-                        child: Text(
-                          "Sample Text",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      color: Colors.red,
-                    ),
-                    Text("Sample Text"),
-                    Text("Sample Text"),
-                    Text("Sample Text"),
-                    Text("Sample Text")
-                  ]),
                 ),
               ),
-            ),
-
-            // Divider
-            Divider(
-              height: 25,
-              thickness: 2,
-              color: Colors.red.shade200,
-              endIndent: 5,
-              indent: 5,
-            ),
-
-            // Row with Links to Order and Phone
-            // TODO
-            Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    height: 50,
-                    child: Text("Uber Eats Image"),
-                  ),
-                  Container(
-                    height: 50,
-                    child: Text("Rappi Image"),
-                  ),
-                  Container(
-                    height: 50,
-                    child: Text("Phone Number"),
-                  )
-                ],
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              ),
-            ),
-
-            // Google Map
-            // TODO
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: 150,
-                child: Center(
-                  child: Text("Google Maps"),
-                ),
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.redAccent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(10)),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
