@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
@@ -43,9 +44,9 @@ class Business {
       this.uberEatsLink = '',
       this.phoneNumber = '',
       this.igLink = ''}) {
-    tipList ??= [];
-    bestPlateList ??= [];
-    imageAssetList ??= [];
+    tipList ??= List<String>();
+    bestPlateList ??= List<String>();
+    imageAssetList ??= List<String>();
   }
 
   /// Will return x amount of given iconsData as a list.
@@ -71,5 +72,26 @@ class Business {
 
   List<Widget> grabHappyIcons() {
     return grabIcons(happyRating, Icons.tag_faces);
+  }
+
+  /// add this business to db
+  /// requires: a firestore instance to add to db
+  /// assumes collection is named 'users'
+  void addBusinessToDB(FirebaseFirestore firestore) {
+    firestore.collection('businesses').doc(businessName).set({
+      'businessName': businessName,
+      'happyRating': happyRating,
+      'houseRating': houseRating,
+      'moneyRating': moneyRating,
+      'igLink': igLink,
+      'mainImageAsset': mainImageAsset,
+      'phoneNumber': phoneNumber,
+      'rappiLink': rappiLink,
+      'userEatsLink': uberEatsLink,
+      'textReview': textReview,
+      'imageAssetList': imageAssetList,
+      'tipList': tipList,
+      'bestPlateList': bestPlateList,
+    });
   }
 }

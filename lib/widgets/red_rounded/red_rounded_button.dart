@@ -34,30 +34,33 @@ class _RedRoundedButtonState extends State<RedRoundedButton> {
         });
         widget.onTapFunction();
       },
-      child: AnimatedContainer(
-        onEnd: () {
-          setState(() {
-            isSelected = false;
-          });
-        },
-        duration: Duration(milliseconds: 350),
-        height: 35,
-        padding: EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 8),
-        decoration: BoxDecoration(
-          color: k_redColor,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: [
-            BoxShadow(
-              color: k_redColorLight,
-              offset: Offset.fromDirection(.8, isSelected ? 0 : 8),
+      child: Padding(
+        padding: EdgeInsets.all(10.0),
+        child: AnimatedContainer(
+          onEnd: () {
+            setState(() {
+              isSelected = false;
+            });
+          },
+          duration: Duration(milliseconds: 350),
+          height: 35,
+          padding: EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 8),
+          decoration: BoxDecoration(
+            color: k_redColor,
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: [
+              BoxShadow(
+                color: k_redColorLight,
+                offset: Offset.fromDirection(.8, isSelected ? 0 : 8),
+              ),
+            ],
+          ),
+          child: Text(
+            widget.buttonText,
+            style: TextStyle(
+              color: k_whiteColor,
+              fontSize: 16,
             ),
-          ],
-        ),
-        child: Text(
-          widget.buttonText,
-          style: TextStyle(
-            color: k_whiteColor,
-            fontSize: 16,
           ),
         ),
       ),

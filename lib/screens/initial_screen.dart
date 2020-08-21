@@ -154,7 +154,7 @@ class _InitialScreenState extends State<InitialScreen> {
           context: context,
           builder: (context) => ErrorDialog(
             stringErrors: errors,
-            cleanUp: () => errors.clear(),
+            extraFunction: () => errors.clear(),
           ),
         );
       } else {

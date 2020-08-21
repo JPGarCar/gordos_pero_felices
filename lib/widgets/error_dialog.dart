@@ -3,9 +3,9 @@ import 'file:///C:/Users/juapg/_Programming_Projects/AndroidStudioProjects/Gordo
 
 class ErrorDialog extends StatelessWidget {
   final List<String> stringErrors;
-  final Function cleanUp;
+  final Function extraFunction;
 
-  ErrorDialog({this.stringErrors, this.cleanUp});
+  ErrorDialog({this.stringErrors, this.extraFunction});
 
   List<Widget> getErrors() {
     List<Widget> errorList = [];
@@ -50,7 +50,7 @@ class ErrorDialog extends StatelessWidget {
             RedRoundedButton(
               onTapFunction: () {
                 Navigator.pop(context);
-                cleanUp();
+                extraFunction();
               },
               buttonText: 'Okay',
             ),

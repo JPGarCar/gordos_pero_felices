@@ -14,8 +14,10 @@ class RedRoundedTextField extends StatelessWidget {
   final Function onTapFunciton;
   final bool isCapitalize;
   final Function onChangedFunction;
+  final bool isMultiLine;
 
   RedRoundedTextField({
+    this.isMultiLine = false,
     this.isEmail = false,
     this.isPassword = false,
     this.isCenterText = false,
@@ -35,7 +37,7 @@ class RedRoundedTextField extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(10.0),
       child: Container(
-        height: 35,
+        height: isMultiLine ? 150 : 35,
         decoration: BoxDecoration(
           color: k_redColor,
           borderRadius: BorderRadius.circular(k_circularBorderRadius),
@@ -47,9 +49,11 @@ class RedRoundedTextField extends StatelessWidget {
           ],
         ),
         child: TextFormField(
+          maxLines: isMultiLine ? 10 : 1,
           onChanged: onChangedFunction ?? null,
-          textCapitalization:
-              isCapitalize ? TextCapitalization.words : TextCapitalization.none,
+          textCapitalization: isCapitalize
+              ? TextCapitalization.words
+              : TextCapitalization.sentences,
           onTap: onTapFunciton,
           focusNode: focusNode,
           textInputAction:
@@ -66,7 +70,9 @@ class RedRoundedTextField extends StatelessWidget {
           ),
           keyboardType: isEmail
               ? TextInputType.emailAddress
-              : isNumber ? TextInputType.number : TextInputType.text,
+              : isNumber
+                  ? TextInputType.number
+                  : isMultiLine ? TextInputType.multiline : TextInputType.text,
           obscureText: isPassword,
           decoration: InputDecoration(
             hintStyle: TextStyle(
@@ -74,7 +80,9 @@ class RedRoundedTextField extends StatelessWidget {
               fontSize: 14,
             ),
             hintText: hint,
-            contentPadding: EdgeInsets.only(right: 20, left: 20, bottom: 15),
+            contentPadding: isMultiLine
+                ? EdgeInsets.symmetric(vertical: 15, horizontal: 20)
+                : EdgeInsets.only(right: 20, left: 20, bottom: 15),
             border: InputBorder.none,
           ),
         ),

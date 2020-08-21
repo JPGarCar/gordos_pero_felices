@@ -4,6 +4,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/models/app_user.dart';
+import 'package:gordos_pero_felizes/models/sex_enum.dart';
 import 'package:gordos_pero_felizes/screens/home_screen.dart';
 import 'package:gordos_pero_felizes/widgets/error_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
@@ -249,6 +250,20 @@ class _NewUserScreenState extends State<NewUserScreen> {
                         });
                         focusNodes[3].requestFocus();
                       },
+                      dropDownItems: [
+                        DropdownMenuItem(
+                          child: Text(getSexValue(Sex.male)),
+                          value: Sex.male,
+                        ),
+                        DropdownMenuItem(
+                          child: Text(getSexValue(Sex.female)),
+                          value: Sex.female,
+                        ),
+                        DropdownMenuItem(
+                          child: Text(getSexValue(Sex.other)),
+                          value: Sex.other,
+                        ),
+                      ],
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 15),
@@ -398,7 +413,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
         context: context,
         barrierDismissible: false,
         builder: (context) => ErrorDialog(
-          cleanUp: () => errors.clear(),
+          extraFunction: () => errors.clear(),
           stringErrors: errors,
         ),
       );

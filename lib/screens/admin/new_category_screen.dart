@@ -5,12 +5,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/models/category.dart';
+import 'package:gordos_pero_felizes/services/image_getter.dart';
 import 'package:gordos_pero_felizes/widgets/card/category_card.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_text_field.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as pt;
 
 class NewCategoryScreen extends StatefulWidget {
   static final screenId = 'newCategoryScreen';
@@ -21,42 +20,16 @@ class NewCategoryScreen extends StatefulWidget {
 
 class _NewCategoryScreenState extends State<NewCategoryScreen> {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
-
   File _image;
-  final picker = ImagePicker();
   TextEditingController nameController = TextEditingController();
-
-  /// Deals with getting images from the phone!
-  Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
-    }
-  }
 
   /// Deals with uploading category info to firestore
   Future uploadCategory(String name) async {
-    String assetPath = await uploadImage();
+    String assetPath = await ImageGetter.uploadImage(image: _image);
     _firestore.collection('categories').add({
       'imageAssetPath': assetPath,
       'name': name,
     });
-  }
-
-  /// Deals with uploading the image to firebase storage
-  Future<String> uploadImage() async {
-    print('called function!');
-    StorageReference storageReference =
-        _firebaseStorage.ref().child('categories/${pt.basename(_image.path)}');
-    StorageUploadTask uploadTask = storageReference.putFile(_image);
-    print('right before await!');
-    await uploadTask.onComplete;
-    print('photo is up!');
-    print(uploadTask.lastSnapshot.storageMetadata.path);
-    return uploadTask.lastSnapshot.storageMetadata.path;
   }
 
   @override
@@ -93,7 +66,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
               ),
               RedRoundedButton(
                 buttonText: 'Escojer imagen de categoria',
-                onTapFunction: getImage,
+                onTapFunction: () async {
+                  _image = await ImageGetter.getImage();
+                },
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 30),

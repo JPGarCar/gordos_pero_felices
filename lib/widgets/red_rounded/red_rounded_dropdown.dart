@@ -6,10 +6,14 @@ class RedRoundedDropDown extends StatelessWidget {
   final String hint;
   final Function onChangeFunction;
   final value;
+  final List<DropdownMenuItem> dropDownItems;
+  final IconData iconData;
 
   RedRoundedDropDown({
-    this.value,
-    this.onChangeFunction,
+    this.iconData,
+    @required this.dropDownItems,
+    @required this.value,
+    @required this.onChangeFunction,
     @required this.hint,
   });
 
@@ -34,6 +38,8 @@ class RedRoundedDropDown extends StatelessWidget {
           widthFactor: 1.2,
           child: DropdownButtonHideUnderline(
             child: DropdownButton(
+              icon: iconData != null ? Icon(iconData) : null,
+              iconEnabledColor: k_whiteColor,
               isDense: true,
               dropdownColor: k_redColorLight,
               elevation: 20,
@@ -48,20 +54,7 @@ class RedRoundedDropDown extends StatelessWidget {
                   color: k_whiteColor,
                 ),
               ),
-              items: [
-                DropdownMenuItem(
-                  child: Text(getSexValue(Sex.male)),
-                  value: Sex.male,
-                ),
-                DropdownMenuItem(
-                  child: Text(getSexValue(Sex.female)),
-                  value: Sex.female,
-                ),
-                DropdownMenuItem(
-                  child: Text(getSexValue(Sex.other)),
-                  value: Sex.other,
-                ),
-              ],
+              items: dropDownItems,
               value: value,
               onChanged: onChangeFunction,
             ),
