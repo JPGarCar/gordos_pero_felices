@@ -1,16 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
-import 'package:gordos_pero_felizes/models/business.dart';
-import 'package:gordos_pero_felizes/models/category.dart';
 import 'package:gordos_pero_felizes/screens/menu_screen.dart';
 import 'package:gordos_pero_felizes/screens/user_screen.dart';
-import 'package:gordos_pero_felizes/widgets/business_card.dart';
-import 'package:gordos_pero_felizes/widgets/category_card.dart';
 import 'package:gordos_pero_felizes/widgets/custom_bottom_sheet.dart' as cbs;
-import 'package:gordos_pero_felizes/widgets/custom_card.dart';
+import 'package:gordos_pero_felizes/widgets/card/custom_card.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
-import 'package:gordos_pero_felizes/models/user.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String screenId = 'homeScreen';

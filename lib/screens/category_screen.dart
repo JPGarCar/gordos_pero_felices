@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:gordos_pero_felizes/models/business.dart';
 import 'package:gordos_pero_felizes/screens/user_screen.dart';
-import 'package:gordos_pero_felizes/widgets/business_card.dart';
+import 'file:///C:/Users/juapg/_Programming_Projects/AndroidStudioProjects/GordosPeroFelizes/gordos_pero_felizes/lib/widgets/card/business_card.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 
 import '../constants.dart';

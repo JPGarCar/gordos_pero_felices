@@ -1,20 +1,18 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gordos_pero_felizes/models/user.dart';
+import 'package:gordos_pero_felizes/models/app_user.dart';
 import 'package:gordos_pero_felizes/screens/home_screen.dart';
 import 'package:gordos_pero_felizes/widgets/error_dialog.dart';
-import 'package:gordos_pero_felizes/widgets/red_rounded_button.dart';
-import 'package:gordos_pero_felizes/widgets/red_rounded_dropdown.dart';
-import 'package:gordos_pero_felizes/widgets/red_rounded_text_field.dart';
+import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
+import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_text_field.dart';
+import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_dropdown.dart';
 import 'package:gordos_pero_felizes/widgets/simple_text_button.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
-import 'package:gordos_pero_felizes/models/sex_enum.dart';
 import 'package:provider/provider.dart';
-import 'package:sticky_headers/sticky_headers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../constants.dart';
 
@@ -29,7 +27,7 @@ class NewUserScreen extends StatefulWidget {
 class _NewUserScreenState extends State<NewUserScreen> {
   final _formKey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
-  final Firestore _firestore = Firestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   ScrollController scrollController = ScrollController();
 
   var _selectedGender;
@@ -59,7 +57,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
   /// Will try to register the user with email and password, if there are any
   /// errors it will return the error as a string, else will return a FirebaseUser
   Future<dynamic> singUpUser({String email, String password}) async {
-    AuthResult authResult;
+    UserCredential authResult;
     try {
       authResult = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -86,6 +84,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
     dayController.dispose();
     monthController.dispose();
     yearController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -376,7 +375,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
         );
       } else {
         /// Set provider User object data
-        Provider.of<User>(context, listen: false).setValues(
+        Provider.of<AppUser>(context, listen: false).setValues(
           uid: signUpResponse.uid,
           name: nameController.text,
           lastName: lastNameController.text,
@@ -389,7 +388,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
         );
 
         /// add user object to db
-        Provider.of<User>(context, listen: false).addUserToDB(_firestore);
+        Provider.of<AppUser>(context, listen: false).addUserToDB(_firestore);
 
         /// push on to home page
         Navigator.popAndPushNamed(context, HomeScreen.screenId);

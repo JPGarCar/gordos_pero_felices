@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/models/business.dart';
 import 'package:gordos_pero_felizes/screens/user_screen.dart';
-import 'package:gordos_pero_felizes/widgets/custom_card.dart';
+import 'package:gordos_pero_felizes/widgets/card/custom_card.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 
 class BusinessScreen extends StatefulWidget {

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
-import 'package:gordos_pero_felizes/models/category.dart';
-import 'package:gordos_pero_felizes/models/user.dart';
-import 'package:gordos_pero_felizes/widgets/category_card.dart';
-import 'package:gordos_pero_felizes/widgets/custom_card.dart';
+import 'package:gordos_pero_felizes/models/app_user.dart';
+import 'package:gordos_pero_felizes/widgets/card/custom_card.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +18,7 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   void initState() {
-    _appUser = Provider.of<User>(context, listen: false);
+    _appUser = Provider.of<AppUser>(context, listen: false);
     super.initState();
   }
 

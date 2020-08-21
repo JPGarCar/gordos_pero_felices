@@ -6,16 +6,15 @@ import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/screens/home_screen.dart';
 import 'package:gordos_pero_felizes/screens/new_user_screen.dart';
 import 'package:gordos_pero_felizes/widgets/error_dialog.dart';
-import 'package:gordos_pero_felizes/widgets/red_rounded_button.dart';
-import 'package:gordos_pero_felizes/widgets/red_rounded_text_field.dart';
+import 'file:///C:/Users/juapg/_Programming_Projects/AndroidStudioProjects/GordosPeroFelizes/gordos_pero_felizes/lib/widgets/red_rounded/red_rounded_button.dart';
+import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_text_field.dart';
 import 'package:gordos_pero_felizes/widgets/custom_bottom_sheet.dart' as cbs;
 import 'package:gordos_pero_felizes/widgets/simple_text_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:gordos_pero_felizes/models/user.dart';
-import 'package:gordos_pero_felizes/models/user.dart';
+import 'package:gordos_pero_felizes/models/app_user.dart';
 import 'package:provider/provider.dart';
 
 class InitialScreen extends StatefulWidget {
@@ -26,7 +25,7 @@ class InitialScreen extends StatefulWidget {
 }
 
 class _InitialScreenState extends State<InitialScreen> {
-  final Firestore _firestore = Firestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: [
     'https://www.googleapis.com/auth/userinfo.profile',
@@ -59,8 +58,9 @@ class _InitialScreenState extends State<InitialScreen> {
       if (googleAuth != null) {
         AuthCredential credential = GoogleAuthProvider.getCredential(
             idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
-        AuthResult authResult = (await _auth.signInWithCredential(credential));
-        FirebaseUser firebaseUser = authResult.user;
+        UserCredential authResult =
+            (await _auth.signInWithCredential(credential));
+        User firebaseUser = authResult.user;
 
         /// Checking if this is the first time the user enters, if so create
         /// user in db
@@ -73,8 +73,8 @@ class _InitialScreenState extends State<InitialScreen> {
         print('signed in user ${firebaseUser.displayName}');
         if (firebaseUser != null) {
           // TODO check if first time logging in!
-          User.setUserFromDB(_firestore, firebaseUser.uid,
-              Provider.of<User>(context, listen: false));
+          AppUser.setUserFromDB(_firestore, firebaseUser.uid,
+              Provider.of<AppUser>(context, listen: false));
           return true;
         }
       }
@@ -107,13 +107,13 @@ class _InitialScreenState extends State<InitialScreen> {
         print("LoggedIn");
 
         /// calling the auth method and getting the logged user
-        var credential = FacebookAuthProvider.getCredential(
-            accessToken: result.accessToken.token);
+        var credential =
+            FacebookAuthProvider.credential(result.accessToken.token);
         var authResult = await _auth.signInWithCredential(credential);
         if (authResult != null) {
           // TODO check if first time logging in!
-          User.setUserFromDB(_firestore, authResult.user.uid,
-              Provider.of<User>(context, listen: false));
+          AppUser.setUserFromDB(_firestore, authResult.user.uid,
+              Provider.of<AppUser>(context, listen: false));
           return true;
         }
     }
@@ -122,19 +122,10 @@ class _InitialScreenState extends State<InitialScreen> {
 
   /// Deals with the email login
   Future<String> emailLogIn(String email, String password) async {
-    try {
-      var user = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      if (user != null) {
-        /// update provider User object
-        User.setUserFromDB(_firestore, user.user.uid,
-            Provider.of<User>(context, listen: false));
-        return null;
-      } else {
-        return 'Se ha producido un error, favor de intentar de nuevo.';
-      }
-    } catch (e) {
-      switch (e.code) {
+    var user = await _auth
+        .signInWithEmailAndPassword(email: email, password: password)
+        .catchError((onError) {
+      switch (onError.code) {
         case 'ERROR_WRONG_PASSWORD':
           return 'Tu contraseña es incorrecta!';
         case 'ERROR_USER_NOT_FOUND':
@@ -142,6 +133,14 @@ class _InitialScreenState extends State<InitialScreen> {
         default:
           return 'Se ha producido un error, favor de intentar de nuevo.';
       }
+    });
+    if (user != null) {
+      /// update provider User object
+      AppUser.setUserFromDB(_firestore, user.user.uid,
+          Provider.of<AppUser>(context, listen: false));
+      return null;
+    } else {
+      return 'Se ha producido un error, favor de intentar de nuevo.';
     }
   }
 

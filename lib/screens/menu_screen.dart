@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gordos_pero_felizes/models/user.dart';
+import 'package:gordos_pero_felizes/models/app_user.dart';
+import 'package:gordos_pero_felizes/screens/admin_panel_screen.dart';
 import 'package:gordos_pero_felizes/screens/categories_screen.dart';
 import 'package:gordos_pero_felizes/screens/initial_screen.dart';
 import 'package:gordos_pero_felizes/widgets/simple_text_button.dart';
+import 'package:provider/provider.dart';
 
 import '../constants.dart';
 
@@ -20,6 +22,7 @@ class _MenuScreenState extends State<MenuScreen> {
     return Container(
       margin: k_appPadding,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
@@ -36,53 +39,65 @@ class _MenuScreenState extends State<MenuScreen> {
               ),
             ],
           ),
-          Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: 20, bottom: 20),
-                child: Container(
-                  height: 90,
-                  child: Image.asset(
-                    'images/gordos_logo.png',
+          Flexible(
+            fit: FlexFit.loose,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 20, bottom: 20),
+                    child: Container(
+                      height: 90,
+                      child: Image.asset(
+                        'images/gordos_logo.png',
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 15),
-                child: SimpleTextButton(
-                  text: 'GORDOS PERO FELICES',
-                  textStyle: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: SimpleTextButton(
+                      text: 'GORDOS PERO FELICES',
+                      textStyle: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
-                ),
+                  SimpleTextButton(
+                    onTapCallBack: () => Navigator.popAndPushNamed(
+                        context, CategoriesScreen.screenId),
+                    text: 'Restaurantes por Categoría',
+                  ),
+                  SimpleTextButton(
+                    text: 'Restaurantes por Ubicación',
+                  ),
+                  SimpleTextButton(
+                    text: 'Juega con la Ruleta Gordos',
+                  ),
+                  SimpleTextButton(
+                    text: 'Toma nuestro Gordo Quiz',
+                  ),
+                  SimpleTextButton(
+                    text: 'Antojate con el Gordo Date',
+                  ),
+                  Provider.of<AppUser>(context, listen: false).isAdmin
+                      ? SimpleTextButton(
+                          text: 'Panel de Admin',
+                          onTapCallBack: () => Navigator.popAndPushNamed(
+                              context, AdminPanelScreen.screenId),
+                        )
+                      : SizedBox(),
+                  SimpleTextButton(
+                    onTapCallBack: () {
+                      _auth.signOut();
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, InitialScreen.screenId, (route) => false);
+                    },
+                    text: 'Cerrar Sesión',
+                  ),
+                ],
               ),
-              SimpleTextButton(
-                onTapCallBack: () => Navigator.popAndPushNamed(
-                    context, CategoriesScreen.screenId),
-                text: 'Restaurantes por Categoría',
-              ),
-              SimpleTextButton(
-                text: 'Restaurantes por Ubicación',
-              ),
-              SimpleTextButton(
-                text: 'Juega con la Ruleta Gordos',
-              ),
-              SimpleTextButton(
-                text: 'Toma nuestro Gordo Quiz',
-              ),
-              SimpleTextButton(
-                text: 'Antojate con el Gordo Date',
-              ),
-              SimpleTextButton(
-                onTapCallBack: () {
-                  _auth.signOut();
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, InitialScreen.screenId, (route) => false);
-                },
-                text: 'Cerrar Sesión',
-              ),
-            ],
+            ),
           ),
         ],
       ),

@@ -13,19 +13,22 @@ class RedRoundedTextField extends StatelessWidget {
   final FocusNode focusNode;
   final Function onTapFunciton;
   final bool isCapitalize;
+  final Function onChangedFunction;
 
-  RedRoundedTextField(
-      {this.isEmail = false,
-      this.isPassword = false,
-      this.isCenterText = false,
-      this.isNumber = false,
-      this.isTextInputDone = false,
-      this.isCapitalize = false,
-      this.onTapFunciton,
-      this.focusNode,
-      this.validatorCallBack,
-      @required this.hint,
-      @required this.textEditingController});
+  RedRoundedTextField({
+    this.isEmail = false,
+    this.isPassword = false,
+    this.isCenterText = false,
+    this.isNumber = false,
+    this.isTextInputDone = false,
+    this.isCapitalize = false,
+    this.onTapFunciton,
+    this.focusNode,
+    this.validatorCallBack,
+    @required this.hint,
+    @required this.textEditingController,
+    this.onChangedFunction,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +47,7 @@ class RedRoundedTextField extends StatelessWidget {
           ],
         ),
         child: TextFormField(
+          onChanged: onChangedFunction ?? null,
           textCapitalization:
               isCapitalize ? TextCapitalization.words : TextCapitalization.none,
           onTap: onTapFunciton,

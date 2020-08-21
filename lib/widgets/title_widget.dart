@@ -13,18 +13,21 @@ class TitleWidget extends StatelessWidget {
   final bool isSecondaryText;
   final String secondaryText;
   final TextStyle secondaryTextStyle;
+  final bool isImage;
 
-  TitleWidget(
-      {this.leftIcon,
-      this.onPressedLeftIcon,
-      this.rightIcon,
-      this.onPressedRightIcon,
-      this.mainText = '',
-      this.isSearchBar = false,
-      this.textStyle,
-      this.isSecondaryText = false,
-      this.secondaryText,
-      this.secondaryTextStyle});
+  TitleWidget({
+    this.leftIcon,
+    this.onPressedLeftIcon,
+    this.rightIcon,
+    this.onPressedRightIcon,
+    this.mainText = '',
+    this.isSearchBar = false,
+    this.textStyle,
+    this.isSecondaryText = false,
+    this.secondaryText,
+    this.secondaryTextStyle,
+    this.isImage = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +41,15 @@ class TitleWidget extends StatelessWidget {
             rightIcon: rightIcon,
             onPressedRightIcon: onPressedRightIcon,
           ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 20),
-            child: Container(
-              height: 80,
-              child: Image.asset('images/gordos_logo.png'),
-            ),
-          ),
+          isImage
+              ? Padding(
+                  padding: EdgeInsets.only(bottom: 20),
+                  child: Container(
+                    height: 80,
+                    child: Image.asset('images/gordos_logo.png'),
+                  ),
+                )
+              : SizedBox(),
           Text(
             mainText,
             style: textStyle,

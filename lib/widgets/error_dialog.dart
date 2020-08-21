@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gordos_pero_felizes/widgets/red_rounded_button.dart';
+import 'file:///C:/Users/juapg/_Programming_Projects/AndroidStudioProjects/GordosPeroFelizes/gordos_pero_felizes/lib/widgets/red_rounded/red_rounded_button.dart';
 
 class ErrorDialog extends StatelessWidget {
   final List<String> stringErrors;
