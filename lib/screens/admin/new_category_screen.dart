@@ -1,12 +1,11 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/models/category.dart';
 import 'package:gordos_pero_felizes/services/image_getter.dart';
 import 'package:gordos_pero_felizes/widgets/card/category_card.dart';
+import 'package:gordos_pero_felizes/widgets/dialogs/confirm_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_text_field.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
@@ -25,8 +24,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   /// Deals with uploading category info to firestore
   Future uploadCategory(String name) async {
-    String assetPath = await ImageGetter.uploadImage(image: _image);
-    _firestore.collection('categories').add({
+    String assetPath = await ImageGetter.uploadImage(
+        image: _image, imagePath: 'categories/$name');
+    _firestore.collection('categories').doc(name).set({
       'imageAssetPath': assetPath,
       'name': name,
     });
@@ -68,6 +68,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                 buttonText: 'Escojer imagen de categoria',
                 onTapFunction: () async {
                   _image = await ImageGetter.getImage();
+                  setState(() {});
                 },
               ),
               Padding(
@@ -82,6 +83,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                     ),
                     _image != null
                         ? CategoryCard(
+                            isOffline: true,
                             isActive: false,
                             category: new Category(
                               name: nameController.text,
@@ -96,8 +98,18 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                   ? nameController.text != ""
                       ? RedRoundedButton(
                           buttonText: 'Agregar Categoría Nueva',
-                          onTapFunction: () =>
-                              uploadCategory(nameController.text),
+                          onTapFunction: () async {
+                            await uploadCategory(nameController.text);
+                            showDialog(
+                              context: context,
+                              child: ConfirmDialog(
+                                onTapFunction: () {
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            );
+                          },
                         )
                       : SizedBox()
                   : SizedBox(),

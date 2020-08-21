@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/models/category.dart';
 import 'package:gordos_pero_felizes/screens/user_screen.dart';
@@ -15,6 +16,8 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -39,19 +42,35 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 ),
               ),
               Expanded(
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),
-                  itemBuilder: (context, index) {
-                    return CategoryCard(
-                      category: Category(
-                        name: 'Burgers',
-                        imageAssetPath: 'images/gourmet_burger.jpg',
+                child: StreamBuilder(
+                  stream:
+                      firebaseFirestore.collection('categories').snapshots(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (!snapshot.hasData) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Icon(Icons.error);
+                    }
+                    QuerySnapshot querySnapshot = snapshot.data;
+                    List<DocumentChange> changedDocs = querySnapshot.docChanges;
+                    return GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
                       ),
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot doc = changedDocs[index].doc;
+                        var mapData = doc.data();
+                        return CategoryCard(
+                          category: Category(
+                            name: mapData['name'],
+                            imageAssetPath: mapData['imageAssetPath'],
+                          ),
+                        );
+                      },
+                      itemCount: changedDocs.length,
                     );
                   },
-                  itemCount: 12,
                 ),
               ),
             ],

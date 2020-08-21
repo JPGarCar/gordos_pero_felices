@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/services/image_getter.dart';
 import 'package:gordos_pero_felizes/widgets/card/custom_card.dart';
-import 'package:gordos_pero_felizes/widgets/error_dialog.dart';
+import 'package:gordos_pero_felizes/widgets/dialogs/confirm_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_dropdown.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_text_field.dart';
@@ -77,9 +77,12 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
   Future uploadImages() async {
     String initalPath = nameController.text.replaceAll(" ", "");
     List<String> paths = List<String>();
-    for (Asset asset in images) {
+    for (int i = 0; i < images.length; i++) {
+      Asset asset = images[i];
       String path = await ImageGetter.uploadImage(
-          asset: asset, isData: true, initialPath: 'businesses/$initalPath/');
+          asset: asset,
+          isData: true,
+          imagePath: 'businesses/$initalPath/${initalPath}_$i');
       paths.add(path);
     }
     return paths;
@@ -89,7 +92,8 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
   Future addBusiness() async {
     String initalPath = nameController.text.replaceAll(" ", "");
     String mainImagePath = await ImageGetter.uploadImage(
-        image: _mainImage, initialPath: 'businesses/$initalPath/');
+        image: _mainImage,
+        imagePath: 'businesses/$initalPath/${initalPath}_main');
     List<String> paths = await uploadImages();
 
     Business business = new Business(
@@ -307,34 +311,13 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
                                               () {
                                                 Navigator.pop(context);
                                                 showDialog(
-                                                  context: context,
-                                                  child: Dialog(
-                                                    child: Padding(
-                                                      padding:
-                                                          EdgeInsets.all(15),
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          Text(
-                                                              'El negocio se ha agregado correctamente!'),
-                                                          RedRoundedButton(
-                                                            buttonText: 'Okay',
-                                                            onTapFunction: () {
-                                                              Navigator.pop(
-                                                                  context);
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
+                                                    context: context,
+                                                    child: ConfirmDialog(
+                                                      onTapFunction: () {
+                                                        Navigator.pop(context);
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ));
                                               },
                                             );
                                           },

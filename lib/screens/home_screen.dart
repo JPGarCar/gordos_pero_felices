@@ -34,18 +34,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<CustomCard> cardList = [
     CustomCard(
+      isOffline: true,
       name: 'Las Tres Bs',
       imageAssetPath: 'images/gourmet_burger.jpg',
     ),
     CustomCard(
+      isOffline: true,
       name: 'Date Favorites',
       imageAssetPath: 'images/gourmet_burger.jpg',
     ),
     CustomCard(
+      isOffline: true,
       name: 'Los Gordo Favoritos',
       imageAssetPath: 'images/gourmet_burger.jpg',
     ),
     CustomCard(
+      isOffline: true,
       name: 'Los Más Buscados',
       imageAssetPath: 'images/gourmet_burger.jpg',
     ),

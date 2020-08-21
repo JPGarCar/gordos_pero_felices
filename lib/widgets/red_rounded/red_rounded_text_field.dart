@@ -53,7 +53,11 @@ class RedRoundedTextField extends StatelessWidget {
           onChanged: onChangedFunction ?? null,
           textCapitalization: isCapitalize
               ? TextCapitalization.words
-              : TextCapitalization.sentences,
+              : isEmail
+                  ? TextCapitalization.none
+                  : isPassword
+                      ? TextCapitalization.none
+                      : TextCapitalization.sentences,
           onTap: onTapFunciton,
           focusNode: focusNode,
           textInputAction:

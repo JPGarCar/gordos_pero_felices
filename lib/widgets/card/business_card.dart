@@ -6,12 +6,14 @@ import 'custom_card.dart';
 
 class BusinessCard extends StatelessWidget {
   final Business business;
+  final bool isOffline;
 
-  BusinessCard({@required this.business});
+  BusinessCard({@required this.business, this.isOffline = false});
 
   @override
   Widget build(BuildContext context) {
     return CustomCard(
+      isOffline: isOffline,
       onTapFunction: () => Navigator.pushNamed(context, BusinessScreen.screenId,
           arguments: business), // TODO send to business page
       imageAssetPath: business.mainImageAsset,
