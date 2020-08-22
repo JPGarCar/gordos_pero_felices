@@ -24,7 +24,7 @@ class NewBusinessScreen extends StatefulWidget {
 class _NewBusinessScreenState extends State<NewBusinessScreen> {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
-  bool isActive;
+  bool isActive = true;
   int happyRating;
   int houseRating;
   int moneyRating;
