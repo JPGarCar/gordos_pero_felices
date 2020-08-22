@@ -58,10 +58,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
               Expanded(
                 child: ListView.builder(
                   itemBuilder: (context, index) {
-                    return BusinessCard(
-                      business: Provider.of<Category>(context, listen: false)
-                          .businesses[index],
-                    );
+                    Business business =
+                        Provider.of<Category>(context, listen: false)
+                            .businesses[index];
+                    return business.isActive
+                        ? BusinessCard(
+                            business: business,
+                          )
+                        : null;
                   },
                   itemCount: Provider.of<Category>(context, listen: false)
                       .businesses

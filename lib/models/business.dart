@@ -27,6 +27,8 @@ class Business {
   String igLink;
   // TODO google maps data
 
+  bool isActive;
+
   /// Constructor ///
   /// ratings and textReview are required, everything else can be added later,
   /// lists will be initialized if not given in constructor.
@@ -43,7 +45,8 @@ class Business {
       this.rappiLink = '',
       this.uberEatsLink = '',
       this.phoneNumber = '',
-      this.igLink = ''}) {
+      this.igLink = '',
+      this.isActive = true}) {
     tipList ??= List<String>();
     bestPlateList ??= List<String>();
     imageAssetList ??= List<String>();
@@ -92,6 +95,7 @@ class Business {
       'imageAssetList': imageAssetList,
       'tipList': tipList,
       'bestPlateList': bestPlateList,
+      'isActive': isActive,
     });
   }
 }

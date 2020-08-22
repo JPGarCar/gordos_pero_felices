@@ -24,6 +24,7 @@ class NewBusinessScreen extends StatefulWidget {
 class _NewBusinessScreenState extends State<NewBusinessScreen> {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
+  bool isActive;
   int happyRating;
   int houseRating;
   int moneyRating;
@@ -137,6 +138,7 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
       uberEatsLink: uberEatsController.text,
       phoneNumber: phoneController.text,
       igLink: igLinkController.text,
+      isActive: isActive,
     );
 
     await business.addBusinessToDB(firebaseFirestore);
@@ -316,6 +318,13 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
                         textEditingController: uberEatsController,
                         isTextInputDone: true,
                       ),
+                      Switch.adaptive(
+                          value: isActive,
+                          onChanged: (value) {
+                            setState(() {
+                              isActive = value;
+                            });
+                          }),
                       RedRoundedDropDown(
                         dropDownItems: categoryDropDownItems,
                         value: categoryDropDownValue,
