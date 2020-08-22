@@ -54,14 +54,17 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     }
                     QuerySnapshot querySnapshot = snapshot.data;
                     List<DocumentChange> changedDocs = querySnapshot.docChanges;
+
                     return GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                       ),
                       itemBuilder: (context, index) {
                         DocumentSnapshot doc = changedDocs[index].doc;
-                        return CategoryCard(
-                            category: Category.getCategoryFromDocument(doc));
+                        return doc.get('isActive')
+                            ? CategoryCard(
+                                category: Category.getCategoryFromDocument(doc))
+                            : null;
                       },
                       itemCount: changedDocs.length,
                     );

@@ -36,6 +36,7 @@ class Category {
       name: mapData['name'],
       imageAssetPath: mapData['imageAssetPath'],
       businesses: businessList,
+      isActive: mapData['isActive'],
     );
   }
 
@@ -43,13 +44,17 @@ class Category {
 
   String name;
   String imageAssetPath;
+  bool isActive;
 
   List<Business> businesses;
 
   /// Constructor
 
   Category(
-      {@required this.name, @required this.imageAssetPath, this.businesses}) {
+      {@required this.name,
+      @required this.imageAssetPath,
+      this.businesses,
+      this.isActive}) {
     businesses ??= [];
   }
 
@@ -63,5 +68,6 @@ class Category {
     name = category.name;
     imageAssetPath = category.imageAssetPath;
     businesses = category.businesses;
+    isActive = category.isActive;
   }
 }

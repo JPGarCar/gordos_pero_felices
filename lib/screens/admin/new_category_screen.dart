@@ -21,6 +21,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   File _image;
   TextEditingController nameController = TextEditingController();
+  bool isActive = true;
 
   /// Deals with uploading category info to firestore
   Future uploadCategory(String name) async {
@@ -30,6 +31,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       'imageAssetPath': assetPath,
       'name': name,
       'businesses': List<DocumentReference>(),
+      'isActive': isActive,
     });
   }
 
@@ -95,6 +97,13 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                   ],
                 ),
               ),
+              Switch.adaptive(
+                  value: isActive,
+                  onChanged: (value) {
+                    setState(() {
+                      isActive = value;
+                    });
+                  }),
               _image != null
                   ? nameController.text != ""
                       ? RedRoundedButton(
