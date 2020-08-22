@@ -38,7 +38,12 @@ class RedRoundedDropDown extends StatelessWidget {
           widthFactor: 1.2,
           child: DropdownButtonHideUnderline(
             child: DropdownButton(
-              icon: iconData != null ? Icon(iconData) : null,
+              icon: iconData != null
+                  ? Padding(
+                      padding: EdgeInsets.only(left: 8.0),
+                      child: Icon(iconData),
+                    )
+                  : null,
               iconEnabledColor: k_whiteColor,
               isDense: true,
               dropdownColor: k_redColorLight,

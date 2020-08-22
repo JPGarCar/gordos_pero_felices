@@ -6,7 +6,6 @@ import 'package:gordos_pero_felizes/models/business.dart';
 class Category {
   static Category getCategoryFromDocument(DocumentSnapshot documentSnapshot) {
     Map<dynamic, dynamic> mapData = documentSnapshot.data();
-    print(mapData);
     var businesses = mapData['businesses'];
 
     List<Business> businessList = List<Business>();

@@ -7,6 +7,7 @@ import 'package:gordos_pero_felizes/services/image_getter.dart';
 import 'package:gordos_pero_felizes/widgets/card/category_card.dart';
 import 'package:gordos_pero_felizes/widgets/dialogs/confirm_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
+import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_switch.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_text_field.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 
@@ -97,13 +98,15 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                   ],
                 ),
               ),
-              Switch.adaptive(
-                  value: isActive,
-                  onChanged: (value) {
-                    setState(() {
-                      isActive = value;
-                    });
-                  }),
+              RedRoundedSwitch(
+                text: 'Activo?',
+                value: isActive,
+                onChangeFunction: (value) {
+                  setState(() {
+                    isActive = value;
+                  });
+                },
+              ),
               _image != null
                   ? nameController.text != ""
                       ? RedRoundedButton(

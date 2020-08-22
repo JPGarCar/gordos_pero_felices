@@ -8,6 +8,7 @@ import 'package:gordos_pero_felizes/widgets/card/custom_card.dart';
 import 'package:gordos_pero_felizes/widgets/dialogs/confirm_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_dropdown.dart';
+import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_switch.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_text_field.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 import 'dart:io';
@@ -204,38 +205,53 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
                         hint: 'Review de negocio...',
                         textEditingController: reviewController,
                       ),
-                      RedRoundedDropDown(
-                        iconData: Icons.tag_faces,
-                        hint: 'Rating Comida',
-                        value: happyRating,
-                        onChangeFunction: (value) {
-                          setState(() {
-                            happyRating = value;
-                          });
-                        },
-                        dropDownItems: getOneToFive(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          RedRoundedDropDown(
+                            iconData: Icons.tag_faces,
+                            hint: '?',
+                            value: happyRating,
+                            onChangeFunction: (value) {
+                              setState(() {
+                                happyRating = value;
+                              });
+                            },
+                            dropDownItems: getOneToFive(),
+                          ),
+                          RedRoundedDropDown(
+                            iconData: Icons.home,
+                            hint: '?',
+                            value: houseRating,
+                            onChangeFunction: (value) {
+                              setState(() {
+                                houseRating = value;
+                              });
+                            },
+                            dropDownItems: getOneToFive(),
+                          ),
+                          RedRoundedDropDown(
+                            iconData: Icons.attach_money,
+                            hint: '?',
+                            value: moneyRating,
+                            onChangeFunction: (value) {
+                              setState(() {
+                                moneyRating = value;
+                              });
+                            },
+                            dropDownItems: getOneToFive(),
+                          ),
+                        ],
                       ),
                       RedRoundedDropDown(
-                        iconData: Icons.home,
-                        hint: 'Rating Lugar',
-                        value: houseRating,
+                        dropDownItems: categoryDropDownItems,
+                        value: categoryDropDownValue,
                         onChangeFunction: (value) {
                           setState(() {
-                            houseRating = value;
+                            categoryDropDownValue = value;
                           });
                         },
-                        dropDownItems: getOneToFive(),
-                      ),
-                      RedRoundedDropDown(
-                        iconData: Icons.attach_money,
-                        hint: 'Rating Dinero',
-                        value: moneyRating,
-                        onChangeFunction: (value) {
-                          setState(() {
-                            moneyRating = value;
-                          });
-                        },
-                        dropDownItems: getOneToFive(),
+                        hint: 'Categoría',
                       ),
                       RedRoundedButton(
                         buttonText: 'Escojer Imagen Principal',
@@ -321,22 +337,14 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
                         textEditingController: uberEatsController,
                         isTextInputDone: true,
                       ),
-                      Switch.adaptive(
-                          value: isActive,
-                          onChanged: (value) {
-                            setState(() {
-                              isActive = value;
-                            });
-                          }),
-                      RedRoundedDropDown(
-                        dropDownItems: categoryDropDownItems,
-                        value: categoryDropDownValue,
+                      RedRoundedSwitch(
+                        text: 'Activo?',
+                        value: isActive,
                         onChangeFunction: (value) {
                           setState(() {
-                            categoryDropDownValue = value;
+                            isActive = value;
                           });
                         },
-                        hint: 'Categoría',
                       ),
                       RedRoundedButton(
                         buttonText: 'Agregar Negocio',
