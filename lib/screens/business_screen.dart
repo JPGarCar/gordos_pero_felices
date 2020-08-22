@@ -26,6 +26,23 @@ List<Widget> listOf(List<String> list, TextStyle textStyle) {
   return texts;
 }
 
+/// Deals with creating the cards for the carousel slider
+List<Widget> carouselItems(List<String> pathList) {
+  List<Widget> list = List<Widget>();
+
+  for (String path in pathList) {
+    list.add(
+      CustomCard(
+        imageAssetPath: path,
+        height: 400,
+        isColorFilter: false,
+        isOffline: false,
+      ),
+    );
+  }
+  return list;
+}
+
 class _BusinessScreenState extends State<BusinessScreen> {
   @override
   Widget build(BuildContext context) {
@@ -66,28 +83,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
                           aspectRatio: 2.0,
                           enlargeCenterPage: true,
                         ),
-                        items: [
-                          CustomCard(
-                            imageAssetPath: 'images/ryoshi_img1.jpg',
-                            height: 400,
-                            isColorFilter: false,
-                          ),
-                          CustomCard(
-                            imageAssetPath: 'images/ryoshi_img2.jpg',
-                            height: 400,
-                            isColorFilter: false,
-                          ),
-                          CustomCard(
-                            imageAssetPath: 'images/ryoshi_img3.jpg',
-                            height: 400,
-                            isColorFilter: false,
-                          ),
-                          CustomCard(
-                            imageAssetPath: 'images/ryoshi_img4.jpg',
-                            height: 400,
-                            isColorFilter: false,
-                          ),
-                        ],
+                        items: carouselItems(business.imageAssetList),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(
