@@ -9,7 +9,7 @@ class ImageGetter {
   FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   /// Deals with getting images from the phone!
-  static Future<File> getImage() async {
+  /* static Future<File> getImage() async {
     var picker = ImagePicker();
     final pickedFile = await picker.getImage(
         source: ImageSource.gallery, maxHeight: 420, imageQuality: 70);
@@ -18,6 +18,19 @@ class ImageGetter {
     } else {
       return null;
     }
+  }*/
+
+  static Future<File> getImage() {
+    var picker = ImagePicker();
+    final pickedFile = picker
+        .getImage(source: ImageSource.gallery, maxHeight: 420, imageQuality: 70)
+        .then((value) {
+      return File(value.path);
+    }).catchError((onError) {
+      print(onError.toString());
+      return null;
+    });
+    return pickedFile;
   }
 
   /// Deals with uploading the image to firebase storage

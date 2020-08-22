@@ -240,8 +240,11 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
                       RedRoundedButton(
                         buttonText: 'Escojer Imagen Principal',
                         onTapFunction: () async {
-                          _mainImage = await ImageGetter.getImage();
-                          setState(() {});
+                          _mainImage =
+                              await ImageGetter.getImage().then((value) {
+                            setState(() {});
+                            return value;
+                          });
                         },
                       ),
                       _mainImage != null
