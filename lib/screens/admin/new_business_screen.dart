@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/services/image_getter.dart';
@@ -27,6 +29,9 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
   int moneyRating;
   File _mainImage;
 
+  String categoryDropDownValue;
+  List<DropdownMenuItem> categoryDropDownItems;
+
   TextEditingController nameController = TextEditingController();
   TextEditingController reviewController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
@@ -50,6 +55,28 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
       );
     }
     return list;
+  }
+
+  /// Deals with adding all the available categories to a dropdown list
+  List<DropdownMenuItem> getCategoriesDropDown() {
+    List<DropdownMenuItem> dropDownItems = List<DropdownMenuItem>();
+
+    firebaseFirestore.collection('categories').get().then(
+      (value) {
+        List<QueryDocumentSnapshot> listOfDocs = value.docs;
+        for (QueryDocumentSnapshot queryDocumentSnapshot in listOfDocs) {
+          dropDownItems.add(
+            DropdownMenuItem(
+              child: Text(
+                queryDocumentSnapshot.get('name'),
+              ),
+              value: queryDocumentSnapshot.id,
+            ),
+          );
+        }
+      },
+    );
+    return dropDownItems;
   }
 
   /// Deals with multi image picker
@@ -112,7 +139,15 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
       igLink: igLinkController.text,
     );
 
-    business.addBusinessToDB(firebaseFirestore);
+    await business.addBusinessToDB(firebaseFirestore);
+    await firebaseFirestore
+        .collection('categories')
+        .doc(categoryDropDownValue)
+        .update({
+      'businesses': FieldValue.arrayUnion([
+        firebaseFirestore.collection('businesses').doc(business.businessName)
+      ]),
+    });
   }
 
   @override
@@ -126,6 +161,12 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
     rappiLinkController.dispose();
     uberEatsController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    categoryDropDownItems = getCategoriesDropDown();
+    super.initState();
   }
 
   @override
@@ -206,9 +247,10 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
                               children: [
                                 Text('Preview...'),
                                 CustomCard(
-                                    imageAssetPath: _mainImage.path,
-                                    name: nameController.text // TODO,
-                                    ),
+                                  imageAssetPath: _mainImage.path,
+                                  name: nameController.text,
+                                  isOffline: true,
+                                ),
                               ],
                             )
                           : SizedBox(),
@@ -274,6 +316,16 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
                         textEditingController: uberEatsController,
                         isTextInputDone: true,
                       ),
+                      RedRoundedDropDown(
+                        dropDownItems: categoryDropDownItems,
+                        value: categoryDropDownValue,
+                        onChangeFunction: (value) {
+                          setState(() {
+                            categoryDropDownValue = value;
+                          });
+                        },
+                        hint: 'Categoría',
+                      ),
                       RedRoundedButton(
                         buttonText: 'Agregar Negocio',
                         onTapFunction: () {
@@ -313,6 +365,8 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
                                                 showDialog(
                                                     context: context,
                                                     child: ConfirmDialog(
+                                                      text:
+                                                          'El negocio se ha agregado correctamente!',
                                                       onTapFunction: () {
                                                         Navigator.pop(context);
                                                         Navigator.pop(context);

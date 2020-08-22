@@ -77,8 +77,8 @@ class Business {
   /// add this business to db
   /// requires: a firestore instance to add to db
   /// assumes collection is named 'users'
-  void addBusinessToDB(FirebaseFirestore firestore) {
-    firestore.collection('businesses').doc(businessName).set({
+  Future<void> addBusinessToDB(FirebaseFirestore firestore) {
+    return firestore.collection('businesses').doc(businessName).set({
       'businessName': businessName,
       'happyRating': happyRating,
       'houseRating': houseRating,

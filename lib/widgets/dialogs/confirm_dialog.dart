@@ -3,8 +3,9 @@ import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart'
 
 class ConfirmDialog extends StatelessWidget {
   final Function onTapFunction;
+  final String text;
 
-  ConfirmDialog({this.onTapFunction});
+  ConfirmDialog({this.onTapFunction, this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class ConfirmDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('El negocio se ha agregado correctamente!'),
+            Text(text),
             RedRoundedButton(
               buttonText: 'Okay',
               onTapFunction: onTapFunction,

@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:gordos_pero_felizes/models/business.dart';
+import 'package:gordos_pero_felizes/models/category.dart';
 import 'package:gordos_pero_felizes/screens/user_screen.dart';
 import 'file:///C:/Users/juapg/_Programming_Projects/AndroidStudioProjects/GordosPeroFelizes/gordos_pero_felizes/lib/widgets/card/business_card.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../constants.dart';
 
@@ -45,7 +47,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 rightIcon: Icons.account_circle,
                 onPressedRightIcon: () =>
                     Navigator.pushNamed(context, UserScreen.screenId),
-                mainText: 'Restauratnes Americandos',
+                mainText:
+                    'Restauratnes ${Provider.of<Category>(context, listen: false).name}',
                 textStyle: TextStyle(
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
@@ -56,25 +59,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 child: ListView.builder(
                   itemBuilder: (context, index) {
                     return BusinessCard(
-                      business: Business(
-                          businessName: 'Ryoshi',
-                          bestPlateList: [
-                            'El bowl',
-                            'La carne',
-                            'El desayuno',
-                          ],
-                          tipList: [
-                            'Pideo mucho chile',
-                            'Toma mucha agua',
-                          ],
-                          happyRating: 3,
-                          houseRating: 2,
-                          moneyRating: 4,
-                          textReview: 'This is a great business',
-                          mainImageAsset: 'images/gourmet_burger.jpg'),
+                      business: Provider.of<Category>(context, listen: false)
+                          .businesses[index],
                     );
                   },
-                  itemCount: 3,
+                  itemCount: Provider.of<Category>(context, listen: false)
+                      .businesses
+                      .length,
                 ),
               ),
             ],

@@ -60,13 +60,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       ),
                       itemBuilder: (context, index) {
                         DocumentSnapshot doc = changedDocs[index].doc;
-                        var mapData = doc.data();
                         return CategoryCard(
-                          category: Category(
-                            name: mapData['name'],
-                            imageAssetPath: mapData['imageAssetPath'],
-                          ),
-                        );
+                            category: Category.getCategoryFromDocument(doc));
                       },
                       itemCount: changedDocs.length,
                     );

@@ -29,6 +29,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     _firestore.collection('categories').doc(name).set({
       'imageAssetPath': assetPath,
       'name': name,
+      'businesses': List<DocumentReference>(),
     });
   }
 
@@ -103,6 +104,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                             showDialog(
                               context: context,
                               child: ConfirmDialog(
+                                text: 'La categoría se agregó correctamente!',
                                 onTapFunction: () {
                                   Navigator.pop(context);
                                   Navigator.pop(context);

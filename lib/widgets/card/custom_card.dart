@@ -28,7 +28,7 @@ class CustomCard extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
         child: isOffline
             ? CardImageWidget(
-                imageProvider: Image.asset(imageAssetPath).image,
+                imageProvider: AssetImage(imageAssetPath),
                 height: height,
                 isColorFilter: isColorFilter,
                 overlay: overlay,

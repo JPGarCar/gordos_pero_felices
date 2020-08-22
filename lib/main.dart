@@ -11,6 +11,7 @@ import 'package:gordos_pero_felizes/screens/user_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'models/app_user.dart';
+import 'models/category.dart';
 import 'screens/home_screen.dart';
 
 void main() async {
@@ -22,8 +23,15 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Provider<AppUser>(
-      create: (_) => AppUser.empty(),
+    return MultiProvider(
+      providers: [
+        Provider<AppUser>(
+          create: (_) => AppUser.empty(),
+        ),
+        Provider(
+          create: (_) => Category(),
+        )
+      ],
       child: MaterialApp(
         title: 'Gordos Pero Felizes',
         theme: ThemeData(
