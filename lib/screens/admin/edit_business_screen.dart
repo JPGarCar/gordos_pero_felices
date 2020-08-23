@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
+import 'package:gordos_pero_felizes/firebase_constants.dart';
 import 'package:gordos_pero_felizes/services/dropdown_items_getter.dart';
 import 'package:gordos_pero_felizes/services/image_getter.dart';
 import 'package:gordos_pero_felizes/widgets/business_editor.dart';
@@ -60,24 +61,24 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
   /// Deals with changing the controller values and other form values
   Future<void> updateValues() async {
     await firebaseFirestore
-        .collection('businesses')
+        .collection(fk_businessCollection)
         .doc(businessChooserStringValue)
         .get()
         .then((DocumentSnapshot value) {
       Map<String, dynamic> data = value.data();
-      nameController.text = data['businessName'];
-      reviewController.text = data['textReview'];
-      uberEatsController.text = data['uberEatsLink'];
-      rappiLinkController.text = data['rappiLink'];
-      igLinkController.text = data['igLink'];
-      phoneController.text = data['phoneNumber'];
-      gordoTipController.text = listToString(data['tipList']);
-      favoriteDishesController.text = listToString(data['bestPlateList']);
-      moneyRating = data['moneyRating'];
-      happyRating = data['happyRating'];
-      houseRating = data['houseRating'];
-      isActive = data['isActive'];
-      mainImagePath = data['mainImageAsset'];
+      nameController.text = data[fk_businessName];
+      reviewController.text = data[fk_textReview];
+      uberEatsController.text = data[fk_uberEatsLink];
+      rappiLinkController.text = data[fk_rappiLink];
+      igLinkController.text = data[fk_igLink];
+      phoneController.text = data[fk_phoneNumber];
+      gordoTipController.text = listToString(data[fk_tipList]);
+      favoriteDishesController.text = listToString(data[fk_bestPlateList]);
+      moneyRating = data[fk_moneyRating];
+      happyRating = data[fk_happyRating];
+      houseRating = data[fk_houseRating];
+      isActive = data[fk_isActive];
+      mainImagePath = data[fk_businessMainImageAsset];
     });
   }
 
@@ -116,23 +117,23 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
     List<String> paths;
     images.isNotEmpty ? paths = await uploadImages() : null;
     await firebaseFirestore
-        .collection('businesses')
+        .collection(fk_businessCollection)
         .doc(businessChooserStringValue)
         .update({
-      'businessName': nameController.text,
-      'happyRating': happyRating,
-      'houseRating': houseRating,
-      'moneyRating': moneyRating,
-      'igLink': igLinkController.text,
-      'mainImageAsset': imagePath ?? mainImagePath,
-      'phoneNumber': phoneController.text,
-      'rappiLink': rappiLinkController.text,
-      'uberEatsLink': uberEatsController.text,
-      'textReview': reviewController.text,
-      'imageAssetList': FieldValue.arrayUnion(paths ?? []),
-      'tipList': getStringListByDot(gordoTipController.text),
-      'bestPlateList': getStringListByDot(favoriteDishesController.text),
-      'isActive': isActive,
+      fk_businessName: nameController.text,
+      fk_happyRating: happyRating,
+      fk_houseRating: houseRating,
+      fk_moneyRating: moneyRating,
+      fk_igLink: igLinkController.text,
+      fk_businessMainImageAsset: imagePath ?? mainImagePath,
+      fk_phoneNumber: phoneController.text,
+      fk_rappiLink: rappiLinkController.text,
+      fk_uberEatsLink: uberEatsController.text,
+      fk_textReview: reviewController.text,
+      fk_businessImageAssetList: FieldValue.arrayUnion(paths ?? []),
+      fk_tipList: getStringListByDot(gordoTipController.text),
+      fk_bestPlateList: getStringListByDot(favoriteDishesController.text),
+      fk_isActive: isActive,
     });
   }
 

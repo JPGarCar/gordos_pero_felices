@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gordos_pero_felizes/firebase_constants.dart';
 
 class DropDownItemsGetter {
   /// Deals with adding all the available categories to a dropdown list
@@ -8,14 +9,14 @@ class DropDownItemsGetter {
       Function(List<DropdownMenuItem> dropDownItems) finalThenFunction}) {
     List<DropdownMenuItem> dropDownItems = List<DropdownMenuItem>();
 
-    firebaseFirestore.collection('categories').get().then(
+    firebaseFirestore.collection(fk_categoryCollection).get().then(
       (value) {
         List<QueryDocumentSnapshot> listOfDocs = value.docs;
         for (QueryDocumentSnapshot queryDocumentSnapshot in listOfDocs) {
           dropDownItems.add(
             DropdownMenuItem(
               child: Text(
-                queryDocumentSnapshot.get('name'),
+                queryDocumentSnapshot.get(fk_categoryName),
               ),
               value: queryDocumentSnapshot.id,
             ),
@@ -35,7 +36,7 @@ class DropDownItemsGetter {
     List<DropdownMenuItem> dropDownItems = List<DropdownMenuItem>();
 
     firebaseFirestore
-        .collection('businesses')
+        .collection(fk_businessCollection)
         .get()
         .then((QuerySnapshot value) {
       value.docs.forEach((QueryDocumentSnapshot element) {

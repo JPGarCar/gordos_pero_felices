@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
+import 'package:gordos_pero_felizes/firebase_constants.dart';
 import 'package:gordos_pero_felizes/models/category.dart';
 import 'package:gordos_pero_felizes/services/image_getter.dart';
 import 'package:gordos_pero_felizes/widgets/card/category_card.dart';
@@ -28,11 +29,11 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   Future uploadCategory(String name) async {
     String assetPath = await ImageGetter.uploadImage(
         image: _image, imagePath: 'categories/$name');
-    _firestore.collection('categories').doc(name).set({
-      'imageAssetPath': assetPath,
-      'name': name,
-      'businesses': List<DocumentReference>(),
-      'isActive': isActive,
+    _firestore.collection(fk_categoryCollection).doc(name).set({
+      fk_categoryImageAssetPath: assetPath,
+      fk_categoryName: name,
+      fk_businesses: List<DocumentReference>(),
+      fk_isActive: isActive,
     });
   }
 

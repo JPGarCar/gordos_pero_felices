@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gordos_pero_felizes/firebase_constants.dart';
 import 'package:gordos_pero_felizes/models/category.dart';
 import 'package:gordos_pero_felizes/screens/user_screen.dart';
 import 'package:gordos_pero_felizes/widgets/card/category_card.dart';
@@ -43,8 +44,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               ),
               Expanded(
                 child: StreamBuilder(
-                  stream:
-                      firebaseFirestore.collection('categories').snapshots(),
+                  stream: firebaseFirestore
+                      .collection(fk_categoryCollection)
+                      .snapshots(),
                   builder:
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if (!snapshot.hasData) {

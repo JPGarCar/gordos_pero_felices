@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
+import 'package:gordos_pero_felizes/firebase_constants.dart';
 
 /// This is the Business class, it represents a business from the real world.
 /// It holds all the business info, from images to ratings, to google map stuff.
@@ -81,21 +82,21 @@ class Business {
   /// requires: a firestore instance to add to db
   /// assumes collection is named 'users'
   Future<void> addBusinessToDB(FirebaseFirestore firestore) {
-    return firestore.collection('businesses').doc(businessName).set({
-      'businessName': businessName,
-      'happyRating': happyRating,
-      'houseRating': houseRating,
-      'moneyRating': moneyRating,
-      'igLink': igLink,
-      'mainImageAsset': mainImageAsset,
-      'phoneNumber': phoneNumber,
-      'rappiLink': rappiLink,
-      'uberEatsLink': uberEatsLink,
-      'textReview': textReview,
-      'imageAssetList': imageAssetList,
-      'tipList': tipList,
-      'bestPlateList': bestPlateList,
-      'isActive': isActive,
+    return firestore.collection(fk_businessCollection).doc(businessName).set({
+      fk_businessName: businessName,
+      fk_happyRating: happyRating,
+      fk_houseRating: houseRating,
+      fk_moneyRating: moneyRating,
+      fk_igLink: igLink,
+      fk_businessMainImageAsset: mainImageAsset,
+      fk_phoneNumber: phoneNumber,
+      fk_rappiLink: rappiLink,
+      fk_uberEatsLink: uberEatsLink,
+      fk_textReview: textReview,
+      fk_businessImageAssetList: imageAssetList,
+      fk_tipList: tipList,
+      fk_bestPlateList: bestPlateList,
+      fk_isActive: isActive,
     });
   }
 }

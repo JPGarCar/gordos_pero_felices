@@ -3,10 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/models/business.dart';
 
+import '../firebase_constants.dart';
+
 class Category {
   static Category getCategoryFromDocument(DocumentSnapshot documentSnapshot) {
     Map<dynamic, dynamic> mapData = documentSnapshot.data();
-    var businesses = mapData['businesses'];
+    var businesses = mapData[fk_businesses];
 
     List<Business> businessList = List<Business>();
 
@@ -14,28 +16,28 @@ class Category {
       documentReference.get().then((DocumentSnapshot docSnapshot) {
         var value = docSnapshot.data();
         businessList.add(Business(
-          businessName: value['businessName'],
-          happyRating: value['happyRating'],
-          houseRating: value['houseRating'],
-          moneyRating: value['moneyRating'],
-          mainImageAsset: value['mainImageAsset'],
-          bestPlateList: List.from(value['bestPlateList']),
-          imageAssetList: List.from(value['imageAssetList']),
-          tipList: List.from(value['tipList']),
-          igLink: value['igLink'],
-          phoneNumber: value['phoneNumber'],
-          rappiLink: value['rappiLink'],
-          textReview: value['textReview'],
-          uberEatsLink: value['uberEatsLink'],
+          businessName: value[fk_businessName],
+          happyRating: value[fk_happyRating],
+          houseRating: value[fk_houseRating],
+          moneyRating: value[fk_moneyRating],
+          mainImageAsset: value[fk_businessMainImageAsset],
+          bestPlateList: List.from(value[fk_bestPlateList]),
+          imageAssetList: List.from(value[fk_businessImageAssetList]),
+          tipList: List.from(value[fk_tipList]),
+          igLink: value[fk_igLink],
+          phoneNumber: value[fk_phoneNumber],
+          rappiLink: value[fk_rappiLink],
+          textReview: value[fk_textReview],
+          uberEatsLink: value[fk_uberEatsLink],
         ));
       });
     }
 
     return Category(
-      name: mapData['name'],
-      imageAssetPath: mapData['imageAssetPath'],
+      name: mapData[fk_categoryName],
+      imageAssetPath: mapData[fk_categoryImageAssetPath],
       businesses: businessList,
-      isActive: mapData['isActive'],
+      isActive: mapData[fk_isActive],
     );
   }
 

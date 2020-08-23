@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
+import 'package:gordos_pero_felizes/firebase_constants.dart';
 import 'package:gordos_pero_felizes/services/dropdown_items_getter.dart';
 import 'package:gordos_pero_felizes/services/image_getter.dart';
 import 'package:gordos_pero_felizes/widgets/business_editor.dart';
@@ -89,11 +90,13 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
 
     await business.addBusinessToDB(firebaseFirestore);
     await firebaseFirestore
-        .collection('categories')
+        .collection(fk_categoryCollection)
         .doc(categoryDropDownValue)
         .update({
-      'businesses': FieldValue.arrayUnion([
-        firebaseFirestore.collection('businesses').doc(business.businessName)
+      fk_businesses: FieldValue.arrayUnion([
+        firebaseFirestore
+            .collection(fk_businessCollection)
+            .doc(business.businessName)
       ]),
     });
   }
