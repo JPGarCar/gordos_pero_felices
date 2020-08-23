@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/firebase_constants.dart';
+import 'package:gordos_pero_felizes/services/admin_services.dart';
 import 'package:gordos_pero_felizes/services/dropdown_items_getter.dart';
 import 'package:gordos_pero_felizes/services/image_getter.dart';
 import 'package:gordos_pero_felizes/widgets/business_editor.dart';
@@ -49,15 +50,6 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
 
   List<Asset> images = List<Asset>();
 
-  /// Deals with creating a single string separated by . from a list of strings
-  String listToString(List<dynamic> list) {
-    String compoundedText = '';
-    for (String string in list) {
-      compoundedText = compoundedText + string + '. ';
-    }
-    return compoundedText;
-  }
-
   /// Deals with changing the controller values and other form values
   Future<void> updateValues() async {
     await firebaseFirestore
@@ -72,36 +64,15 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
       rappiLinkController.text = data[fk_rappiLink];
       igLinkController.text = data[fk_igLink];
       phoneController.text = data[fk_phoneNumber];
-      gordoTipController.text = listToString(data[fk_tipList]);
-      favoriteDishesController.text = listToString(data[fk_bestPlateList]);
+      gordoTipController.text = AdminServices.listToString(data[fk_tipList]);
+      favoriteDishesController.text =
+          AdminServices.listToString(data[fk_bestPlateList]);
       moneyRating = data[fk_moneyRating];
       happyRating = data[fk_happyRating];
       houseRating = data[fk_houseRating];
       isActive = data[fk_isActive];
       mainImagePath = data[fk_businessMainImageAsset];
     });
-  }
-
-  /// Deals with uploading a list of Assets
-  /// returns a list of paths from db
-  Future uploadImages() async {
-    print(images);
-    String initalPath = nameController.text.replaceAll(" ", "");
-    List<String> paths = List<String>();
-    for (int i = 0; i < images.length; i++) {
-      Asset asset = images[i];
-      String path = await ImageGetter.uploadImage(
-          asset: asset,
-          isData: true,
-          imagePath: 'businesses/$initalPath/${initalPath}_$i');
-      paths.add(path);
-    }
-    return paths;
-  }
-
-  /// Deals with separating the string for every period
-  List<String> getStringListByDot(String initial) {
-    return initial.split('.');
   }
 
   /// Deals with updating the db
@@ -115,7 +86,11 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
         : null;
 
     List<String> paths;
-    images.isNotEmpty ? paths = await uploadImages() : null;
+    images.isNotEmpty
+        ? paths = await AdminServices.uploadImages(
+            images: images,
+            businessName: nameController.text.replaceAll(" ", ""))
+        : null;
     await firebaseFirestore
         .collection(fk_businessCollection)
         .doc(businessChooserStringValue)
@@ -131,8 +106,9 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
       fk_uberEatsLink: uberEatsController.text,
       fk_textReview: reviewController.text,
       fk_businessImageAssetList: FieldValue.arrayUnion(paths ?? []),
-      fk_tipList: getStringListByDot(gordoTipController.text),
-      fk_bestPlateList: getStringListByDot(favoriteDishesController.text),
+      fk_tipList: AdminServices.getStringListByDot(gordoTipController.text),
+      fk_bestPlateList:
+          AdminServices.getStringListByDot(favoriteDishesController.text),
       fk_isActive: isActive,
     });
   }

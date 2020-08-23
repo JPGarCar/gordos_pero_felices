@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/firebase_constants.dart';
+import 'package:gordos_pero_felizes/services/admin_services.dart';
 import 'package:gordos_pero_felizes/services/dropdown_items_getter.dart';
 import 'package:gordos_pero_felizes/services/image_getter.dart';
 import 'package:gordos_pero_felizes/widgets/business_editor.dart';
@@ -42,34 +43,16 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
 
   List<Asset> images = List<Asset>();
 
-  /// Deals with separating the string for every period
-  List<String> getStringListByDot(String initial) {
-    return initial.split('.');
-  }
-
-  /// Deals with uploading a list of Assets
-  /// returns a list of paths from db
-  Future uploadImages() async {
-    String initalPath = nameController.text.replaceAll(" ", "");
-    List<String> paths = List<String>();
-    for (int i = 0; i < images.length; i++) {
-      Asset asset = images[i];
-      String path = await ImageGetter.uploadImage(
-          asset: asset,
-          isData: true,
-          imagePath: 'businesses/$initalPath/${initalPath}_$i');
-      paths.add(path);
-    }
-    return paths;
-  }
-
   /// Deals with creating the Business object and uploading files to storage
   Future addBusiness() async {
     String initalPath = nameController.text.replaceAll(" ", "");
     String mainImagePath = await ImageGetter.uploadImage(
         image: _mainImage,
         imagePath: 'businesses/$initalPath/${initalPath}_main');
-    List<String> paths = await uploadImages();
+    List<String> paths = await AdminServices.uploadImages(
+      images: images,
+      businessName: nameController.text.replaceAll(" ", ""),
+    );
 
     Business business = new Business(
       businessName: nameController.text,
@@ -79,8 +62,9 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
       textReview: reviewController.text,
       mainImageAsset: mainImagePath,
       imageAssetList: paths,
-      tipList: getStringListByDot(gordoTipController.text),
-      bestPlateList: getStringListByDot(favoriteDishesController.text),
+      tipList: AdminServices.getStringListByDot(gordoTipController.text),
+      bestPlateList:
+          AdminServices.getStringListByDot(favoriteDishesController.text),
       rappiLink: rappiLinkController.text,
       uberEatsLink: uberEatsController.text,
       phoneNumber: phoneController.text,
