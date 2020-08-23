@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:gordos_pero_felizes/screens/admin/edit_business_screen.dart';
 import 'package:gordos_pero_felizes/screens/admin/new_business_screen.dart';
 import 'package:gordos_pero_felizes/screens/admin/new_category_screen.dart';
 import 'file:///C:/Users/juapg/_Programming_Projects/AndroidStudioProjects/GordosPeroFelizes/gordos_pero_felizes/lib/screens/admin/admin_panel_screen.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
           create: (_) => AppUser.empty(),
         ),
         Provider(
-          create: (_) => Category(),
+          create: (_) => Category.empty(),
         )
       ],
       child: MaterialApp(
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
           AdminPanelScreen.screenId: (context) => AdminPanelScreen(),
           NewCategoryScreen.screenId: (context) => NewCategoryScreen(),
           NewBusinessScreen.screenId: (context) => NewBusinessScreen(),
+          EditBusinessScreen.screenId: (context) => EditBusinessScreen(),
         },
         initialRoute: InitialScreen.screenId,
       ),

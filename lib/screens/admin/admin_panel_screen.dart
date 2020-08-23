@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
+import 'package:gordos_pero_felizes/screens/admin/edit_business_screen.dart';
 import 'package:gordos_pero_felizes/screens/admin/new_business_screen.dart';
 import 'package:gordos_pero_felizes/screens/admin/new_category_screen.dart';
 import 'package:gordos_pero_felizes/widgets/simple_text_button.dart';
@@ -42,6 +43,8 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
               ),
               SimpleTextButton(
                 text: 'Editar Negocio',
+                onTapCallBack: () =>
+                    Navigator.pushNamed(context, EditBusinessScreen.screenId),
               ),
             ],
           ),

@@ -28,3 +28,8 @@ const k_defaultTextButtonStyle = TextStyle(
 );
 
 const double k_cardHeight = 210;
+
+const TextStyle k_16wStyle = TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.w700,
+);

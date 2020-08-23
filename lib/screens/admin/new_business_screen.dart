@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/services/image_getter.dart';
+import 'package:gordos_pero_felizes/widgets/business_editor.dart';
 import 'package:gordos_pero_felizes/widgets/card/custom_card.dart';
 import 'package:gordos_pero_felizes/widgets/dialogs/confirm_dialog.dart';
+import 'package:gordos_pero_felizes/widgets/dialogs/yes_no_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_dropdown.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_switch.dart';
@@ -45,20 +45,6 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
 
   List<Asset> images = List<Asset>();
 
-  /// Returns a list of DropDownItems with values 1 to 5
-  List<DropdownMenuItem> getOneToFive() {
-    List<DropdownMenuItem> list = [];
-    for (int i = 1; i <= 5; i++) {
-      list.add(
-        DropdownMenuItem(
-          child: Text('$i'),
-          value: i,
-        ),
-      );
-    }
-    return list;
-  }
-
   /// Deals with adding all the available categories to a dropdown list
   List<DropdownMenuItem> getCategoriesDropDown() {
     List<DropdownMenuItem> dropDownItems = List<DropdownMenuItem>();
@@ -76,9 +62,11 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
             ),
           );
         }
+        setState(() {
+          categoryDropDownItems = dropDownItems;
+        });
       },
     );
-    return dropDownItems;
   }
 
   /// Deals with multi image picker
@@ -168,7 +156,7 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
 
   @override
   void initState() {
-    categoryDropDownItems = getCategoriesDropDown();
+    getCategoriesDropDown();
     super.initState();
   }
 
@@ -186,230 +174,99 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
                 leftIcon: Icons.arrow_back,
                 onPressedLeftIcon: () => Navigator.pop(context),
                 mainText: 'Agregar un Negocio Nuevo',
-                textStyle: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
+                textStyle: k_16wStyle,
               ),
               Flexible(
                 fit: FlexFit.loose,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      RedRoundedTextField(
-                        hint: 'Nombre de Negocio',
-                        textEditingController: nameController,
-                      ),
-                      RedRoundedTextField(
-                        isMultiLine: true,
-                        hint: 'Review de negocio...',
-                        textEditingController: reviewController,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          RedRoundedDropDown(
-                            iconData: Icons.tag_faces,
-                            hint: '?',
-                            value: happyRating,
-                            onChangeFunction: (value) {
-                              setState(() {
-                                happyRating = value;
-                              });
-                            },
-                            dropDownItems: getOneToFive(),
-                          ),
-                          RedRoundedDropDown(
-                            iconData: Icons.home,
-                            hint: '?',
-                            value: houseRating,
-                            onChangeFunction: (value) {
-                              setState(() {
-                                houseRating = value;
-                              });
-                            },
-                            dropDownItems: getOneToFive(),
-                          ),
-                          RedRoundedDropDown(
-                            iconData: Icons.attach_money,
-                            hint: '?',
-                            value: moneyRating,
-                            onChangeFunction: (value) {
-                              setState(() {
-                                moneyRating = value;
-                              });
-                            },
-                            dropDownItems: getOneToFive(),
-                          ),
-                        ],
-                      ),
-                      RedRoundedDropDown(
-                        dropDownItems: categoryDropDownItems,
-                        value: categoryDropDownValue,
-                        onChangeFunction: (value) {
-                          setState(() {
-                            categoryDropDownValue = value;
-                          });
-                        },
-                        hint: 'Categoría',
-                      ),
-                      RedRoundedButton(
-                        buttonText: 'Escojer Imagen Principal',
-                        onTapFunction: () async {
-                          _mainImage =
-                              await ImageGetter.getImage().then((value) {
-                            setState(() {});
-                            return value;
-                          });
-                        },
-                      ),
-                      _mainImage != null
-                          ? Column(
-                              children: [
-                                Text('Preview...'),
-                                CustomCard(
-                                  imageAssetPath: _mainImage.path,
-                                  name: nameController.text,
-                                  isOffline: true,
-                                ),
-                              ],
-                            )
-                          : SizedBox(),
-                      RedRoundedButton(
-                        buttonText: 'Escojer imagenes secundarias',
-                        onTapFunction: () {
-                          loadAssets();
-                          return GridView.count(
-                            crossAxisCount: 3,
-                            children: List.generate(images.length, (index) {
-                              Asset asset = images[index];
-                              return AssetThumb(
-                                asset: asset,
-                                width: 250,
-                                height: 250,
-                              );
-                            }),
-                          );
-                        },
-                      ),
-                      RedRoundedTextField(
-                        isNumber: true,
-                        hint: 'Telefono',
-                        textEditingController: phoneController,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 10),
-                        child: Column(
-                          children: [
-                            Text(
-                                'Cada renglon, separado por un . es un platillo.'),
-                            RedRoundedTextField(
-                              isMultiLine: true,
-                              hint: 'Platillos favoritos...',
-                              textEditingController: favoriteDishesController,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 10),
-                        child: Column(
-                          children: [
-                            Text('Cada renglon, separado por un . es un tip.'),
-                            RedRoundedTextField(
-                              isMultiLine: true,
-                              hint: 'Gordo Tips...',
-                              textEditingController: gordoTipController,
-                            ),
-                          ],
-                        ),
-                      ),
-                      RedRoundedTextField(
-                        hint: 'Instagram Link',
-                        textEditingController: igLinkController,
-                      ),
-                      RedRoundedTextField(
-                        hint: 'Rappi Link',
-                        textEditingController: rappiLinkController,
-                      ),
-                      RedRoundedTextField(
-                        hint: 'Uber Eats Link',
-                        textEditingController: uberEatsController,
-                        isTextInputDone: true,
-                      ),
-                      RedRoundedSwitch(
-                        text: 'Activo?',
-                        value: isActive,
-                        onChangeFunction: (value) {
-                          setState(() {
-                            isActive = value;
-                          });
-                        },
-                      ),
-                      RedRoundedButton(
-                        buttonText: 'Agregar Negocio',
-                        onTapFunction: () {
+                child: BusinessEditor(
+                  finalOnTapFunction: () {
+                    showDialog(
+                      child: YesNoDialog(
+                        onNoFunction: () => Navigator.pop(context),
+                        onYesFunction: () async {
+                          Navigator.pop(context);
                           showDialog(
-                            child: Dialog(
-                              child: Padding(
-                                padding: EdgeInsets.all(15),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Seguro que queires agregar este negocio?',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        RedRoundedButton(
-                                          buttonText: 'No',
-                                          onTapFunction: () =>
-                                              Navigator.pop(context),
-                                        ),
-                                        RedRoundedButton(
-                                          buttonText: 'Si',
-                                          onTapFunction: () async {
-                                            Navigator.pop(context);
-                                            showDialog(
-                                                context: context,
-                                                child:
-                                                    CircularProgressIndicator());
-                                            addBusiness().whenComplete(
-                                              () {
-                                                Navigator.pop(context);
-                                                showDialog(
-                                                    context: context,
-                                                    child: ConfirmDialog(
-                                                      text:
-                                                          'El negocio se ha agregado correctamente!',
-                                                      onTapFunction: () {
-                                                        Navigator.pop(context);
-                                                        Navigator.pop(context);
-                                                      },
-                                                    ));
-                                              },
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                              context: context,
+                              child: CircularProgressIndicator());
+                          addBusiness().whenComplete(
+                            () {
+                              Navigator.pop(context);
+                              showDialog(
+                                context: context,
+                                child: ConfirmDialog(
+                                  text:
+                                      'El negocio se ha agregado correctamente!',
+                                  onTapFunction: () {
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                  },
                                 ),
-                              ),
-                            ),
-                            context: context,
+                              );
+                            },
                           );
                         },
-                      )
-                    ],
-                  ),
+                      ),
+                      context: context,
+                    );
+                  },
+                  finalButtonString: 'Agregar Negocio',
+                  isActiveFunction: (value) => setState(() {
+                    isActive = value;
+                  }),
+                  isActive: isActive,
+                  multiImageOnTapFunction: () {
+                    loadAssets();
+                    return GridView.count(
+                      crossAxisCount: 3,
+                      children: List.generate(
+                        images.length,
+                        (index) {
+                          Asset asset = images[index];
+                          return AssetThumb(
+                            asset: asset,
+                            width: 250,
+                            height: 250,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  mainImageOnTapFunction: () async {
+                    _mainImage = await ImageGetter.getImage().then(
+                      (value) {
+                        setState(() {});
+                        return value;
+                      },
+                    );
+                  },
+                  categoryOnChangeFunction: (value) => setState(() {
+                    categoryDropDownValue = value;
+                  }),
+                  categoryDropDownItems: categoryDropDownItems,
+                  categoryDropDownValue: categoryDropDownValue,
+                  moneyOnTapFunction: (value) => setState(() {
+                    moneyRating = value;
+                  }),
+                  moneyRating: moneyRating,
+                  houseOnTapFunction: (value) => setState(() {
+                    houseRating = value;
+                  }),
+                  houseRating: houseRating,
+                  happyRatingOnTapFunction: (value) => setState(() {
+                    happyRating = value;
+                  }),
+                  happyRating: happyRating,
+                  nameController: nameController,
+                  favoriteDishesController: favoriteDishesController,
+                  gordoTipController: gordoTipController,
+                  igLinkController: igLinkController,
+                  phoneController: phoneController,
+                  rappiLinkController: rappiLinkController,
+                  reviewController: reviewController,
+                  uberEatsController: uberEatsController,
+                  mainImage: _mainImage,
                 ),
-              )
+              ),
             ],
           ),
         ),
