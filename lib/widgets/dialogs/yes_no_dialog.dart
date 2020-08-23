@@ -4,8 +4,10 @@ import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart'
 class YesNoDialog extends StatelessWidget {
   final Function onYesFunction;
   final Function onNoFunction;
+  final String dialogText;
 
-  YesNoDialog({this.onNoFunction, this.onYesFunction});
+  YesNoDialog(
+      {this.onNoFunction, this.onYesFunction, @required this.dialogText});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class YesNoDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Seguro que queires agregar este negocio?',
+              dialogText,
               style: TextStyle(fontSize: 16),
             ),
             Row(

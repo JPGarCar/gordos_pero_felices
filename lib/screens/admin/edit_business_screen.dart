@@ -1,9 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
-import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
+import 'package:gordos_pero_felizes/services/dropdown_items_getter.dart';
+import 'package:gordos_pero_felizes/services/image_getter.dart';
+import 'package:gordos_pero_felizes/widgets/business_editor.dart';
+import 'package:gordos_pero_felizes/widgets/dialogs/confirm_dialog.dart';
+import 'package:gordos_pero_felizes/widgets/dialogs/yes_no_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_dropdown.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
+import 'dart:io';
+
+/// This screen is used to change details about a business already in the system,
+/// at this point everything can be changed except for images. We can only change
+/// the main image and add images to the secondary images, not delete, if you
+/// want to delete then you need to do that form firebase
 
 class EditBusinessScreen extends StatefulWidget {
   static final String screenId = 'editBusinessScreen';
@@ -14,34 +25,140 @@ class EditBusinessScreen extends StatefulWidget {
 
 class _EditBusinessScreenState extends State<EditBusinessScreen> {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-  String documentSnapshot;
+  String businessChooserStringValue;
+  QuerySnapshot businessesQuerySnapshot;
 
-  List<DropdownMenuItem> dropDownItemsList;
+  List<DropdownMenuItem> businessChooserDropDownList;
 
-  /// Deals with grabbing all the businesses
-  void getDropDownBusinesses() async {
-    List<DropdownMenuItem> dropDownItems = List<DropdownMenuItem>();
+  bool isActive = true;
+  int happyRating;
+  int houseRating;
+  int moneyRating;
+  File _mainImageFile;
+  String mainImagePath;
 
+  TextEditingController nameController = TextEditingController();
+  TextEditingController reviewController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController favoriteDishesController = TextEditingController();
+  TextEditingController gordoTipController = TextEditingController();
+  TextEditingController igLinkController = TextEditingController();
+  TextEditingController rappiLinkController = TextEditingController();
+  TextEditingController uberEatsController = TextEditingController();
+
+  List<Asset> images = List<Asset>();
+
+  /// Deals with creating a single string separated by . from a list of strings
+  String listToString(List<dynamic> list) {
+    String compoundedText = '';
+    for (String string in list) {
+      compoundedText = compoundedText + string + '. ';
+    }
+    return compoundedText;
+  }
+
+  /// Deals with changing the controller values and other form values
+  Future<void> updateValues() async {
     await firebaseFirestore
         .collection('businesses')
+        .doc(businessChooserStringValue)
         .get()
-        .then((QuerySnapshot value) {
-      value.docs.forEach((QueryDocumentSnapshot element) {
-        dropDownItems.add(
-          DropdownMenuItem(
-            value: element.id,
-            child: Text(element.id),
-          ),
-        );
-      });
-      dropDownItemsList = dropDownItems;
-      setState(() {});
+        .then((DocumentSnapshot value) {
+      Map<String, dynamic> data = value.data();
+      nameController.text = data['businessName'];
+      reviewController.text = data['textReview'];
+      uberEatsController.text = data['uberEatsLink'];
+      rappiLinkController.text = data['rappiLink'];
+      igLinkController.text = data['igLink'];
+      phoneController.text = data['phoneNumber'];
+      gordoTipController.text = listToString(data['tipList']);
+      favoriteDishesController.text = listToString(data['bestPlateList']);
+      moneyRating = data['moneyRating'];
+      happyRating = data['happyRating'];
+      houseRating = data['houseRating'];
+      isActive = data['isActive'];
+      mainImagePath = data['mainImageAsset'];
+    });
+  }
+
+  /// Deals with uploading a list of Assets
+  /// returns a list of paths from db
+  Future uploadImages() async {
+    print(images);
+    String initalPath = nameController.text.replaceAll(" ", "");
+    List<String> paths = List<String>();
+    for (int i = 0; i < images.length; i++) {
+      Asset asset = images[i];
+      String path = await ImageGetter.uploadImage(
+          asset: asset,
+          isData: true,
+          imagePath: 'businesses/$initalPath/${initalPath}_$i');
+      paths.add(path);
+    }
+    return paths;
+  }
+
+  /// Deals with separating the string for every period
+  List<String> getStringListByDot(String initial) {
+    return initial.split('.');
+  }
+
+  /// Deals with updating the db
+  Future<void> updateDB() async {
+    String imagePath;
+    String initalPath = nameController.text.replaceAll(" ", "");
+    _mainImageFile != null
+        ? imagePath = await ImageGetter.uploadImage(
+            image: _mainImageFile,
+            imagePath: 'businesses/$initalPath/${initalPath}_main')
+        : null;
+
+    List<String> paths;
+    images.isNotEmpty ? paths = await uploadImages() : null;
+    await firebaseFirestore
+        .collection('businesses')
+        .doc(businessChooserStringValue)
+        .update({
+      'businessName': nameController.text,
+      'happyRating': happyRating,
+      'houseRating': houseRating,
+      'moneyRating': moneyRating,
+      'igLink': igLinkController.text,
+      'mainImageAsset': imagePath ?? mainImagePath,
+      'phoneNumber': phoneController.text,
+      'rappiLink': rappiLinkController.text,
+      'uberEatsLink': uberEatsController.text,
+      'textReview': reviewController.text,
+      'imageAssetList': FieldValue.arrayUnion(paths ?? []),
+      'tipList': getStringListByDot(gordoTipController.text),
+      'bestPlateList': getStringListByDot(favoriteDishesController.text),
+      'isActive': isActive,
     });
   }
 
   @override
+  void dispose() {
+    nameController.dispose();
+    reviewController.dispose();
+    phoneController.dispose();
+    favoriteDishesController.dispose();
+    gordoTipController.dispose();
+    igLinkController.dispose();
+    rappiLinkController.dispose();
+    uberEatsController.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
-    getDropDownBusinesses();
+    DropDownItemsGetter.getBusinesses(
+        firebaseFirestore: firebaseFirestore,
+        thenFinalFunction: (dropDownItems, querySnapshot) {
+          businessesQuerySnapshot = querySnapshot;
+          setState(() {
+            businessChooserDropDownList = dropDownItems;
+          });
+        });
     super.initState();
   }
 
@@ -52,6 +169,7 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
         body: Container(
           padding: k_appPadding,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               TitleWidget(
                 isImage: false,
@@ -61,24 +179,110 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
                 textStyle: k_16wStyle,
               ),
               Text('Porfavor selecione un negocio a editar.'),
-              dropDownItemsList != null
+              businessChooserDropDownList != null
                   ? RedRoundedDropDown(
                       hint: 'Negocio',
-                      value: documentSnapshot,
-                      onChangeFunction: (value) {
-                        setState(() {
-                          documentSnapshot = value;
-                        });
+                      value: businessChooserStringValue,
+                      onChangeFunction: (value) async {
+                        businessChooserStringValue = value;
+                        await updateValues();
+                        setState(() {});
                       },
-                      dropDownItems: dropDownItemsList,
+                      dropDownItems: businessChooserDropDownList,
                     )
                   : SizedBox(), // TODO change to load asset
-              documentSnapshot != null
-                  ? RedRoundedButton(
-                      buttonText: 'Editar Negocio',
-                      onTapFunction: () {} // TODO,
-                      )
-                  : SizedBox(),
+              businessChooserStringValue == null
+                  ? SizedBox()
+                  : Flexible(
+                      fit: FlexFit.loose,
+                      child: BusinessEditor(
+                        finalOnTapFunction: () {
+                          showDialog(
+                            child: YesNoDialog(
+                              dialogText:
+                                  'Seguro que queires cambiar este negocio?',
+                              onNoFunction: () => Navigator.pop(context),
+                              onYesFunction: () async {
+                                Navigator.pop(context);
+                                showDialog(
+                                    context: context,
+                                    child: CircularProgressIndicator());
+                                updateDB().whenComplete(
+                                  () {
+                                    Navigator.pop(context);
+                                    showDialog(
+                                      context: context,
+                                      child: ConfirmDialog(
+                                        text:
+                                            'El negocio se ha cambiado correctamente!',
+                                        onTapFunction: () {
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                            context: context,
+                          );
+                        },
+                        finalButtonString: 'Cambiar Negocio',
+                        isActiveFunction: (value) => setState(() {
+                          isActive = value;
+                        }),
+                        isActive: isActive,
+                        multiImageOnTapFunction: () async {
+                          images = await ImageGetter.loadAssets();
+                          return GridView.count(
+                            crossAxisCount: 3,
+                            children: List.generate(
+                              images.length,
+                              (index) {
+                                Asset asset = images[index];
+                                return AssetThumb(
+                                  asset: asset,
+                                  width: 250,
+                                  height: 250,
+                                );
+                              },
+                            ),
+                          );
+                        },
+                        mainImageOnTapFunction: () async {
+                          _mainImageFile = await ImageGetter.getImage().then(
+                            (value) {
+                              setState(() {});
+                              return value;
+                            },
+                          );
+                        },
+                        isCategories: false,
+                        moneyOnTapFunction: (value) => setState(() {
+                          moneyRating = value;
+                        }),
+                        moneyRating: moneyRating,
+                        houseOnTapFunction: (value) => setState(() {
+                          houseRating = value;
+                        }),
+                        houseRating: houseRating,
+                        happyRatingOnTapFunction: (value) => setState(() {
+                          happyRating = value;
+                        }),
+                        happyRating: happyRating,
+                        nameController: nameController,
+                        favoriteDishesController: favoriteDishesController,
+                        gordoTipController: gordoTipController,
+                        igLinkController: igLinkController,
+                        phoneController: phoneController,
+                        rappiLinkController: rappiLinkController,
+                        reviewController: reviewController,
+                        uberEatsController: uberEatsController,
+                        mainImagePath: _mainImageFile?.path ?? mainImagePath,
+                        isOnlineMainImage: _mainImageFile == null,
+                      ),
+                    ),
             ],
           ),
         ),

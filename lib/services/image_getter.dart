@@ -5,9 +5,6 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'dart:io';
 
 class ImageGetter {
-  final picker = ImagePicker();
-  FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
-
   /// Deals with getting images from the phone!
   /* static Future<File> getImage() async {
     var picker = ImagePicker();
@@ -31,6 +28,19 @@ class ImageGetter {
       return null;
     });
     return pickedFile;
+  }
+
+  /// Deals with multi image picker
+  static Future<List<Asset>> loadAssets() async {
+    List<Asset> resultList = List<Asset>();
+
+    try {
+      resultList = await MultiImagePicker.pickImages(maxImages: 10);
+    } catch (e) {
+      print(e);
+    }
+
+    return resultList;
   }
 
   /// Deals with uploading the image to firebase storage

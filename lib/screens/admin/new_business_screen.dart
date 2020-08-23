@@ -1,15 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
+import 'package:gordos_pero_felizes/services/dropdown_items_getter.dart';
 import 'package:gordos_pero_felizes/services/image_getter.dart';
 import 'package:gordos_pero_felizes/widgets/business_editor.dart';
-import 'package:gordos_pero_felizes/widgets/card/custom_card.dart';
 import 'package:gordos_pero_felizes/widgets/dialogs/confirm_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/dialogs/yes_no_dialog.dart';
-import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
-import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_dropdown.dart';
-import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_switch.dart';
-import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_text_field.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 import 'dart:io';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -44,45 +40,6 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
   TextEditingController uberEatsController = TextEditingController();
 
   List<Asset> images = List<Asset>();
-
-  /// Deals with adding all the available categories to a dropdown list
-  List<DropdownMenuItem> getCategoriesDropDown() {
-    List<DropdownMenuItem> dropDownItems = List<DropdownMenuItem>();
-
-    firebaseFirestore.collection('categories').get().then(
-      (value) {
-        List<QueryDocumentSnapshot> listOfDocs = value.docs;
-        for (QueryDocumentSnapshot queryDocumentSnapshot in listOfDocs) {
-          dropDownItems.add(
-            DropdownMenuItem(
-              child: Text(
-                queryDocumentSnapshot.get('name'),
-              ),
-              value: queryDocumentSnapshot.id,
-            ),
-          );
-        }
-        setState(() {
-          categoryDropDownItems = dropDownItems;
-        });
-      },
-    );
-  }
-
-  /// Deals with multi image picker
-  Future<void> loadAssets() async {
-    images = List<Asset>();
-
-    List<Asset> resultList = List<Asset>();
-
-    try {
-      resultList = await MultiImagePicker.pickImages(maxImages: 10);
-    } catch (e) {
-      print(e);
-    }
-
-    images = resultList;
-  }
 
   /// Deals with separating the string for every period
   List<String> getStringListByDot(String initial) {
@@ -156,7 +113,12 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
 
   @override
   void initState() {
-    getCategoriesDropDown();
+    DropDownItemsGetter.getCategories(
+      finalThenFunction: (dropDownItems) => setState(() {
+        categoryDropDownItems = dropDownItems;
+      }),
+      firebaseFirestore: firebaseFirestore,
+    );
     super.initState();
   }
 
@@ -182,6 +144,7 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
                   finalOnTapFunction: () {
                     showDialog(
                       child: YesNoDialog(
+                        dialogText: 'Seguro que queires agregar este negocio?',
                         onNoFunction: () => Navigator.pop(context),
                         onYesFunction: () async {
                           Navigator.pop(context);
@@ -214,8 +177,8 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
                     isActive = value;
                   }),
                   isActive: isActive,
-                  multiImageOnTapFunction: () {
-                    loadAssets();
+                  multiImageOnTapFunction: () async {
+                    images = await ImageGetter.loadAssets();
                     return GridView.count(
                       crossAxisCount: 3,
                       children: List.generate(
@@ -264,7 +227,7 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
                   rappiLinkController: rappiLinkController,
                   reviewController: reviewController,
                   uberEatsController: uberEatsController,
-                  mainImage: _mainImage,
+                  mainImagePath: _mainImage?.path,
                 ),
               ),
             ],

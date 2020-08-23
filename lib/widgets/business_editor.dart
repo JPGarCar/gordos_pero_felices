@@ -3,9 +3,7 @@ import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart'
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_dropdown.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_switch.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_text_field.dart';
-import 'dart:io';
 import 'card/custom_card.dart';
-import 'dialogs/confirm_dialog.dart';
 
 class BusinessEditor extends StatelessWidget {
   final TextEditingController nameController;
@@ -21,7 +19,7 @@ class BusinessEditor extends StatelessWidget {
   final int happyRating;
   final int houseRating;
   final int moneyRating;
-  final File mainImage;
+  final String mainImagePath;
 
   final Function finalOnTapFunction;
   final String finalButtonString;
@@ -38,13 +36,20 @@ class BusinessEditor extends StatelessWidget {
   final Function houseOnTapFunction;
   final Function happyRatingOnTapFunction;
 
+  final bool isOnlineMainImage;
+
+  /// We will disable categories for edit business screen for the time being
+  final bool isCategories;
+
   BusinessEditor(
-      {@required this.happyRatingOnTapFunction,
+      {this.isOnlineMainImage = false,
+      this.isCategories = true,
+      @required this.happyRatingOnTapFunction,
       @required this.houseOnTapFunction,
       @required this.moneyOnTapFunction,
-      @required this.categoryDropDownValue,
-      @required this.categoryDropDownItems,
-      @required this.categoryOnChangeFunction,
+      this.categoryDropDownValue,
+      this.categoryDropDownItems,
+      this.categoryOnChangeFunction,
       @required this.mainImageOnTapFunction,
       @required this.multiImageOnTapFunction,
       @required this.isActiveFunction,
@@ -62,7 +67,7 @@ class BusinessEditor extends StatelessWidget {
       @required this.happyRating,
       @required this.houseRating,
       @required this.moneyRating,
-      @required this.mainImage});
+      @required this.mainImagePath});
 
   /// Returns a list of DropDownItems with values 1 to 5
   List<DropdownMenuItem> getOneToFive() {
@@ -97,45 +102,47 @@ class BusinessEditor extends StatelessWidget {
             children: [
               RedRoundedDropDown(
                 iconData: Icons.tag_faces,
-                hint: '?',
+                hint: happyRating != null ? happyRating.toString() : '?',
                 value: happyRating,
                 onChangeFunction: happyRatingOnTapFunction,
                 dropDownItems: getOneToFive(),
               ),
               RedRoundedDropDown(
                 iconData: Icons.home,
-                hint: '?',
+                hint: houseRating != null ? houseRating.toString() : '?',
                 value: houseRating,
                 onChangeFunction: houseOnTapFunction,
                 dropDownItems: getOneToFive(),
               ),
               RedRoundedDropDown(
                 iconData: Icons.attach_money,
-                hint: '?',
+                hint: moneyRating != null ? moneyRating.toString() : '?',
                 value: moneyRating,
                 onChangeFunction: moneyOnTapFunction,
                 dropDownItems: getOneToFive(),
               ),
             ],
           ),
-          RedRoundedDropDown(
-            dropDownItems: categoryDropDownItems,
-            value: categoryDropDownValue,
-            onChangeFunction: categoryOnChangeFunction,
-            hint: 'Categoría',
-          ),
+          isCategories
+              ? RedRoundedDropDown(
+                  dropDownItems: categoryDropDownItems,
+                  value: categoryDropDownValue,
+                  onChangeFunction: categoryOnChangeFunction,
+                  hint: 'Categoría',
+                )
+              : SizedBox(),
           RedRoundedButton(
             buttonText: 'Escojer Imagen Principal',
             onTapFunction: mainImageOnTapFunction,
           ),
-          mainImage != null
+          mainImagePath != null
               ? Column(
                   children: [
                     Text('Preview...'),
                     CustomCard(
-                      imageAssetPath: mainImage.path,
+                      imageAssetPath: mainImagePath,
                       name: nameController.text,
-                      isOffline: true,
+                      isOffline: !isOnlineMainImage,
                     ),
                   ],
                 )

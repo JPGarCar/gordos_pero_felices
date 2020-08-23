@@ -90,7 +90,7 @@ class Business {
       'mainImageAsset': mainImageAsset,
       'phoneNumber': phoneNumber,
       'rappiLink': rappiLink,
-      'userEatsLink': uberEatsLink,
+      'uberEatsLink': uberEatsLink,
       'textReview': textReview,
       'imageAssetList': imageAssetList,
       'tipList': tipList,
