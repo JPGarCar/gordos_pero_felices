@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/screens/home_screen.dart';
 import 'package:gordos_pero_felizes/screens/new_user_screen.dart';
+import 'package:gordos_pero_felizes/services/login_services.dart';
 import 'package:gordos_pero_felizes/widgets/custom/custom_clamping_scroll_physics.dart';
 import 'package:gordos_pero_felizes/widgets/error_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
@@ -27,12 +28,6 @@ class InitialScreen extends StatefulWidget {
 
 class _InitialScreenState extends State<InitialScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: [
-    'https://www.googleapis.com/auth/userinfo.profile',
-    'https://www.googleapis.com/auth/userinfo.email	',
-  ]);
-  final _facebookLogin = FacebookLogin();
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -46,103 +41,6 @@ class _InitialScreenState extends State<InitialScreen> {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
-  }
-
-  /// Deals with the google login
-  Future<bool> googleLogIn() async {
-    print('Singing in with google ##########');
-    try {
-      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser?.authentication;
-      print('google done checking googleAuth: $googleAuth');
-      if (googleAuth != null) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(
-            idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
-        UserCredential authResult =
-            (await _auth.signInWithCredential(credential));
-        User firebaseUser = authResult.user;
-
-        /// Checking if this is the first time the user enters, if so create
-        /// user in db
-/*        if (authResult.additionalUserInfo.isNewUser){
-          print(authResult.additionalUserInfo.profile);
-        }*/
-
-        print(authResult.additionalUserInfo.profile);
-
-        print('signed in user ${firebaseUser.displayName}');
-        if (firebaseUser != null) {
-          // TODO check if first time logging in!
-          AppUser.setUserFromDB(_firestore, firebaseUser.uid,
-              Provider.of<AppUser>(context, listen: false));
-          return true;
-        }
-      }
-    } catch (e) {
-      print(e);
-    }
-    return false;
-  }
-
-  /// Deals with the facebook login
-  Future<bool> facebookLogIn() async {
-    final result = await _facebookLogin.logInWithReadPermissions([
-      'email',
-      'instagram_basic',
-      'user_birthday',
-      'user_gender',
-      'user_hometown',
-    ]);
-
-    switch (result.status) {
-      case FacebookLoginStatus.error:
-        print("Error");
-        break;
-
-      case FacebookLoginStatus.cancelledByUser:
-        print("CancelledByUser");
-        break;
-
-      case FacebookLoginStatus.loggedIn:
-        print("LoggedIn");
-
-        /// calling the auth method and getting the logged user
-        var credential =
-            FacebookAuthProvider.credential(result.accessToken.token);
-        var authResult = await _auth.signInWithCredential(credential);
-        if (authResult != null) {
-          // TODO check if first time logging in!
-          AppUser.setUserFromDB(_firestore, authResult.user.uid,
-              Provider.of<AppUser>(context, listen: false));
-          return true;
-        }
-    }
-    return false;
-  }
-
-  /// Deals with the email login
-  Future<String> emailLogIn(String email, String password) async {
-    var user = await _auth
-        .signInWithEmailAndPassword(email: email, password: password)
-        .catchError((onError) {
-      switch (onError.code) {
-        case 'ERROR_WRONG_PASSWORD':
-          return 'Tu contraseña es incorrecta!';
-        case 'ERROR_USER_NOT_FOUND':
-          return 'Este correo no esta en nuestro sistema, favor de crear una cuenta nueva.';
-        default:
-          return 'Se ha producido un error, favor de intentar de nuevo.';
-      }
-    });
-    if (user != null) {
-      /// update provider User object
-      AppUser.setUserFromDB(_firestore, user.user.uid,
-          Provider.of<AppUser>(context, listen: false));
-      return null;
-    } else {
-      return 'Se ha producido un error, favor de intentar de nuevo.';
-    }
   }
 
   /// email and password submit button function
@@ -159,8 +57,11 @@ class _InitialScreenState extends State<InitialScreen> {
           ),
         );
       } else {
-        String error =
-            await emailLogIn(emailController.text, passwordController.text);
+        String error = await LoginServices.emailLogIn(
+            emailController.text, passwordController.text, (String uid) {
+          AppUser.setValuesFromDBUser(
+              _firestore, uid, Provider.of<AppUser>(context, listen: false));
+        });
         if (error == null) {
           /// Navigate to home screen with the User object
           Navigator.popAndPushNamed(context, HomeScreen.screenId);
@@ -258,7 +159,13 @@ class _InitialScreenState extends State<InitialScreen> {
                       children: [
                         FacebookLogInButton(
                           onTapFunction: () async {
-                            if (await facebookLogIn()) {
+                            if (await LoginServices.facebookLogIn(
+                              (String uid) => AppUser.setValuesFromDBUser(
+                                _firestore,
+                                uid,
+                                Provider.of<AppUser>(context, listen: false),
+                              ),
+                            )) {
                               Navigator.popAndPushNamed(
                                   context, HomeScreen.screenId);
                             }
@@ -266,7 +173,13 @@ class _InitialScreenState extends State<InitialScreen> {
                         ),
                         GoogleLoginButton(
                           onTapFunction: () async {
-                            if (await googleLogIn()) {
+                            if (await LoginServices.googleLogIn(
+                              (String uid) => AppUser.setValuesFromDBUser(
+                                _firestore,
+                                uid,
+                                Provider.of<AppUser>(context, listen: false),
+                              ),
+                            )) {
                               Navigator.popAndPushNamed(
                                   context, HomeScreen.screenId);
                             }

@@ -27,7 +27,8 @@ class AppUser {
     );
   }
 
-  static void setUserFromDB(
+  /// Will set the given User object values to the firebase user given uid
+  static void setValuesFromDBUser(
       FirebaseFirestore firestore, String uid, AppUser user) async {
     DocumentSnapshot dbUser =
         await firestore.collection(fk_usersCollection).doc(uid).get();
