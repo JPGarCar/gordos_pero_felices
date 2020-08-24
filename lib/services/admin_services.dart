@@ -6,14 +6,16 @@ import 'image_getter.dart';
 class AdminServices {
   /// Deals with separating the string for every period
   static List<String> getStringListByDot(String initial) {
-    return initial.split('.');
+    List<String> list = initial.split('.');
+    list.removeWhere((element) => element.length == 0);
+    return list;
   }
 
   /// Deals with creating a single string separated by . from a list of strings
   static String listToString(List<dynamic> list) {
     String compoundedText = '';
     for (String string in list) {
-      compoundedText = compoundedText + string + '. ';
+      compoundedText = compoundedText + string + '.';
     }
     return compoundedText;
   }
