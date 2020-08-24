@@ -1,14 +1,15 @@
 import 'dart:ui';
-
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/screens/home_screen.dart';
 import 'package:gordos_pero_felizes/screens/new_user_screen.dart';
+import 'package:gordos_pero_felizes/widgets/custom/custom_clamping_scroll_physics.dart';
 import 'package:gordos_pero_felizes/widgets/error_dialog.dart';
-import 'file:///C:/Users/juapg/_Programming_Projects/AndroidStudioProjects/GordosPeroFelizes/gordos_pero_felizes/lib/widgets/red_rounded/red_rounded_button.dart';
+import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_text_field.dart';
-import 'package:gordos_pero_felizes/widgets/custom_bottom_sheet.dart' as cbs;
+import 'package:gordos_pero_felizes/widgets/custom/custom_bottom_sheet.dart'
+    as cbs;
 import 'package:gordos_pero_felizes/widgets/simple_text_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -182,125 +183,125 @@ class _InitialScreenState extends State<InitialScreen> {
         body: Container(
           padding: k_appPadding,
           color: k_whiteColor,
-          child: Column(
-            children: [
-              Expanded(
-                flex: 1,
-                child: Form(
-                  key: _key,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Flexible(
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 30, bottom: 15),
-                          child: Image.asset(
-                            'images/gordos_logo.png',
-                          ),
-                        ),
-                        fit: FlexFit.loose,
-                        flex: 2,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          RedRoundedTextField(
-                            isEmail: true,
-                            hint: 'Correo Electrónico',
-                            textEditingController: emailController,
-                            validatorCallBack: (String value) {
-                              if (!EmailValidator.validate(value)) {
-                                errors.add(
-                                    'Porfavor escriba un correo electronico valido.');
-                                return null;
-                              }
-                            },
-                          ),
-                          RedRoundedTextField(
-                            isTextInputDone: true,
-                            hint: 'Contraseña',
-                            isPassword: true,
-                            textEditingController: passwordController,
-                            validatorCallBack: (String value) {
-                              if (value.length < 6) {
-                                errors.add(
-                                    'Porfavor escriba una contraseña valida.');
-                                return null;
-                              }
-                            },
-                          ),
-                          SimpleTextButton(
-                            verticalPadding: 0,
-                            text: 'olvidaste tu contraseña?',
-                            textStyle: TextStyle(
-                              color: k_redColor,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Flexible(
-                        fit: FlexFit.loose,
-                        flex: 2,
-                        child: RedRoundedButton(
-                          buttonText: 'Ingresar',
-                          onTapFunction: submitButtonFunction,
+          child: Form(
+            key: _key,
+            child: SingleChildScrollView(
+              physics: CustomClampingScrollPhysics(
+                  parent: NeverScrollableScrollPhysics()),
+              child: Container(
+                height: MediaQuery.of(context).size.height - 50,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Flexible(
+                      fit: FlexFit.loose,
+                      flex: 2,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 30, bottom: 15),
+                        child: Image.asset(
+                          'images/gordos_logo.png',
                         ),
                       ),
-                      Divider(
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        RedRoundedTextField(
+                          isEmail: true,
+                          hint: 'Correo Electrónico',
+                          textEditingController: emailController,
+                          validatorCallBack: (String value) {
+                            if (!EmailValidator.validate(value)) {
+                              errors.add(
+                                  'Porfavor escriba un correo electronico valido.');
+                              return null;
+                            }
+                          },
+                        ),
+                        RedRoundedTextField(
+                          isTextInputDone: true,
+                          hint: 'Contraseña',
+                          isPassword: true,
+                          textEditingController: passwordController,
+                          validatorCallBack: (String value) {
+                            if (value.length < 6) {
+                              errors.add(
+                                  'Porfavor escriba una contraseña valida.');
+                              return null;
+                            }
+                          },
+                        ),
+                        SimpleTextButton(
+                          verticalPadding: 0,
+                          text: 'olvidaste tu contraseña?',
+                          textStyle: TextStyle(
+                            color: k_redColor,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Flexible(
+                      fit: FlexFit.loose,
+                      flex: 2,
+                      child: RedRoundedButton(
+                        buttonText: 'Ingresar',
+                        onTapFunction: submitButtonFunction,
+                      ),
+                    ),
+                    Divider(
+                      color: k_redColor,
+                      thickness: 1.5,
+                    ),
+                    Column(
+                      children: [
+                        FacebookLogInButton(
+                          onTapFunction: () async {
+                            if (await facebookLogIn()) {
+                              Navigator.popAndPushNamed(
+                                  context, HomeScreen.screenId);
+                            }
+                          },
+                        ),
+                        GoogleLoginButton(
+                          onTapFunction: () async {
+                            if (await googleLogIn()) {
+                              Navigator.popAndPushNamed(
+                                  context, HomeScreen.screenId);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    SimpleTextButton(
+                      verticalPadding: 0,
+                      text: 'Crear una cuenta aquí',
+                      textStyle: TextStyle(
                         color: k_redColor,
-                        thickness: 1.5,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
                       ),
-                      Column(
-                        children: [
-                          FacebookLogInButton(
-                            onTapFunction: () async {
-                              if (await facebookLogIn()) {
-                                Navigator.popAndPushNamed(
-                                    context, HomeScreen.screenId);
-                              }
-                            },
-                          ),
-                          GoogleLoginButton(
-                            onTapFunction: () async {
-                              if (await googleLogIn()) {
-                                Navigator.popAndPushNamed(
-                                    context, HomeScreen.screenId);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                      SimpleTextButton(
-                        verticalPadding: 0,
-                        text: 'Crear una cuenta aquí',
-                        textStyle: TextStyle(
-                          color: k_redColor,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        onTapCallBack: () {
-                          cbs.showModalBottomSheet(
-                            backgroundColor: k_whiteColor,
-                            isScrollControlled: true,
-                            context: context,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(k_circularBorderRadius),
-                              ),
+                      onTapCallBack: () {
+                        cbs.showModalBottomSheet(
+                          backgroundColor: k_whiteColor,
+                          isScrollControlled: true,
+                          context: context,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(k_circularBorderRadius),
                             ),
-                            builder: (context) {
-                              return new NewUserScreen();
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                          ),
+                          builder: (context) {
+                            return new NewUserScreen();
+                          },
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),
