@@ -2,19 +2,18 @@ import 'dart:ui';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
+import 'package:gordos_pero_felizes/models/sex_enum.dart';
 import 'package:gordos_pero_felizes/screens/home_screen.dart';
 import 'package:gordos_pero_felizes/screens/new_user_screen.dart';
 import 'package:gordos_pero_felizes/services/login_services.dart';
 import 'package:gordos_pero_felizes/widgets/custom/custom_clamping_scroll_physics.dart';
+import 'package:gordos_pero_felizes/widgets/dialogs/extra_info_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/error_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_text_field.dart';
 import 'package:gordos_pero_felizes/widgets/custom/custom_bottom_sheet.dart'
     as cbs;
 import 'package:gordos_pero_felizes/widgets/simple_text_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gordos_pero_felizes/models/app_user.dart';
 import 'package:provider/provider.dart';
@@ -166,8 +165,23 @@ class _InitialScreenState extends State<InitialScreen> {
                                 Provider.of<AppUser>(context, listen: false),
                               ),
                             )) {
-                              Navigator.popAndPushNamed(
-                                  context, HomeScreen.screenId);
+                              if (Provider.of<AppUser>(context, listen: false)
+                                      .city ==
+                                  null) {
+                                print('################### SHOWING DIALOG');
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return ExtraInfoDialog();
+                                    });
+                              } else {
+                                print('Did not show dialog ################');
+                                print(
+                                    Provider.of<AppUser>(context, listen: false)
+                                        .city);
+                                Navigator.popAndPushNamed(
+                                    context, HomeScreen.screenId);
+                              }
                             }
                           },
                         ),

@@ -1,14 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:gordos_pero_felizes/models/app_user.dart';
-import 'package:provider/provider.dart';
 
 class LoginServices {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
   /// Deals with the google login
   static Future<bool> googleLogIn(Function onSuccess) async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -54,13 +50,14 @@ class LoginServices {
   static Future<bool> facebookLogIn(Function onSuccess) async {
     final _facebookLogin = FacebookLogin();
     final FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
     final result = await _facebookLogin.logInWithReadPermissions([
       'email',
-      //'instagram_basic',
       //'user_birthday',
       //'user_gender',
       //'user_hometown',
+      // This does work except for hometown
     ]);
 
     switch (result.status) {
@@ -80,7 +77,18 @@ class LoginServices {
             FacebookAuthProvider.credential(result.accessToken.token);
         var authResult = await _auth.signInWithCredential(credential);
         if (authResult != null) {
-          // TODO check if first time logging in!
+          /// Checking if this is the first time the user enters, if so create
+          /// user in db
+          if (authResult.additionalUserInfo.isNewUser) {
+            AppUser appUser = new AppUser(
+              uid: authResult.user.uid,
+              name: authResult.additionalUserInfo.profile['first_name'],
+              lastName: authResult.additionalUserInfo.profile['last_name'],
+              email: authResult.user.email,
+            );
+            appUser.addUserToDB(_firestore);
+          }
+
           onSuccess(authResult.user.uid);
           return true;
         }
