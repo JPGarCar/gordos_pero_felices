@@ -18,6 +18,7 @@ class ErrorDialog extends StatelessWidget {
             style: TextStyle(
               fontSize: 15,
             ),
+            textAlign: TextAlign.center,
           ),
         ),
       );
@@ -40,6 +41,7 @@ class ErrorDialog extends StatelessWidget {
                 fontWeight: FontWeight.w700,
                 fontSize: 18,
               ),
+              textAlign: TextAlign.center,
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 12.0),
@@ -50,7 +52,7 @@ class ErrorDialog extends StatelessWidget {
             RedRoundedButton(
               onTapFunction: () {
                 Navigator.pop(context);
-                extraFunction();
+                extraFunction != null ? extraFunction() : null;
               },
               buttonText: 'Okay',
             ),

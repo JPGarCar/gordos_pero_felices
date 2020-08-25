@@ -167,6 +167,9 @@ class _InitialScreenState extends State<InitialScreen> {
                                 );
                               },
                             )) {
+                              /// If facebook did work then check if we need
+                              /// more data from the user, else pop and
+                              /// push to home
                               if (Provider.of<AppUser>(context, listen: false)
                                       .city ==
                                   null) {
@@ -180,11 +183,22 @@ class _InitialScreenState extends State<InitialScreen> {
                                 Navigator.popAndPushNamed(
                                     context, HomeScreen.screenId);
                               }
+                            } else {
+                              /// If facebook did not work then show an error dialog
+                              showDialog(
+                                context: context,
+                                builder: (context) => ErrorDialog(
+                                  stringErrors: [
+                                    'Se ha producido un error con facebook, favor de intentar de nuevo.'
+                                  ],
+                                ),
+                              );
                             }
                           },
                         ),
                         GoogleLoginButton(
                           onTapFunction: () async {
+                            /// Try to authenticate with google
                             if (await LoginServices.googleLogIn(
                               (String uid) => AppUser.setValuesFromDBUser(
                                 _firestore,
@@ -192,8 +206,19 @@ class _InitialScreenState extends State<InitialScreen> {
                                 Provider.of<AppUser>(context, listen: false),
                               ),
                             )) {
+                              /// If google did work then pop and push to home
                               Navigator.popAndPushNamed(
                                   context, HomeScreen.screenId);
+                            } else {
+                              /// If google did not work then show an error dialog
+                              showDialog(
+                                context: context,
+                                builder: (context) => ErrorDialog(
+                                  stringErrors: [
+                                    'Se ha producido un error con google, favor de intentar de nuevo.'
+                                  ],
+                                ),
+                              );
                             }
                           },
                         ),
@@ -208,6 +233,8 @@ class _InitialScreenState extends State<InitialScreen> {
                         fontWeight: FontWeight.w500,
                       ),
                       onTapCallBack: () {
+                        /// When clicked will show a custom modal bottom sheet
+                        /// with the new_user_screen.dart screen
                         cbs.showModalBottomSheet(
                           backgroundColor: k_whiteColor,
                           isScrollControlled: true,
