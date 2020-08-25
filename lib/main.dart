@@ -7,6 +7,7 @@ import 'file:///C:/Users/juapg/_Programming_Projects/AndroidStudioProjects/Gordo
 import 'package:gordos_pero_felizes/screens/business_screen.dart';
 import 'package:gordos_pero_felizes/screens/categories_screen.dart';
 import 'package:gordos_pero_felizes/screens/category_screen.dart';
+import 'package:gordos_pero_felizes/screens/filler_screen.dart';
 import 'package:gordos_pero_felizes/screens/initial_screen.dart';
 import 'package:gordos_pero_felizes/screens/user_screen.dart';
 import 'package:provider/provider.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
           NewCategoryScreen.screenId: (context) => NewCategoryScreen(),
           NewBusinessScreen.screenId: (context) => NewBusinessScreen(),
           EditBusinessScreen.screenId: (context) => EditBusinessScreen(),
+          FillerScreen.screenId: (context) => FillerScreen(),
         },
         initialRoute: InitialScreen.screenId,
       ),

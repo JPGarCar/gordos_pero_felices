@@ -68,10 +68,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         context, CategoriesScreen.screenId),
                     text: 'Restaurantes por Categoría',
                   ),
-                  SimpleTextButton(
-                    text: 'Restaurantes por Ubicación',
-                  ),
-                  SimpleTextButton(
+                  /*SimpleTextButton(
                     text: 'Juega con la Ruleta Gordos',
                   ),
                   SimpleTextButton(
@@ -79,6 +76,12 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                   SimpleTextButton(
                     text: 'Antojate con el Gordo Date',
+                  ),*/
+                  SimpleTextButton(
+                    text: 'Preguntas Frequentes',
+                  ),
+                  SimpleTextButton(
+                    text: 'Contacto para Negocios',
                   ),
                   Provider.of<AppUser>(context, listen: false).isAdmin
                       ? SimpleTextButton(

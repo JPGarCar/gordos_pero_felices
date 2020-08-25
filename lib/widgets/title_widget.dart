@@ -32,7 +32,7 @@ class TitleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 20),
+      padding: EdgeInsets.only(bottom: 15),
       child: Column(
         children: [
           TopRow(
@@ -43,9 +43,9 @@ class TitleWidget extends StatelessWidget {
           ),
           isImage
               ? Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: EdgeInsets.only(bottom: 15),
                   child: Container(
-                    height: 80,
+                    height: 70,
                     child: Image.asset('images/gordos_logo.png'),
                   ),
                 )

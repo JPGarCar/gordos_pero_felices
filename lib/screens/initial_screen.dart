@@ -2,7 +2,9 @@ import 'dart:ui';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
-import 'package:gordos_pero_felizes/models/sex_enum.dart';
+import 'package:gordos_pero_felizes/models/enums/status_enum.dart';
+import 'package:gordos_pero_felizes/screens/filler_screen.dart';
+import 'file:///C:/Users/juapg/_Programming_Projects/AndroidStudioProjects/GordosPeroFelizes/gordos_pero_felizes/lib/models/enums/sex_enum.dart';
 import 'package:gordos_pero_felizes/screens/home_screen.dart';
 import 'package:gordos_pero_felizes/screens/new_user_screen.dart';
 import 'package:gordos_pero_felizes/services/login_services.dart';
@@ -157,43 +159,45 @@ class _InitialScreenState extends State<InitialScreen> {
                     Column(
                       children: [
                         FacebookLogInButton(
-                          onTapFunction: () async {
-                            if (await LoginServices.facebookLogIn(
-                              (String uid) async {
-                                await AppUser.setValuesFromDBUser(
-                                  _firestore,
-                                  uid,
-                                  Provider.of<AppUser>(context, listen: false),
-                                );
-                              },
-                            )) {
-                              /// If facebook did work then check if we need
-                              /// more data from the user, else pop and
-                              /// push to home
-                              if (Provider.of<AppUser>(context, listen: false)
-                                      .city ==
-                                  null) {
-                                showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (context) {
-                                      return ExtraInfoDialog();
-                                    });
-                              } else {
-                                Navigator.popAndPushNamed(
-                                    context, HomeScreen.screenId);
-                              }
-                            } else {
-                              /// If facebook did not work then show an error dialog
-                              showDialog(
-                                context: context,
-                                builder: (context) => ErrorDialog(
-                                  stringErrors: [
-                                    'Se ha producido un error con facebook, favor de intentar de nuevo.'
-                                  ],
+                          onTapFunction: () {
+                            showDialog(
+                              child: FutureBuilder(
+                                future: LoginServices.facebookLogIn(
+                                  (String uid) async {
+                                    await AppUser.setValuesFromDBUser(
+                                      _firestore,
+                                      uid,
+                                      Provider.of<AppUser>(context,
+                                          listen: false),
+                                    );
+                                  },
                                 ),
-                              );
-                            }
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<Status> snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return CircularProgressIndicator();
+                                  } else {
+                                    print('there is data!');
+                                    if (snapshot.data == Status.loggedIn) {
+                                      /*Navigator.popAndPushNamed(
+                                          context, HomeScreen.screenId);*/
+                                      //Navigator.pop(context);
+                                      return FillerScreen();
+                                    } else if (snapshot.data ==
+                                        Status.newLogIn) {
+                                      return ExtraInfoDialog();
+                                    } else {
+                                      return ErrorDialog(
+                                        stringErrors: [
+                                          'Se ha producido un error con facebook, favor de intentar de nuevo.'
+                                        ],
+                                      );
+                                    }
+                                  }
+                                },
+                              ),
+                              context: context,
+                            );
                           },
                         ),
                         GoogleLoginButton(

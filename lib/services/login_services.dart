@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:gordos_pero_felizes/models/app_user.dart';
+import 'package:gordos_pero_felizes/models/enums/status_enum.dart';
 
 class LoginServices {
   /// Deals with the google login
@@ -48,10 +49,12 @@ class LoginServices {
   }
 
   /// Deals with the facebook login
-  static Future<bool> facebookLogIn(Function onSuccess) async {
+  static Future<Status> facebookLogIn(Function onSuccess) async {
     final _facebookLogin = FacebookLogin();
     final FirebaseAuth _auth = FirebaseAuth.instance;
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    Status status;
 
     final result = await _facebookLogin.logInWithReadPermissions([
       'email',
@@ -64,10 +67,12 @@ class LoginServices {
     switch (result.status) {
       case FacebookLoginStatus.error:
         print("Error");
+        status = Status.error;
         break;
 
       case FacebookLoginStatus.cancelledByUser:
         print("CancelledByUser");
+        status = Status.error;
         break;
 
       case FacebookLoginStatus.loggedIn:
@@ -79,7 +84,7 @@ class LoginServices {
         var authResult = await _auth.signInWithCredential(credential);
         if (authResult != null) {
           /// Checking if this is the first time the user enters, if so create
-          /// user in db
+          /// user, add to firestore and set status to new log in
           if (authResult.additionalUserInfo.isNewUser) {
             AppUser appUser = new AppUser(
               uid: authResult.user.uid,
@@ -88,12 +93,20 @@ class LoginServices {
               email: authResult.user.email,
             );
             appUser.addUserToDB(_firestore);
+            status = Status.newLogIn;
+          } else {
+            /// If successfull and not new user set status to logged in
+            status = Status.loggedIn;
           }
+
+          /// onSuccess method call, used to update the provider AppUser
           await onSuccess(authResult.user.uid);
-          return true;
+        } else {
+          /// If auth result is null there was an error
+          status = Status.error;
         }
     }
-    return false;
+    return status;
   }
 
   /// Deals with the email login
