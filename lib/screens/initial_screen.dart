@@ -159,26 +159,24 @@ class _InitialScreenState extends State<InitialScreen> {
                         FacebookLogInButton(
                           onTapFunction: () async {
                             if (await LoginServices.facebookLogIn(
-                              (String uid) => AppUser.setValuesFromDBUser(
-                                _firestore,
-                                uid,
-                                Provider.of<AppUser>(context, listen: false),
-                              ),
+                              (String uid) async {
+                                await AppUser.setValuesFromDBUser(
+                                  _firestore,
+                                  uid,
+                                  Provider.of<AppUser>(context, listen: false),
+                                );
+                              },
                             )) {
                               if (Provider.of<AppUser>(context, listen: false)
                                       .city ==
                                   null) {
-                                print('################### SHOWING DIALOG');
                                 showDialog(
+                                    barrierDismissible: false,
                                     context: context,
                                     builder: (context) {
                                       return ExtraInfoDialog();
                                     });
                               } else {
-                                print('Did not show dialog ################');
-                                print(
-                                    Provider.of<AppUser>(context, listen: false)
-                                        .city);
                                 Navigator.popAndPushNamed(
                                     context, HomeScreen.screenId);
                               }

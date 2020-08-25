@@ -28,26 +28,26 @@ class AppUser {
   }
 
   /// Will set the given User object values to the firebase user given uid
-  static void setValuesFromDBUser(
+  static Future<void> setValuesFromDBUser(
       FirebaseFirestore firestore, String uid, AppUser user) async {
-    DocumentSnapshot dbUser =
-        await firestore.collection(fk_usersCollection).doc(uid).get();
-    Map<String, dynamic> dbUserData = dbUser.data();
+    await firestore.collection(fk_usersCollection).doc(uid).get().then((value) {
+      Map<String, dynamic> dbUserData = value.data();
 
-    user.setValues(
-      name: dbUserData[fk_userName],
-      lastName: dbUserData[fk_lastName],
-      email: dbUserData[fk_email],
-      city: dbUserData[fk_city],
-      day: dbUserData[fk_day],
-      month: dbUserData[fk_month],
-      year: dbUserData[fk_year],
-      age: dbUserData[fk_age],
-      sex: getSexEnum(dbUserData[fk_sex]),
-      uid: dbUser.id,
-      favoriteBusinessList: dbUserData[fk_userFavorites].cast<String>(),
-      isAdmin: dbUserData[fk_isAdmin],
-    );
+      user.setValues(
+        name: dbUserData[fk_userName],
+        lastName: dbUserData[fk_lastName],
+        email: dbUserData[fk_email],
+        city: dbUserData[fk_city],
+        day: dbUserData[fk_day],
+        month: dbUserData[fk_month],
+        year: dbUserData[fk_year],
+        age: dbUserData[fk_age],
+        sex: getSexEnum(dbUserData[fk_sex]),
+        uid: value.id,
+        favoriteBusinessList: dbUserData[fk_userFavorites].cast<String>(),
+        isAdmin: dbUserData[fk_isAdmin],
+      );
+    });
   }
 
   String name;
