@@ -20,17 +20,6 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class _CategoryScreenState extends State<CategoryScreen> {
-  List<Widget> getIconList(IconData iconData, int amount) {
-    List<Widget> moneyList = new List();
-    for (var i = 0; i < amount; i++) {
-      moneyList.add(Icon(
-        iconData,
-        color: Colors.red,
-      ));
-    }
-    return moneyList;
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -41,6 +30,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              /// Title widget with back arrow and account circle, no search bar
               TitleWidget(
                 leftIcon: Icons.arrow_back,
                 onPressedLeftIcon: () => Navigator.pop(context),
@@ -48,27 +38,48 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 onPressedRightIcon: () =>
                     Navigator.pushNamed(context, UserScreen.screenId),
                 mainText:
-                    'Restauratnes ${Provider.of<Category>(context, listen: false).name}',
+                    'Restaurantes ${Provider.of<Category>(context, listen: false).name}',
                 textStyle: TextStyle(
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
                   fontSize: 20,
                 ),
               ),
+
+              /// Listbuilder of all the businessReferences in the category
+              /// itemBuilder calls a FutureBuilder which grabs the Business
+              /// from a businessReferences in the category by calling the
+              /// Business static function getBusinessFromDB()
               Expanded(
                 child: ListView.builder(
                   itemBuilder: (context, index) {
-                    Business business =
-                        Provider.of<Category>(context, listen: false)
-                            .businesses[index];
-                    return business.isActive
-                        ? BusinessCard(
-                            business: business,
-                          )
-                        : null;
+                    return FutureBuilder(
+                      future: Business.getBusinessFromDB(
+                          Provider.of<Category>(context, listen: false)
+                              .businessReferences[index]),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<dynamic> snapshot) {
+                        /// Check if there is data or for an error
+                        if (!snapshot.hasData) {
+                          return Icon(
+                              Icons.update); // TODO return loading widget
+                        } else if (snapshot.hasError) {
+                          return Icon(Icons.error);
+                        }
+
+                        /// All good, we can continue
+                        /// check if business is active, else do not build card
+                        Business business = snapshot.data;
+                        return business.isActive
+                            ? BusinessCard(
+                                business: business,
+                              )
+                            : SizedBox();
+                      },
+                    );
                   },
                   itemCount: Provider.of<Category>(context, listen: false)
-                      .businesses
+                      .businessReferences
                       .length,
                 ),
               ),

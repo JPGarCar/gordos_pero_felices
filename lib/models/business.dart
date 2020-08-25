@@ -8,6 +8,34 @@ import 'package:gordos_pero_felizes/firebase_constants.dart';
 /// It holds all the business info, from images to ratings, to google map stuff.
 
 class Business {
+  static Future<Business> getBusinessFromDB(
+      DocumentReference documentReference) async {
+    Business business;
+
+    /// Grabs the documentReference and creates a Business out of it, will
+    /// return a furure<Business> once the documentReference get returns.
+    await documentReference.get().then((DocumentSnapshot docSnapshot) {
+      var value = docSnapshot.data();
+      business = Business(
+        businessName: value[fk_businessName],
+        happyRating: value[fk_happyRating],
+        houseRating: value[fk_houseRating],
+        moneyRating: value[fk_moneyRating],
+        mainImageAsset: value[fk_businessMainImageAsset],
+        bestPlateList: List.from(value[fk_bestPlateList]),
+        imageAssetList: List.from(value[fk_businessImageAssetList]),
+        tipList: List.from(value[fk_tipList]),
+        igLink: value[fk_igLink],
+        phoneNumber: value[fk_phoneNumber],
+        rappiLink: value[fk_rappiLink],
+        textReview: value[fk_textReview],
+        uberEatsLink: value[fk_uberEatsLink],
+        isActive: value[fk_isActive],
+      );
+    });
+    return business;
+  }
+
   /// variables ///
 
   int moneyRating;
@@ -54,7 +82,7 @@ class Business {
   }
 
   /// Will return x amount of given iconsData as a list.
-  List<Widget> grabIcons(int amount, IconData iconData) {
+  List<Widget> _grabIcons(int amount, IconData iconData) {
     List<Widget> iconList = [];
     for (int i = 0; i < amount; i++) {
       iconList.add(Icon(
@@ -67,15 +95,15 @@ class Business {
   }
 
   List<Widget> grabMoneyIcons() {
-    return grabIcons(moneyRating, Icons.attach_money);
+    return _grabIcons(moneyRating, Icons.attach_money);
   }
 
   List<Widget> grabHouseIcons() {
-    return grabIcons(houseRating, Icons.home);
+    return _grabIcons(houseRating, Icons.home);
   }
 
   List<Widget> grabHappyIcons() {
-    return grabIcons(happyRating, Icons.tag_faces);
+    return _grabIcons(happyRating, Icons.tag_faces);
   }
 
   /// add this business to db

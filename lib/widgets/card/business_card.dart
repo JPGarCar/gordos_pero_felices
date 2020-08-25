@@ -15,9 +15,13 @@ class BusinessCard extends StatelessWidget {
     return CustomCard(
       isOffline: isOffline,
       onTapFunction: () => Navigator.pushNamed(context, BusinessScreen.screenId,
-          arguments: business), // TODO send to business page
+          arguments: business),
       imageAssetPath: business.mainImageAsset,
       name: business.businessName,
+
+      /// Sets the overlay of this CustomCard
+      /// Overlay will be row with the icons, inside a black box with
+      /// round borders in all sides except top left and bottom right
       overlay: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [

@@ -29,6 +29,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              /// Title Widget
               TitleWidget(
                 leftIcon: Icons.arrow_back,
                 onPressedLeftIcon: () => Navigator.pop(context),
@@ -43,32 +44,41 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 ),
               ),
               Expanded(
+                /// Stream builder gets collection snapshot and creates a
+                /// Gridview with each new collection
                 child: StreamBuilder(
                   stream: firebaseFirestore
                       .collection(fk_categoryCollection)
                       .snapshots(),
                   builder:
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    /// Checks if there is data or an error, deal with both
                     if (!snapshot.hasData) {
                       return CircularProgressIndicator();
                     } else if (snapshot.hasError) {
                       return Icon(Icons.error);
                     }
+
+                    /// Everything is good, we can continue!
+                    /// We grab the snapshot and set all the docs in documents
                     QuerySnapshot querySnapshot = snapshot.data;
-                    List<DocumentChange> changedDocs = querySnapshot.docChanges;
+                    List<QueryDocumentSnapshot> documents = querySnapshot.docs;
 
                     return GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                       ),
+
+                      /// Builder will return a Category card with the
+                      /// document category
                       itemBuilder: (context, index) {
-                        DocumentSnapshot doc = changedDocs[index].doc;
+                        DocumentSnapshot doc = documents[index];
                         return doc.get('isActive')
                             ? CategoryCard(
                                 category: Category.getCategoryFromDocument(doc))
                             : null;
                       },
-                      itemCount: changedDocs.length,
+                      itemCount: documents.length,
                     );
                   },
                 ),
