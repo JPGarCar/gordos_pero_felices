@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/models/app_user.dart';
 import 'file:///C:/Users/juapg/_Programming_Projects/AndroidStudioProjects/GordosPeroFelizes/gordos_pero_felizes/lib/screens/admin/admin_panel_screen.dart';
 import 'package:gordos_pero_felizes/screens/categories_screen.dart';
+import 'package:gordos_pero_felizes/screens/contact_screen.dart';
 import 'package:gordos_pero_felizes/screens/initial_screen.dart';
 import 'package:gordos_pero_felizes/widgets/simple_text_button.dart';
 import 'package:provider/provider.dart';
@@ -82,6 +83,8 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                   SimpleTextButton(
                     text: 'Contacto para Negocios',
+                    onTapCallBack: () => Navigator.popAndPushNamed(
+                        context, ContactScreen.screenId),
                   ),
                   Provider.of<AppUser>(context, listen: false).isAdmin
                       ? SimpleTextButton(

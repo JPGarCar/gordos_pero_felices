@@ -40,7 +40,6 @@ class _UserScreenState extends State<UserScreen> {
                   fontWeight: FontWeight.w700,
                   fontSize: 24,
                 ),
-                isSecondaryText: true,
                 secondaryText: 'Tus Favoritos',
                 secondaryTextStyle: TextStyle(
                   fontWeight: FontWeight.w500,
@@ -56,6 +55,8 @@ class _UserScreenState extends State<UserScreen> {
                         ),
                         itemBuilder: (context, index) {
                           return CustomCard(
+                            // TODO finish
+                            isOffline: true,
                             name: _appUser.favoriteBusinessList[index],
                             imageAssetPath: 'images/gourmet_burger.jpg',
                           );

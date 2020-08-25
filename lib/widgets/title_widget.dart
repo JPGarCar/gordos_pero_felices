@@ -10,7 +10,6 @@ class TitleWidget extends StatelessWidget {
   final String mainText;
   final bool isSearchBar;
   final TextStyle textStyle;
-  final bool isSecondaryText;
   final String secondaryText;
   final TextStyle secondaryTextStyle;
   final bool isImage;
@@ -23,7 +22,6 @@ class TitleWidget extends StatelessWidget {
     this.mainText = '',
     this.isSearchBar = false,
     this.textStyle,
-    this.isSecondaryText = false,
     this.secondaryText,
     this.secondaryTextStyle,
     this.isImage = true,
@@ -53,13 +51,15 @@ class TitleWidget extends StatelessWidget {
           Text(
             mainText,
             style: textStyle,
+            textAlign: TextAlign.center,
           ),
-          isSecondaryText
+          secondaryText != null
               ? Padding(
                   padding: EdgeInsets.only(top: 10),
                   child: Text(
                     secondaryText,
                     style: secondaryTextStyle,
+                    textAlign: TextAlign.center,
                   ),
                 )
               : SizedBox(),
