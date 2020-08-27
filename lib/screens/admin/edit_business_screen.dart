@@ -8,6 +8,7 @@ import 'package:gordos_pero_felizes/services/image_getter.dart';
 import 'package:gordos_pero_felizes/widgets/business_editor.dart';
 import 'package:gordos_pero_felizes/widgets/dialogs/confirm_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/dialogs/yes_no_dialog.dart';
+import 'package:gordos_pero_felizes/widgets/loading_gif.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_dropdown.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -182,8 +183,7 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
                               onYesFunction: () async {
                                 Navigator.pop(context);
                                 showDialog(
-                                    context: context,
-                                    child: CircularProgressIndicator());
+                                    context: context, child: LoadingGif());
                                 updateDB().whenComplete(
                                   () {
                                     Navigator.pop(context);

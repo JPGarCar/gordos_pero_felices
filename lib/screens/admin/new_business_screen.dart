@@ -8,6 +8,7 @@ import 'package:gordos_pero_felizes/services/image_getter.dart';
 import 'package:gordos_pero_felizes/widgets/business_editor.dart';
 import 'package:gordos_pero_felizes/widgets/dialogs/confirm_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/dialogs/yes_no_dialog.dart';
+import 'package:gordos_pero_felizes/widgets/loading_gif.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 import 'dart:io';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -135,9 +136,7 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
                         onNoFunction: () => Navigator.pop(context),
                         onYesFunction: () async {
                           Navigator.pop(context);
-                          showDialog(
-                              context: context,
-                              child: CircularProgressIndicator());
+                          showDialog(context: context, child: LoadingGif());
                           addBusiness().whenComplete(
                             () {
                               Navigator.pop(context);
