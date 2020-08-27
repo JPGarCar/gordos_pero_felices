@@ -4,6 +4,7 @@ import 'package:gordos_pero_felizes/firebase_constants.dart';
 import 'package:gordos_pero_felizes/models/category.dart';
 import 'package:gordos_pero_felizes/screens/user_screen.dart';
 import 'package:gordos_pero_felizes/widgets/card/category_card.dart';
+import 'package:gordos_pero_felizes/widgets/loading_gif.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 
 import '../constants.dart';
@@ -54,7 +55,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     /// Checks if there is data or an error, deal with both
                     if (!snapshot.hasData) {
-                      return CircularProgressIndicator();
+                      return LoadingGif();
                     } else if (snapshot.hasError) {
                       return Icon(Icons.error);
                     }

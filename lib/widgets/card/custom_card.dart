@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../../constants.dart';
+import '../loading_gif.dart';
 
 class CustomCard extends StatelessWidget {
   final Function onTapFunction;
@@ -35,7 +36,7 @@ class CustomCard extends StatelessWidget {
                 name: name)
             : CachedNetworkImage(
                 imageUrl: imageAssetPath,
-                placeholder: (context, url) => CircularProgressIndicator(),
+                placeholder: (context, url) => LoadingGif(),
                 errorWidget: (context, url, error) => Icon(Icons.error),
                 imageBuilder: (context, ImageProvider image) {
                   return CardImageWidget(

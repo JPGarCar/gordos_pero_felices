@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:gordos_pero_felizes/models/business.dart';
 import 'package:gordos_pero_felizes/models/category.dart';
 import 'package:gordos_pero_felizes/screens/user_screen.dart';
+import 'package:gordos_pero_felizes/widgets/loading_gif.dart';
 import 'file:///C:/Users/juapg/_Programming_Projects/AndroidStudioProjects/GordosPeroFelizes/gordos_pero_felizes/lib/widgets/card/business_card.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 import 'package:provider/provider.dart';
@@ -61,8 +62,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           AsyncSnapshot<dynamic> snapshot) {
                         /// Check if there is data or for an error
                         if (!snapshot.hasData) {
-                          return Icon(
-                              Icons.update); // TODO return loading widget
+                          return LoadingGif();
                         } else if (snapshot.hasError) {
                           return Icon(Icons.error);
                         }

@@ -11,6 +11,7 @@ import 'package:gordos_pero_felizes/services/login_services.dart';
 import 'package:gordos_pero_felizes/widgets/custom/custom_clamping_scroll_physics.dart';
 import 'package:gordos_pero_felizes/widgets/dialogs/extra_info_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/error_dialog.dart';
+import 'package:gordos_pero_felizes/widgets/loading_gif.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_text_field.dart';
 import 'package:gordos_pero_felizes/widgets/custom/custom_bottom_sheet.dart'
@@ -175,9 +176,8 @@ class _InitialScreenState extends State<InitialScreen> {
                                 builder: (BuildContext context,
                                     AsyncSnapshot<Status> snapshot) {
                                   if (!snapshot.hasData) {
-                                    return CircularProgressIndicator();
+                                    return LoadingGif();
                                   } else {
-                                    print('there is data!');
                                     if (snapshot.data == Status.loggedIn) {
                                       /*Navigator.popAndPushNamed(
                                           context, HomeScreen.screenId);*/
