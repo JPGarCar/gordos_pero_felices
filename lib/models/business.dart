@@ -82,28 +82,32 @@ class Business {
   }
 
   /// Will return x amount of given iconsData as a list.
-  List<Widget> _grabIcons(int amount, IconData iconData) {
+  List<Widget> _grabIcons(
+      int amount, IconData iconData, Color color, double size) {
     List<Widget> iconList = [];
     for (int i = 0; i < amount; i++) {
       iconList.add(Icon(
         iconData,
-        color: k_whiteColor,
-        size: k_cardIconSize,
+        color: color,
+        size: size,
       ));
     }
     return iconList;
   }
 
-  List<Widget> grabMoneyIcons() {
-    return _grabIcons(moneyRating, Icons.attach_money);
+  List<Widget> grabMoneyIcons(
+      {Color color = k_whiteColor, @required double size}) {
+    return _grabIcons(moneyRating, Icons.attach_money, color, size);
   }
 
-  List<Widget> grabHouseIcons() {
-    return _grabIcons(houseRating, Icons.home);
+  List<Widget> grabHouseIcons(
+      {Color color = k_whiteColor, @required double size}) {
+    return _grabIcons(houseRating, Icons.home, color, size);
   }
 
-  List<Widget> grabHappyIcons() {
-    return _grabIcons(happyRating, Icons.tag_faces);
+  List<Widget> grabHappyIcons(
+      {Color color = k_whiteColor, @required double size}) {
+    return _grabIcons(happyRating, Icons.tag_faces, color, size);
   }
 
   /// add this business to db

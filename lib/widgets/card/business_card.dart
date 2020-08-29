@@ -40,15 +40,15 @@ class BusinessCard extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: business.grabMoneyIcons(),
+                  children: business.grabMoneyIcons(size: k_cardIconSize),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: business.grabHouseIcons(),
+                  children: business.grabHouseIcons(size: k_cardIconSize),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: business.grabHappyIcons(),
+                  children: business.grabHappyIcons(size: k_cardIconSize),
                 ),
               ],
             ),
