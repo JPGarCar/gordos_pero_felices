@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_text_field.dart';
@@ -12,6 +13,12 @@ class ContactScreen extends StatefulWidget {
 }
 
 class _ContactScreenState extends State<ContactScreen> {
+  final Email email = Email(
+    subject: 'Contacto de GPF App - Negocio',
+    recipients: ['gordospfelices@gmail.com'],
+    isHTML: false,
+  );
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -30,7 +37,14 @@ class _ContactScreenState extends State<ContactScreen> {
                     'Porfavor complete este formulario con su informacion y nos pondremos en contacto con'
                     ' usted en cuanto antes possible!',
               ),
-              SingleChildScrollView(
+
+              RedRoundedButton(
+                buttonText: 'Enviar correo electronico',
+                onTapFunction: () async => await FlutterEmailSender.send(email),
+              ),
+
+              /// The following widget is the form -> will not be used at the moment
+              /*SingleChildScrollView(
                 child: Form(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -57,7 +71,7 @@ class _ContactScreenState extends State<ContactScreen> {
                     ],
                   ),
                 ),
-              )
+              ),*/
             ],
           ),
         ),
