@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
-import 'file:///C:/Users/juapg/_Programming_Projects/AndroidStudioProjects/GordosPeroFelizes/gordos_pero_felizes/lib/models/enums/sex_enum.dart';
 
 class RedRoundedDropDown extends StatelessWidget {
   final String hint;

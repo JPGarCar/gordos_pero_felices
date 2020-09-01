@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/firebase_constants.dart';
-import 'file:///C:/Users/juapg/_Programming_Projects/AndroidStudioProjects/GordosPeroFelizes/gordos_pero_felizes/lib/models/enums/sex_enum.dart';
-
+import 'package:gordos_pero_felizes/models/enums/sex_enum.dart';
 /// This is the User class, it represents a real human using the app.
 class AppUser {
   static Future<AppUser> getUserFromDB(

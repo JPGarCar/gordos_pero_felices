@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/screens/menu_screen.dart';
 import 'package:gordos_pero_felizes/screens/user_screen.dart';
-import 'file:///C:/Users/juapg/_Programming_Projects/AndroidStudioProjects/GordosPeroFelizes/gordos_pero_felizes/lib/widgets/custom/custom_bottom_sheet.dart'
+import 'package:gordos_pero_felizes/widgets/custom/custom_bottom_sheet.dart'
     as cbs;
 import 'package:gordos_pero_felizes/widgets/card/custom_card.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
