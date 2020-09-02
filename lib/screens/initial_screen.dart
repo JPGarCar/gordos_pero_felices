@@ -1,11 +1,8 @@
 import 'dart:ui';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sidekick/flutter_sidekick.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/models/enums/status_enum.dart';
-import 'package:gordos_pero_felizes/screens/filler_screen.dart';
-import 'file:///C:/Users/juapg/_Programming_Projects/AndroidStudioProjects/GordosPeroFelizes/gordos_pero_felizes/lib/models/enums/sex_enum.dart';
 import 'package:gordos_pero_felizes/screens/home_screen.dart';
 import 'package:gordos_pero_felizes/screens/new_user_screen.dart';
 import 'package:gordos_pero_felizes/services/login_services.dart';

@@ -13,6 +13,7 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
+
   AppUser _appUser;
 
   @override
