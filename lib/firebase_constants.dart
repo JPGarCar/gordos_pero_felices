@@ -1,3 +1,5 @@
+import 'package:gordos_pero_felizes/models/category.dart';
+
 /// This file has all the firebase firestore constants, makes it easier to change
 /// if a firebase firestore data name changes, and to keep things bug free
 
@@ -8,6 +10,8 @@ const String fk_businessCollection = 'businesses';
 const String fk_categoryCollection = 'categories';
 
 const String fk_usersCollection = 'users';
+
+const String fk_specialCategoryCollection = 'special-categories';
 
 /// Business ///
 
@@ -72,3 +76,5 @@ const String fk_userName = 'name';
 const String fk_sex = 'sex';
 
 const String fk_year = 'year';
+
+/// Special Category

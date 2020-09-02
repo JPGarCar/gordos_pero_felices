@@ -25,11 +25,18 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   TextEditingController nameController = TextEditingController();
   bool isActive = true;
 
+  /// var to know if new category is for home screen!
+  bool isSpecial = false;
+
   /// Deals with uploading category info to firestore
   Future uploadCategory(String name) async {
     String assetPath = await ImageGetter.uploadImage(
         image: _image, imagePath: 'categories/$name');
-    _firestore.collection(fk_categoryCollection).doc(name).set({
+    _firestore
+        .collection(
+            isSpecial ? fk_specialCategoryCollection : fk_categoryCollection)
+        .doc(name)
+        .set({
       fk_categoryImageAssetPath: assetPath,
       fk_categoryName: name,
       fk_businesses: List<DocumentReference>(),
@@ -61,73 +68,91 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                 ),
                 mainText: 'Agregar una Categoría Nueva',
               ),
-              RedRoundedTextField(
-                onChangedFunction: (string) {
-                  setState(() {});
-                },
-                isTextInputDone: true,
-                hint: 'Nombre de categoría',
-                textEditingController: nameController,
-              ),
-              RedRoundedButton(
-                buttonText: 'Escojer imagen de categoria',
-                onTapFunction: () async {
-                  _image = await ImageGetter.getImage();
-                  setState(() {});
-                },
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 30),
-                child: Column(
-                  children: [
-                    Text(
-                      'Preview de la categoría:',
-                      style: TextStyle(
-                        fontSize: 16,
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      RedRoundedTextField(
+                        onChangedFunction: (string) {
+                          setState(() {});
+                        },
+                        isTextInputDone: true,
+                        hint: 'Nombre de categoría',
+                        textEditingController: nameController,
                       ),
-                    ),
-                    _image != null
-                        ? CategoryCard(
-                            isOffline: true,
-                            isActive: false,
-                            category: new Category(
-                              name: nameController.text,
-                              imageAssetPath: _image.path,
+                      RedRoundedButton(
+                        buttonText: 'Escojer imagen de categoria',
+                        onTapFunction: () async {
+                          _image = await ImageGetter.getImage();
+                          setState(() {});
+                        },
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 30),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Preview de la categoría:',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
                             ),
-                          )
-                        : SizedBox(),
-                  ],
+                            _image != null
+                                ? CategoryCard(
+                                    isOffline: true,
+                                    isActive: false,
+                                    category: new Category(
+                                      name: nameController.text,
+                                      imageAssetPath: _image.path,
+                                    ),
+                                  )
+                                : SizedBox(),
+                          ],
+                        ),
+                      ),
+                      RedRoundedSwitch(
+                        text: 'Activo?',
+                        value: isActive,
+                        onChangeFunction: (value) {
+                          setState(() {
+                            isActive = value;
+                          });
+                        },
+                      ),
+                      RedRoundedSwitch(
+                        text: 'Especial?',
+                        value: isSpecial,
+                        onChangeFunction: (value) {
+                          setState(() {
+                            isSpecial = value;
+                          });
+                        },
+                      ),
+                      _image != null
+                          ? nameController.text != ""
+                              ? RedRoundedButton(
+                                  buttonText: 'Agregar Categoría Nueva',
+                                  onTapFunction: () async {
+                                    await uploadCategory(nameController.text);
+                                    showDialog(
+                                      context: context,
+                                      child: ConfirmDialog(
+                                        text:
+                                            'La categoría se agregó correctamente!',
+                                        onTapFunction: () {
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    );
+                                  },
+                                )
+                              : SizedBox()
+                          : SizedBox(),
+                    ],
+                  ),
                 ),
               ),
-              RedRoundedSwitch(
-                text: 'Activo?',
-                value: isActive,
-                onChangeFunction: (value) {
-                  setState(() {
-                    isActive = value;
-                  });
-                },
-              ),
-              _image != null
-                  ? nameController.text != ""
-                      ? RedRoundedButton(
-                          buttonText: 'Agregar Categoría Nueva',
-                          onTapFunction: () async {
-                            await uploadCategory(nameController.text);
-                            showDialog(
-                              context: context,
-                              child: ConfirmDialog(
-                                text: 'La categoría se agregó correctamente!',
-                                onTapFunction: () {
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            );
-                          },
-                        )
-                      : SizedBox()
-                  : SizedBox(),
             ],
           ),
         ),
