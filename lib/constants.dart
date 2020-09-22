@@ -33,3 +33,7 @@ const TextStyle k_16wStyle = TextStyle(
   fontSize: 16,
   fontWeight: FontWeight.w700,
 );
+
+const double k_textFontSize = 16.0;
+
+const double k_iconPadding = 8.0;

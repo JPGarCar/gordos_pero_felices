@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gordos_pero_felizes/services/g_p_f_icons_icons.dart';
 
 import '../constants.dart';
 
-class TitleWidget extends StatelessWidget {
+class TitleWidget extends StatefulWidget {
   final IconData leftIcon;
   final IconData rightIcon;
   final Function onPressedLeftIcon;
@@ -13,6 +14,8 @@ class TitleWidget extends StatelessWidget {
   final String secondaryText;
   final TextStyle secondaryTextStyle;
   final bool isImage;
+  final bool isBusiness;
+  final bool isFavorite;
 
   TitleWidget({
     this.leftIcon,
@@ -25,21 +28,56 @@ class TitleWidget extends StatelessWidget {
     this.secondaryText,
     this.secondaryTextStyle,
     this.isImage = true,
+    this.isBusiness = false,
+    this.isFavorite = false,
   });
+
+  TitleWidget.business({
+    this.leftIcon = Icons.arrow_back,
+    @required this.onPressedLeftIcon,
+    this.rightIcon = Icons.account_circle,
+    @required this.onPressedRightIcon,
+    this.mainText = '',
+    this.isSearchBar = false,
+    this.textStyle,
+    this.secondaryText,
+    this.secondaryTextStyle,
+    this.isImage = true,
+    this.isBusiness = true,
+    @required this.isFavorite,
+  });
+
+  @override
+  _TitleWidgetState createState() => _TitleWidgetState();
+}
+
+class _TitleWidgetState extends State<TitleWidget> {
+  bool isFavorite;
+
+  @override
+  void initState() {
+    super.initState();
+    isFavorite = widget.isFavorite;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 15),
+      padding: widget.isBusiness
+          // this is a special padding needed for the business page
+          ? EdgeInsets.symmetric(
+              vertical: k_appPaddingVertical,
+              horizontal: k_appPaddingHorizontal)
+          : EdgeInsets.only(bottom: k_appPaddingVertical),
       child: Column(
         children: [
           TopRow(
-            leftIcon: leftIcon,
-            onPressedLeftIcon: onPressedLeftIcon,
-            rightIcon: rightIcon,
-            onPressedRightIcon: onPressedRightIcon,
+            leftIcon: widget.leftIcon,
+            onPressedLeftIcon: widget.onPressedLeftIcon,
+            rightIcon: widget.rightIcon,
+            onPressedRightIcon: widget.onPressedRightIcon,
           ),
-          isImage
+          widget.isImage
               ? Padding(
                   padding: EdgeInsets.only(bottom: 15),
                   child: Container(
@@ -48,22 +86,55 @@ class TitleWidget extends StatelessWidget {
                   ),
                 )
               : SizedBox(),
-          Text(
-            mainText,
-            style: textStyle,
-            textAlign: TextAlign.center,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                flex: 7,
+                child: Text(
+                  widget.mainText,
+                  style: widget.textStyle,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              widget.isBusiness
+                  ? Flexible(
+                      flex: 1,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: k_iconPadding),
+                        child: Center(
+                          child: IconButton(
+                            color: k_redColor,
+                            highlightColor: k_redColorLight,
+                            splashColor: k_redColor,
+                            onPressed: () {
+                              setState(() {
+                                isFavorite = !isFavorite;
+                              });
+                            },
+                            icon: Icon(
+                              isFavorite
+                                  ? GPFIcons.heart
+                                  : GPFIcons.heart_empty,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : SizedBox(),
+            ],
           ),
-          secondaryText != null
+          widget.secondaryText != null
               ? Padding(
                   padding: EdgeInsets.only(top: 10),
                   child: Text(
-                    secondaryText,
-                    style: secondaryTextStyle,
+                    widget.secondaryText,
+                    style: widget.secondaryTextStyle,
                     textAlign: TextAlign.center,
                   ),
                 )
               : SizedBox(),
-          isSearchBar
+          widget.isSearchBar
               ? Padding(
                   padding: EdgeInsets.only(left: 25, right: 25, top: 10),
                   child: SearchBar(),

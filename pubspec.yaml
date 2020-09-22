@@ -108,3 +108,6 @@ flutter:
       fonts:
         - asset: fonts/KlavikaMedium-TF.otf
           weight: 500
+    - family:  GPFIcons
+      fonts:
+       - asset: fonts/GPFIcons.ttf
