@@ -21,17 +21,8 @@ class BusinessScreen extends StatefulWidget {
 class _BusinessScreenState extends State<BusinessScreen> {
   /// Default image height is 400
   // var imageHeight = 400.0; will use aspect ratio fot better quality
-
-  List<Widget> listOf(List<String> list, TextStyle textStyle) {
-    List<Text> texts;
-    texts = list
-        .map((e) => Text(
-              '-' + e,
-              style: textStyle,
-            ))
-        .toList();
-    return texts;
-  }
+  // padding to be used between all the info sections
+  var itemPadding = EdgeInsets.symmetric(vertical: 15);
 
   /// Deals with creating the cards for the carousel slider
   List<Widget> carouselItems(List<String> pathList) {
@@ -60,6 +51,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
         body: Container(
           child: Column(
             children: [
+              // padding for the title widget ONLY
               Padding(
                 padding: EdgeInsets.only(
                     top: k_appPaddingVertical,
@@ -81,6 +73,8 @@ class _BusinessScreenState extends State<BusinessScreen> {
               Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
+                    // only give bottom padding to differentiate between carousel
+                    // and the information
                     padding: EdgeInsets.only(bottom: k_appPaddingVertical),
                     child: Column(
                       children: [
@@ -88,19 +82,22 @@ class _BusinessScreenState extends State<BusinessScreen> {
                           options: CarouselOptions(
                             //height: imageHeight,
                             autoPlay: true,
+                            // this is the aspect ratio that instagram uses
                             aspectRatio: 4 / 5,
                             enlargeCenterPage: true,
                           ),
                           items: carouselItems(business.imageAssetList),
                         ),
                         Padding(
+                          // resume horizontal padding outside the image carousel
                           padding: EdgeInsets.symmetric(
                               horizontal: k_appPaddingHorizontal),
                           child: Column(
+                            // main column with all the information
                             children: [
                               /// Main text
                               Container(
-                                padding: EdgeInsets.symmetric(vertical: 8),
+                                padding: itemPadding,
                                 child: Text(
                                   business.textReview,
                                   style: TextStyle(fontSize: 16),
@@ -109,114 +106,26 @@ class _BusinessScreenState extends State<BusinessScreen> {
 
                               /// Icon reviews
                               Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: business.grabHappyIcons(
-                                        size: 20,
-                                        color: k_redColor,
-                                      ),
-                                    ),
-                                    Row(
-                                      children: business.grabHouseIcons(
-                                        size: 20,
-                                        color: k_redColor,
-                                      ),
-                                    ),
-                                    Row(
-                                      children: business.grabMoneyIcons(
-                                        size: 20,
-                                        color: k_redColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                padding: itemPadding,
+                                child: IconReviewRow(business: business),
                               ),
 
                               /// Best Plates
-                              Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8),
-                                child: business.bestPlateList.isNotEmpty
-                                    ? Container(
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              'Lo que pedimos:',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                            Column(
-                                              children: listOf(
-                                                business.bestPlateList,
-                                                TextStyle(
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    : SizedBox(),
+                              CustomListView(
+                                padding: itemPadding,
+                                list: business.bestPlateList,
+                                title: 'Lo Que Pedimos:',
                               ),
 
                               /// List of tips
-                              Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8),
-                                child: business.tipList.isNotEmpty
-                                    ? Container(
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              'Nuestros Gordo Tips:',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                            Column(
-                                              children: listOf(
-                                                business.tipList,
-                                                TextStyle(
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    : SizedBox(),
+                              CustomListView(
+                                padding: itemPadding,
+                                list: business.tipList,
+                                title: 'Nuestros Gordo Tips:',
                               ),
 
                               /// Google maps
-                              Container(
-                                padding: EdgeInsets.symmetric(vertical: 8),
-                                width: 220,
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15)),
-                                  color: k_redColorLight,
-                                  onPressed: () {
-                                    MapsLauncher.launchQuery('query');
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.all(10.0),
-                                        child: Image.asset(
-                                          'images/Google_Maps_logo_icon.png',
-                                          height: 30,
-                                        ),
-                                      ),
-                                      Text('Ir a Google Maps'),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              GoogleMapsButton(),
 
                               /// Menu TODO
 
@@ -311,6 +220,135 @@ class _BusinessScreenState extends State<BusinessScreen> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomListView extends StatelessWidget {
+  const CustomListView({
+    @required this.list,
+    @required this.title,
+    this.padding = EdgeInsets.zero,
+  });
+
+  final list;
+  final title;
+  final padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: padding,
+      child: list.isNotEmpty
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: list.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: EdgeInsets.only(top: 8, right: 16, left: 16),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: Icon(Icons.check, color: k_redColorLight),
+                          ),
+                          Flexible(
+                            child: Text(
+                              list[index],
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            )
+          : SizedBox(),
+    );
+  }
+}
+
+class IconReviewRow extends StatelessWidget {
+  const IconReviewRow({
+    Key key,
+    @required this.business,
+  }) : super(key: key);
+
+  final Business business;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: business.grabHappyIcons(
+              size: 20,
+              color: k_redColor,
+            ),
+          ),
+          Row(
+            children: business.grabHouseIcons(
+              size: 20,
+              color: k_redColor,
+            ),
+          ),
+          Row(
+            children: business.grabMoneyIcons(
+              size: 20,
+              color: k_redColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class GoogleMapsButton extends StatelessWidget {
+  const GoogleMapsButton({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8),
+      width: 220,
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        color: k_redColorLight,
+        onPressed: () {
+          MapsLauncher.launchQuery('query');
+        },
+        child: Row(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Image.asset(
+                'images/Google_Maps_logo_icon.png',
+                height: 30,
+              ),
+            ),
+            Text('Ir a Google Maps'),
+          ],
         ),
       ),
     );
