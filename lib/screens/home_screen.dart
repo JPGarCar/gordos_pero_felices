@@ -1,11 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
+import 'package:gordos_pero_felizes/firebase_constants.dart';
+import 'package:gordos_pero_felizes/models/category.dart';
 import 'package:gordos_pero_felizes/screens/menu_screen.dart';
 import 'package:gordos_pero_felizes/screens/user_screen.dart';
+import 'package:gordos_pero_felizes/widgets/card/category_card.dart';
 import 'package:gordos_pero_felizes/widgets/custom/custom_bottom_sheet.dart'
     as cbs;
 import 'package:gordos_pero_felizes/widgets/card/custom_card.dart';
+import 'package:gordos_pero_felizes/widgets/loading_gif.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,6 +22,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  /// class variables
+  var firebase = FirebaseFirestore.instance;
+
   /// will show the custom modal bottom sheet
   dynamic showCustomModalBottomSheet(BuildContext context) {
     return cbs.showModalBottomSheet(
@@ -81,11 +89,36 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressedLeftIcon: () => showCustomModalBottomSheet(context),
               ),
               Expanded(
-                child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    return cardList[index];
+                child: StreamBuilder(
+                  stream: firebase
+                      .collection(fk_specialCategoryCollection)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    // check to make sure there is data
+                    if (!snapshot.hasData) {
+                      return LoadingGif();
+                    } else if (snapshot.hasError) {
+                      return Icon(Icons.error);
+                    }
+
+                    // Everything is good, we can continue!
+                    // We grab the snapshot and set all the docs in documents
+                    QuerySnapshot querySnapshot = snapshot.data;
+                    List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+
+                    // Will return a list view with cards for each category
+                    return ListView.builder(
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot doc = documents[index];
+                        // make sure the category is active == true
+                        return doc.get('isActive')
+                            ? CategoryCard(
+                                category: Category.getCategoryFromDocument(doc))
+                            : null;
+                      },
+                      itemCount: documents.length,
+                    );
                   },
-                  itemCount: cardList.length,
                 ),
               ),
             ],

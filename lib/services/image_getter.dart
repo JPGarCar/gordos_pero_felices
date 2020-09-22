@@ -50,9 +50,7 @@ class ImageGetter {
       @required String imagePath,
       isData = false}) async {
     FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
-    StorageReference storageReference = isData
-        ? _firebaseStorage.ref().child(imagePath)
-        : _firebaseStorage.ref().child(imagePath);
+    StorageReference storageReference = _firebaseStorage.ref().child(imagePath);
     StorageUploadTask uploadTask = isData
         ? storageReference.putData(
             (await asset.getByteData(quality: 70)).buffer.asUint8List())
