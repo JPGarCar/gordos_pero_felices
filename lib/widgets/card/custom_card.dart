@@ -88,13 +88,18 @@ class CardImageWidget extends StatelessWidget {
           overlay ?? SizedBox(),
           Row(
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-                child: Text(
-                  name ?? '',
-                  style: TextStyle(
-                    color: k_whiteColor,
-                    fontSize: 26,
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                  child: Text(
+                    name ?? '',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    style: TextStyle(
+                      color: k_whiteColor,
+                      fontSize: 26,
+                    ),
                   ),
                 ),
               )
