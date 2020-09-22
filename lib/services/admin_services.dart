@@ -8,6 +8,7 @@ class AdminServices {
   static List<String> getStringListByDot(String initial) {
     List<String> list = initial.split('.');
     list.removeWhere((element) => element.length == 0);
+    list = list.map((e) => e.trim()).toList();
     return list;
   }
 
