@@ -271,7 +271,7 @@ class IconReviewRow extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Row(
             children: business.grabHappyIcons(

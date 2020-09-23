@@ -62,8 +62,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
                     /// Everything is good, we can continue!
                     /// We grab the snapshot and set all the docs in documents
+                    /// we also make sure we only proceed with active documents
                     QuerySnapshot querySnapshot = snapshot.data;
                     List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+                    documents
+                        .removeWhere((element) => !element.get('isActive'));
 
                     return GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -74,10 +77,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       /// document category
                       itemBuilder: (context, index) {
                         DocumentSnapshot doc = documents[index];
-                        return doc.get('isActive')
-                            ? CategoryCard(
-                                category: Category.getCategoryFromDocument(doc))
-                            : null;
+                        return CategoryCard(
+                            category: Category.getCategoryFromDocument(doc));
                       },
                       itemCount: documents.length,
                     );

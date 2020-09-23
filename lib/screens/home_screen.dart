@@ -103,18 +103,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     // Everything is good, we can continue!
                     // We grab the snapshot and set all the docs in documents
+                    // we also make sure we only proceed with active documents
                     QuerySnapshot querySnapshot = snapshot.data;
                     List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+                    documents
+                        .removeWhere((element) => !element.get('isActive'));
 
                     // Will return a list view with cards for each category
                     return ListView.builder(
                       itemBuilder: (context, index) {
                         DocumentSnapshot doc = documents[index];
-                        // make sure the category is active == true
-                        return doc.get('isActive')
-                            ? CategoryCard(
-                                category: Category.getCategoryFromDocument(doc))
-                            : null;
+                        return CategoryCard(
+                            category: Category.getCategoryFromDocument(doc));
                       },
                       itemCount: documents.length,
                     );
