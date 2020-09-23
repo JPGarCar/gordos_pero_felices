@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/firebase_constants.dart';
 import 'package:gordos_pero_felizes/models/enums/sex_enum.dart';
+
 /// This is the User class, it represents a real human using the app.
 class AppUser {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   static Future<AppUser> getUserFromDB(
       FirebaseFirestore firestore, String uid) async {
     DocumentSnapshot dbUser =
@@ -154,5 +157,28 @@ class AppUser {
       fk_userFavorites: favoriteBusinessList,
       fk_isAdmin: isAdmin,
     });
+  }
+
+  /// will check if the given business is in the favorite business list
+  bool isFavorite(String name) {
+    return favoriteBusinessList.contains(name);
+  }
+
+  /// will remove the given business from the favorite list
+  void removeFromFavorites(String name) {
+    favoriteBusinessList.remove(name);
+    firestore
+        .collection(fk_usersCollection)
+        .doc(uid)
+        .update({fk_userFavorites: favoriteBusinessList});
+  }
+
+  /// will add the given business to the favorite list
+  void addToFavorites(String name) {
+    favoriteBusinessList.add(name);
+    firestore
+        .collection(fk_usersCollection)
+        .doc(uid)
+        .update({fk_userFavorites: favoriteBusinessList});
   }
 }

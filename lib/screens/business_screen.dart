@@ -4,12 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
+import 'package:gordos_pero_felizes/models/app_user.dart';
 import 'package:gordos_pero_felizes/models/business.dart';
 import 'package:gordos_pero_felizes/screens/user_screen.dart';
 import 'package:gordos_pero_felizes/widgets/card/custom_card.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 import 'package:maps_launcher/maps_launcher.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BusinessScreen extends StatefulWidget {
@@ -62,7 +64,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),
-              isFavorite: false,
+              businessName: business.businessName,
               // TODO change this to user favorite
             ),
             Expanded(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gordos_pero_felizes/models/app_user.dart';
 import 'package:gordos_pero_felizes/services/g_p_f_icons_icons.dart';
+import 'package:provider/provider.dart';
 
 import '../constants.dart';
 
@@ -15,7 +17,7 @@ class TitleWidget extends StatefulWidget {
   final TextStyle secondaryTextStyle;
   final bool isImage;
   final bool isBusiness;
-  final bool isFavorite;
+  final String businessName;
 
   TitleWidget({
     this.leftIcon,
@@ -29,7 +31,7 @@ class TitleWidget extends StatefulWidget {
     this.secondaryTextStyle,
     this.isImage = true,
     this.isBusiness = false,
-    this.isFavorite = false,
+    this.businessName,
   });
 
   TitleWidget.business({
@@ -44,7 +46,7 @@ class TitleWidget extends StatefulWidget {
     this.secondaryTextStyle,
     this.isImage = true,
     this.isBusiness = true,
-    @required this.isFavorite,
+    @required this.businessName,
   });
 
   @override
@@ -55,9 +57,9 @@ class _TitleWidgetState extends State<TitleWidget> {
   bool isFavorite;
 
   @override
-  void initState() {
-    super.initState();
-    isFavorite = widget.isFavorite;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    isFavorite = Provider.of<AppUser>(context).isFavorite(widget.businessName);
   }
 
   @override
@@ -87,14 +89,16 @@ class _TitleWidgetState extends State<TitleWidget> {
                 )
               : SizedBox(),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Flexible(
                 flex: 7,
-                child: Text(
-                  widget.mainText,
-                  style: widget.textStyle,
-                  textAlign: TextAlign.center,
+                child: Center(
+                  child: Text(
+                    widget.mainText,
+                    style: widget.textStyle,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
               widget.isBusiness
@@ -109,6 +113,13 @@ class _TitleWidgetState extends State<TitleWidget> {
                             splashColor: k_redColor,
                             onPressed: () {
                               setState(() {
+                                if (isFavorite) {
+                                  Provider.of<AppUser>(context, listen: false)
+                                      .removeFromFavorites(widget.businessName);
+                                } else {
+                                  Provider.of<AppUser>(context, listen: false)
+                                      .addToFavorites(widget.businessName);
+                                }
                                 isFavorite = !isFavorite;
                               });
                             },
