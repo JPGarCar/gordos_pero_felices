@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/firebase_constants.dart';
 
 class DropDownItemsGetter {
-  /// Deals with adding all the available categories to a dropdown list
-  static void getCategories(
-      {FirebaseFirestore firebaseFirestore,
-      Function(List<DropdownMenuItem> dropDownItems) finalThenFunction}) {
+  /// Firebase instance
+  static final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
+  /// Will return a future with a list of drop down menu items,
+  /// each item will have the category name as value and its text as child
+  static Future<List<DropdownMenuItem>> getCategories() async {
     List<DropdownMenuItem> dropDownItems = List<DropdownMenuItem>();
 
-    firebaseFirestore.collection(fk_categoryCollection).get().then(
+    await firebaseFirestore.collection(fk_categoryCollection).get().then(
       (value) {
         List<QueryDocumentSnapshot> listOfDocs = value.docs;
         for (QueryDocumentSnapshot queryDocumentSnapshot in listOfDocs) {
@@ -22,15 +24,14 @@ class DropDownItemsGetter {
             ),
           );
         }
-        finalThenFunction(dropDownItems);
       },
     );
+    return dropDownItems;
   }
 
   /// Deals with grabbing all the businesses
   static void getBusinesses(
-      {FirebaseFirestore firebaseFirestore,
-      Function(
+      {Function(
               List<DropdownMenuItem> dropDownItems, QuerySnapshot querySnapshot)
           thenFinalFunction}) {
     List<DropdownMenuItem> dropDownItems = List<DropdownMenuItem>();
