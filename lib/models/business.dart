@@ -139,4 +139,24 @@ class Business {
       fk_isActive: isActive,
     });
   }
+
+  /// Adds this business to the given category ID in the db
+  /// requires: the cateogry ID and a firebase instance
+  Future addToCategory(String categoryID, FirebaseFirestore firebase) async {
+    await firebase.collection(fk_categoryCollection).doc(categoryID).update({
+      fk_businesses: FieldValue.arrayUnion(
+          [firebase.collection(fk_businessCollection).doc(businessName)]),
+    });
+  }
+
+  /// Removes this business from the given category ID in the db
+  /// requires: the category ID and a firebase instance
+  Future removeFromCategory(
+      String categoryID, FirebaseFirestore firebase) async {
+    await firebase.collection(fk_categoryCollection).doc(categoryID).update({
+      fk_businesses: FieldValue.arrayRemove([
+        firebase.collection(fk_businessCollection).doc(businessName),
+      ])
+    });
+  }
 }
