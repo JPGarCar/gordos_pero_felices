@@ -27,4 +27,7 @@ class GPFIcons {
 
   static const IconData heart = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData heart_empty = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData mesero = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData carita_entera = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData lengua = IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

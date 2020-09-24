@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/firebase_constants.dart';
+import 'package:gordos_pero_felizes/services/g_p_f_icons_icons.dart';
 
 /// This is the Business class, it represents a business from the real world.
 /// It holds all the business info, from images to ratings, to google map stuff.
@@ -109,12 +110,12 @@ class Business {
 
   List<Widget> grabHouseIcons(
       {Color color = k_whiteColor, @required double size}) {
-    return _grabIcons(houseRating, Icons.home, color, size);
+    return _grabIcons(houseRating, GPFIcons.mesero, color, size);
   }
 
   List<Widget> grabHappyIcons(
       {Color color = k_whiteColor, @required double size}) {
-    return _grabIcons(happyRating, Icons.tag_faces, color, size);
+    return _grabIcons(happyRating, GPFIcons.carita_entera, color, size);
   }
 
   /// add this business to db

@@ -7,6 +7,7 @@ import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/models/app_user.dart';
 import 'package:gordos_pero_felizes/models/business.dart';
 import 'package:gordos_pero_felizes/screens/user_screen.dart';
+import 'package:gordos_pero_felizes/services/g_p_f_icons_icons.dart';
 import 'package:gordos_pero_felizes/widgets/card/custom_card.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
@@ -238,7 +239,8 @@ class CustomListView extends StatelessWidget {
                         children: [
                           Padding(
                             padding: EdgeInsets.only(right: k_iconPadding),
-                            child: Icon(Icons.check, color: k_redColorLight),
+                            child:
+                                Icon(GPFIcons.lengua, color: k_redColorLight),
                           ),
                           Flexible(
                             child: Text(
