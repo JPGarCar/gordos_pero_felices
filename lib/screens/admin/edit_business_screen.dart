@@ -116,27 +116,18 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
 
   @override
   void dispose() {
-    nameController.dispose();
-    reviewController.dispose();
-    phoneController.dispose();
-    favoriteDishesController.dispose();
-    gordoTipController.dispose();
-    igLinkController.dispose();
-    rappiLinkController.dispose();
-    uberEatsController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     DropDownItemsGetter.getBusinesses(
-        firebaseFirestore: firebaseFirestore,
         thenFinalFunction: (dropDownItems, querySnapshot) {
-          businessesQuerySnapshot = querySnapshot;
-          setState(() {
-            businessChooserDropDownList = dropDownItems;
-          });
-        });
+      businessesQuerySnapshot = querySnapshot;
+      setState(() {
+        businessChooserDropDownList = dropDownItems;
+      });
+    });
     super.initState();
   }
 
@@ -206,10 +197,6 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
                           );
                         },
                         finalButtonString: 'Cambiar Negocio',
-                        isActiveFunction: (value) => setState(() {
-                          isActive = value;
-                        }),
-                        isActive: isActive,
                         multiImageOnTapFunction: () async {
                           images = await ImageGetter.loadAssets();
                           return GridView.count(
@@ -236,26 +223,6 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
                           );
                         },
                         isCategories: false,
-                        moneyOnTapFunction: (value) => setState(() {
-                          moneyRating = value;
-                        }),
-                        moneyRating: moneyRating,
-                        houseOnTapFunction: (value) => setState(() {
-                          houseRating = value;
-                        }),
-                        houseRating: houseRating,
-                        happyRatingOnTapFunction: (value) => setState(() {
-                          happyRating = value;
-                        }),
-                        happyRating: happyRating,
-                        nameController: nameController,
-                        favoriteDishesController: favoriteDishesController,
-                        gordoTipController: gordoTipController,
-                        igLinkController: igLinkController,
-                        phoneController: phoneController,
-                        rappiLinkController: rappiLinkController,
-                        reviewController: reviewController,
-                        uberEatsController: uberEatsController,
                         mainImagePath: _mainImageFile?.path ?? mainImagePath,
                         isOnlineMainImage: _mainImageFile == null,
                       ),

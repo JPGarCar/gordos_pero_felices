@@ -1,75 +1,83 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gordos_pero_felizes/models/business.dart';
+import 'package:gordos_pero_felizes/services/admin_services.dart';
+import 'package:gordos_pero_felizes/services/dropdown_items_getter.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_dropdown.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_switch.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_text_field.dart';
+import '../constants.dart';
 import 'card/custom_card.dart';
 
-class BusinessEditor extends StatelessWidget {
-  final TextEditingController nameController;
-  final TextEditingController reviewController;
-  final TextEditingController phoneController;
-  final TextEditingController favoriteDishesController;
-  final TextEditingController gordoTipController;
-  final TextEditingController igLinkController;
-  final TextEditingController rappiLinkController;
-  final TextEditingController uberEatsController;
+/// Contains its own k_appPading, no need to add extra
+class BusinessEditor extends StatefulWidget {
+  /// callback to open multi image picker and set images in parent
+  final Function multiImageOnTapFunction;
 
-  final bool isActive;
-  final int happyRating;
-  final int houseRating;
-  final int moneyRating;
+  /// Image path
   final String mainImagePath;
 
+  /// callback to open single image picker,
+  /// also used to set the file selected to variable on parent
+  final Function mainImageOnTapFunction;
+
+  /// Used to let card know if image will be in local device or web,
+  /// local is used for new business, web for editing a business
+  final bool isOnlineMainImage;
+
+  /// Submit button text and callback,
+  /// callback used to upload or update the business at db
   final Function finalOnTapFunction;
   final String finalButtonString;
 
-  final Function isActiveFunction;
-  final Function multiImageOnTapFunction;
-  final Function mainImageOnTapFunction;
-  final Function categoryOnChangeFunction;
-
-  final String categoryDropDownValue;
-  final List<DropdownMenuItem> categoryDropDownItems;
-
-  final Function moneyOnTapFunction;
-  final Function houseOnTapFunction;
-  final Function happyRatingOnTapFunction;
-
-  final bool isOnlineMainImage;
+  /// list of category ids that have been selected to be shown in list
+  final List<String> categoryIDs;
 
   /// We will disable categories for edit business screen for the time being
   final bool isCategories;
 
-  BusinessEditor(
-      {this.isOnlineMainImage = false,
-      this.isCategories = true,
-      @required this.happyRatingOnTapFunction,
-      @required this.houseOnTapFunction,
-      @required this.moneyOnTapFunction,
-      this.categoryDropDownValue,
-      this.categoryDropDownItems,
-      this.categoryOnChangeFunction,
-      @required this.mainImageOnTapFunction,
-      @required this.multiImageOnTapFunction,
-      @required this.isActiveFunction,
-      @required this.finalButtonString,
-      @required this.finalOnTapFunction,
-      @required this.nameController,
-      @required this.reviewController,
-      @required this.phoneController,
-      @required this.favoriteDishesController,
-      @required this.gordoTipController,
-      @required this.igLinkController,
-      @required this.rappiLinkController,
-      @required this.uberEatsController,
-      @required this.isActive,
-      @required this.happyRating,
-      @required this.houseRating,
-      @required this.moneyRating,
-      @required this.mainImagePath});
+  /// Business object we are adding or editing
+  final Business business;
 
-  /// Returns a list of DropDownItems with values 1 to 5
+  BusinessEditor({
+    // isOnlineMain Image
+    this.isOnlineMainImage = false,
+    // Business object
+    this.business,
+    // category dropdown item, items, callback
+    this.isCategories = true,
+    // chosen category list and callback for list items
+    @required this.categoryIDs,
+    // image callbacks and var
+    @required this.mainImageOnTapFunction,
+    @required this.multiImageOnTapFunction,
+    @required this.mainImagePath,
+    // submit text and callback
+    @required this.finalButtonString,
+    @required this.finalOnTapFunction,
+  });
+
+  @override
+  _BusinessEditorState createState() => _BusinessEditorState();
+}
+
+class _BusinessEditorState extends State<BusinessEditor> {
+  /// temp variables for long strings to be cut down into sentences later
+  var tips;
+  var dishes;
+
+  /// Drop down value var -> not used
+  var dropDownValue;
+
+  /// for easier access
+  Business business;
+
+  /// category drop down item list
+  List<DropdownMenuItem> categoryDropDownItems;
+
+  /// Returns a list of DropDownItems with values 1 to 5, used for
+  /// rating dropdownMenu list creation
   List<DropdownMenuItem> getOneToFive() {
     List<DropdownMenuItem> list = [];
     for (int i = 1; i <= 5; i++) {
@@ -83,127 +91,249 @@ class BusinessEditor extends StatelessWidget {
     return list;
   }
 
+  /// Grab drop down menu items using helper function and update state
+  /// once we get the list
+  void grabDropDownItems() {
+    DropDownItemsGetter.getCategories().then((value) => setState(() {
+          categoryDropDownItems = value;
+        }));
+  }
+
+  /// We have to grab the parent widget business object and put it in a more
+  /// convenient variable, also populate dropDown list
+  @override
+  void initState() {
+    super.initState();
+    business = widget.business;
+    grabDropDownItems();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
+      // Padding is added inside Scroll so that the padding can be used to scroll
+      child: Padding(
+        padding: k_appPadding,
+        child: Column(
+          children: [
+            RedRoundedTextField(
+              hint: 'Nombre de Negocio',
+              onChangedFunction: (value) => business.businessName = value,
+            ),
+            RedRoundedTextField(
+              isMultiLine: true,
+              hint: 'Review de negocio...',
+              onChangedFunction: (value) => business.textReview = value,
+            ),
+
+            /// Row with all three rating dropdowns, start with '?'
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RedRoundedDropDown(
+                  iconData: Icons.tag_faces,
+                  hint: business.happyRating != null
+                      ? business.happyRating.toString()
+                      : '?',
+                  value: business.happyRating,
+                  onChangeFunction: (value) => setState(() {
+                    business.happyRating = value;
+                  }),
+                  dropDownItems: getOneToFive(),
+                ),
+                RedRoundedDropDown(
+                  iconData: Icons.home,
+                  hint: business.houseRating != null
+                      ? business.houseRating.toString()
+                      : '?',
+                  value: business.houseRating,
+                  onChangeFunction: (value) => setState(() {
+                    business.houseRating = value;
+                  }),
+                  dropDownItems: getOneToFive(),
+                ),
+                RedRoundedDropDown(
+                  iconData: Icons.attach_money,
+                  hint: business.moneyRating != null
+                      ? business.moneyRating.toString()
+                      : '?',
+                  value: business.moneyRating,
+                  onChangeFunction: (value) => setState(() {
+                    business.moneyRating = value;
+                  }),
+                  dropDownItems: getOneToFive(),
+                ),
+              ],
+            ),
+
+            // Check if we are going to edit or add categories, temp fix for
+            // edit business screen!
+            widget.isCategories
+                ?
+
+                /// Column containing category dropDown chooser and chosen
+                /// category list
+                Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      RedRoundedDropDown(
+                        dropDownItems: categoryDropDownItems,
+                        value: dropDownValue,
+                        onChangeFunction: (value) => setState(() {
+                          // add category to chosen list
+                          widget.categoryIDs.add(value);
+                          // remove the category from the drop down so the same
+                          // category can't be chosen more than once
+                          categoryDropDownItems
+                              .removeWhere((element) => element.value == value);
+                        }),
+                        hint: 'Agregar Categoría',
+                      ),
+                      Flexible(
+                        child: ListView.builder(
+                          itemBuilder: (context, index) {
+                            return BusinessListItem(
+                              businessID: widget.categoryIDs[index],
+
+                              // Was giving called setState on build so needed to wrap
+                              // the businessListItemFunction() inside its own
+                              // new function
+                              onTapFunction: (value) => setState(() {
+                                categoryDropDownItems.add(DropdownMenuItem(
+                                  value: value,
+                                  child: Text(value),
+                                ));
+                                widget.categoryIDs.remove(value);
+                              }),
+                            );
+                          },
+                          shrinkWrap: true,
+                          itemCount: widget.categoryIDs.length,
+                        ),
+                      ),
+                    ],
+                  )
+                : SizedBox(),
+
+            /// Main image picker and preview!
+            RedRoundedButton(
+              buttonText: 'Escojer Imagen Principal',
+              onTapFunction: widget.mainImageOnTapFunction,
+            ),
+            // check if the main image path have been chosen, we don't want
+            // to show this part without it!
+            widget.mainImagePath != null
+                ? Column(
+                    children: [
+                      Text('Preview...'),
+                      CustomCard(
+                        imageAssetPath: widget.mainImagePath,
+                        name: business.businessName ?? '',
+                        isOffline: !widget.isOnlineMainImage,
+                      ),
+                    ],
+                  )
+                : SizedBox(),
+
+            /// Secondary image picker
+            RedRoundedButton(
+              buttonText: 'Escojer imagenes secundarias',
+              onTapFunction: widget.multiImageOnTapFunction,
+            ),
+            RedRoundedTextField(
+              isNumber: true,
+              hint: 'Telefono',
+              onChangedFunction: (value) => business.phoneNumber,
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Column(
+                children: [
+                  Text('Cada renglon, separado por un . es un platillo.'),
+                  RedRoundedTextField(
+                    isMultiLine: true,
+                    hint: 'Platillos favoritos...',
+                    onChangedFunction: (value) => dishes = value,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Column(
+                children: [
+                  Text('Cada renglon, separado por un . es un tip.'),
+                  RedRoundedTextField(
+                    isMultiLine: true,
+                    hint: 'Gordo Tips...',
+                    onChangedFunction: (value) => tips = value,
+                  ),
+                ],
+              ),
+            ),
+            RedRoundedTextField(
+              hint: 'Instagram Link',
+              onChangedFunction: (value) => business.igLink,
+            ),
+            RedRoundedTextField(
+              hint: 'Rappi Link',
+              onChangedFunction: (value) => business.rappiLink,
+            ),
+            RedRoundedTextField(
+              hint: 'Uber Eats Link',
+              onChangedFunction: (value) => business.uberEatsLink,
+              isTextInputDone: true,
+            ),
+            RedRoundedSwitch(
+              text: 'Activo?',
+              value: business.isActive ?? false,
+              onChangeFunction: (value) => setState(() {
+                business.isActive = value;
+              }),
+            ),
+
+            /// Submit button
+            RedRoundedButton(
+              buttonText: widget.finalButtonString,
+              onTapFunction: () {
+                // We update business lists from our temp variables
+                business.tipList = AdminServices.getStringListByDot(tips);
+                business.bestPlateList =
+                    AdminServices.getStringListByDot(dishes);
+
+                // callback function from parent
+                widget.finalOnTapFunction();
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// TODO Will delete and refactor or change
+class BusinessListItem extends StatelessWidget {
+  final String businessID;
+  final Function onTapFunction;
+
+  BusinessListItem({this.businessID, this.onTapFunction});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          RedRoundedTextField(
-            hint: 'Nombre de Negocio',
-            textEditingController: nameController,
+          Text(
+            businessID,
+            style: k_16wStyle,
           ),
-          RedRoundedTextField(
-            isMultiLine: true,
-            hint: 'Review de negocio...',
-            textEditingController: reviewController,
+          GestureDetector(
+            child: Icon(Icons.remove_circle),
+            onTap: onTapFunction,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RedRoundedDropDown(
-                iconData: Icons.tag_faces,
-                hint: happyRating != null ? happyRating.toString() : '?',
-                value: happyRating,
-                onChangeFunction: happyRatingOnTapFunction,
-                dropDownItems: getOneToFive(),
-              ),
-              RedRoundedDropDown(
-                iconData: Icons.home,
-                hint: houseRating != null ? houseRating.toString() : '?',
-                value: houseRating,
-                onChangeFunction: houseOnTapFunction,
-                dropDownItems: getOneToFive(),
-              ),
-              RedRoundedDropDown(
-                iconData: Icons.attach_money,
-                hint: moneyRating != null ? moneyRating.toString() : '?',
-                value: moneyRating,
-                onChangeFunction: moneyOnTapFunction,
-                dropDownItems: getOneToFive(),
-              ),
-            ],
-          ),
-          isCategories
-              ? RedRoundedDropDown(
-                  dropDownItems: categoryDropDownItems,
-                  value: categoryDropDownValue,
-                  onChangeFunction: categoryOnChangeFunction,
-                  hint: 'Categoría',
-                )
-              : SizedBox(),
-          RedRoundedButton(
-            buttonText: 'Escojer Imagen Principal',
-            onTapFunction: mainImageOnTapFunction,
-          ),
-          mainImagePath != null
-              ? Column(
-                  children: [
-                    Text('Preview...'),
-                    CustomCard(
-                      imageAssetPath: mainImagePath,
-                      name: nameController.text,
-                      isOffline: !isOnlineMainImage,
-                    ),
-                  ],
-                )
-              : SizedBox(),
-          RedRoundedButton(
-            buttonText: 'Escojer imagenes secundarias',
-            onTapFunction: multiImageOnTapFunction,
-          ),
-          RedRoundedTextField(
-            isNumber: true,
-            hint: 'Telefono',
-            textEditingController: phoneController,
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10),
-            child: Column(
-              children: [
-                Text('Cada renglon, separado por un . es un platillo.'),
-                RedRoundedTextField(
-                  isMultiLine: true,
-                  hint: 'Platillos favoritos...',
-                  textEditingController: favoriteDishesController,
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10),
-            child: Column(
-              children: [
-                Text('Cada renglon, separado por un . es un tip.'),
-                RedRoundedTextField(
-                  isMultiLine: true,
-                  hint: 'Gordo Tips...',
-                  textEditingController: gordoTipController,
-                ),
-              ],
-            ),
-          ),
-          RedRoundedTextField(
-            hint: 'Instagram Link',
-            textEditingController: igLinkController,
-          ),
-          RedRoundedTextField(
-            hint: 'Rappi Link',
-            textEditingController: rappiLinkController,
-          ),
-          RedRoundedTextField(
-            hint: 'Uber Eats Link',
-            textEditingController: uberEatsController,
-            isTextInputDone: true,
-          ),
-          RedRoundedSwitch(
-            text: 'Activo?',
-            value: isActive,
-            onChangeFunction: isActiveFunction,
-          ),
-          RedRoundedButton(
-            buttonText: finalButtonString,
-            onTapFunction: finalOnTapFunction,
-          )
         ],
       ),
     );

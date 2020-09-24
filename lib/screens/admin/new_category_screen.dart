@@ -65,14 +65,12 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   /// Will get all the possible businesses for the drop down
   void getBusinesses() {
-    DropDownItemsGetter.getBusinesses(
-        firebaseFirestore: _firestore,
-        thenFinalFunction: (items, value) {
-          querySnapshot = value;
-          setState(() {
-            dropDownItems = items;
-          });
-        });
+    DropDownItemsGetter.getBusinesses(thenFinalFunction: (items, value) {
+      querySnapshot = value;
+      setState(() {
+        dropDownItems = items;
+      });
+    });
   }
 
   @override
@@ -147,6 +145,8 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                           ],
                         ),
                       ),
+
+                      /// Business Selector
                       dropDownItems != null
                           ? Padding(
                               padding: EdgeInsets.symmetric(vertical: 10),
