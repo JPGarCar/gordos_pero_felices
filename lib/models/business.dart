@@ -81,6 +81,14 @@ class Business {
     imageAssetList ??= List<String>();
   }
 
+  /// Empty constructor of a business object, to be completed later
+  /// be very careful with the use of this!
+  Business.empty() {
+    tipList ??= List<String>();
+    bestPlateList ??= List<String>();
+    imageAssetList ??= List<String>();
+  }
+
   /// Will return x amount of given iconsData as a list.
   List<Widget> _grabIcons(
       int amount, IconData iconData, Color color, double size) {
