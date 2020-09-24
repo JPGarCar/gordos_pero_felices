@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/models/app_user.dart';
+import 'package:gordos_pero_felizes/models/business.dart';
+import 'package:gordos_pero_felizes/widgets/card/business_card.dart';
 import 'package:gordos_pero_felizes/widgets/card/custom_card.dart';
+import 'package:gordos_pero_felizes/widgets/loading_gif.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +37,7 @@ class _UserScreenState extends State<UserScreen> {
               TitleWidget(
                 leftIcon: Icons.arrow_back,
                 onPressedLeftIcon: () => Navigator.pop(context),
-                mainText: 'Nombre Usuario',
+                mainText: _appUser.name,
                 textStyle: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 24,
@@ -53,12 +56,27 @@ class _UserScreenState extends State<UserScreen> {
                           crossAxisCount: 2,
                         ),
                         itemBuilder: (context, index) {
-                          return CustomCard(
-                            // TODO finish
-                            isOffline: true,
-                            name: _appUser.favoriteBusinessList[index],
-                            imageAssetPath: 'images/gourmet_burger.jpg',
-                          );
+                          return FutureBuilder(
+                              future: Business.getBusinessFromDB(
+                                  _appUser.favoriteBusinessList[index]),
+                              builder: (context, snapshot) {
+                                /// Check if there is data or for an error
+                                if (!snapshot.hasData) {
+                                  return LoadingGif();
+                                } else if (snapshot.hasError) {
+                                  return Icon(Icons.error);
+                                }
+
+                                /// All good, we can continue
+                                /// check if business is active, else do not build card
+                                Business business = snapshot.data;
+                                return business.isActive
+                                    ? BusinessCard(
+                                        isOverlay: false,
+                                        business: business,
+                                      )
+                                    : SizedBox();
+                              });
                         },
                         itemCount: _appUser.favoriteBusinessList.length,
                       ),

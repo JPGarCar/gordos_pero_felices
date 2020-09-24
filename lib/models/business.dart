@@ -37,7 +37,6 @@ class Business {
   }
 
   /// variables ///
-
   int moneyRating;
   int houseRating;
   int happyRating;

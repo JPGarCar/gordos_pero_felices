@@ -46,7 +46,8 @@ class AppUser {
         age: dbUserData[fk_age],
         sex: getSexEnum(dbUserData[fk_sex]),
         uid: value.id,
-        favoriteBusinessList: dbUserData[fk_userFavorites].cast<String>(),
+        favoriteBusinessList:
+            dbUserData[fk_userFavorites].cast<DocumentReference>(),
         isAdmin: dbUserData[fk_isAdmin],
       );
     });
@@ -66,11 +67,11 @@ class AppUser {
   /// Will use this var to connect the Auth user to db user
   String uid;
 
-  /// will use business name's to id them from db
-  List<String> favoriteBusinessList;
+  /// Docuemnt references of businesses user likes
+  List<DocumentReference> favoriteBusinessList;
 
   AppUser.empty() {
-    favoriteBusinessList = List<String>();
+    favoriteBusinessList = List<DocumentReference>();
   }
 
   AppUser(
@@ -98,7 +99,7 @@ class AppUser {
       sex = Sex.other;
     }
     if (favoriteBusinessList == null) {
-      favoriteBusinessList = List<String>();
+      favoriteBusinessList = List<DocumentReference>();
     }
   }
 
@@ -113,7 +114,7 @@ class AppUser {
     int age,
     Sex sex,
     String uid,
-    List<String> favoriteBusinessList,
+    List<DocumentReference> favoriteBusinessList,
     bool isAdmin,
   }) {
     this.isAdmin = isAdmin ?? this.isAdmin;
@@ -166,7 +167,9 @@ class AppUser {
 
   /// will remove the given business from the favorite list
   void removeFromFavorites(String name) {
-    favoriteBusinessList.remove(name);
+    // grab business reference
+    var ref = firestore.collection(fk_businessCollection).doc(name);
+    favoriteBusinessList.remove(ref);
     firestore
         .collection(fk_usersCollection)
         .doc(uid)
@@ -175,7 +178,9 @@ class AppUser {
 
   /// will add the given business to the favorite list
   void addToFavorites(String name) {
-    favoriteBusinessList.add(name);
+    // grab business reference
+    var ref = firestore.collection(fk_businessCollection).doc(name);
+    favoriteBusinessList.add(ref);
     firestore
         .collection(fk_usersCollection)
         .doc(uid)
