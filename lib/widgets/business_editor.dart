@@ -88,10 +88,14 @@ class _BusinessEditorState extends State<BusinessEditor> {
 
   /// We have to grab the parent widget business object and put it in a more
   /// convenient variable, also populate dropDown list
+  /// We also update temp vars with data
   @override
   void initState() {
     super.initState();
     business = widget.business;
+    tips = AdminServices.listToString(business.tipList);
+    dishes = AdminServices.listToString(business.bestPlateList);
+
     // grab all the categories available for the drop down chooser
     DropDownItemsGetter.getCategories().then((value) => setState(() {
           categoryDropDownItems = value;
@@ -107,6 +111,7 @@ class _BusinessEditorState extends State<BusinessEditor> {
         child: Column(
           children: [
             RedRoundedTextField(
+              isEnabled: false,
               hint: 'Nombre de Negocio',
               onChangedFunction: (value) => business.businessName = value,
               initialValue: business.businessName,
@@ -196,6 +201,7 @@ class _BusinessEditorState extends State<BusinessEditor> {
                     },
                     shrinkWrap: true,
                     itemCount: widget.categoryIDs.length,
+                    physics: NeverScrollableScrollPhysics(),
                   ),
                 ),
               ],
@@ -241,8 +247,7 @@ class _BusinessEditorState extends State<BusinessEditor> {
                     isMultiLine: true,
                     hint: 'Platillos favoritos...',
                     onChangedFunction: (value) => dishes = value,
-                    initialValue:
-                        AdminServices.listToString(business.bestPlateList),
+                    initialValue: dishes,
                   ),
                 ],
               ),
@@ -256,7 +261,7 @@ class _BusinessEditorState extends State<BusinessEditor> {
                     isMultiLine: true,
                     hint: 'Gordo Tips...',
                     onChangedFunction: (value) => tips = value,
-                    initialValue: AdminServices.listToString(business.tipList),
+                    initialValue: tips,
                   ),
                 ],
               ),
@@ -293,7 +298,6 @@ class _BusinessEditorState extends State<BusinessEditor> {
                 business.tipList = AdminServices.getStringListByDot(tips);
                 business.bestPlateList =
                     AdminServices.getStringListByDot(dishes);
-
                 // callback function from parent
                 widget.finalOnTapFunction();
               },
