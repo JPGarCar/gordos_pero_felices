@@ -27,8 +27,8 @@ class RedRoundedTextField extends StatelessWidget {
     this.onTapFunciton,
     this.focusNode,
     this.validatorCallBack,
-    @required this.hint,
-    @required this.textEditingController,
+    this.hint = '',
+    this.textEditingController,
     this.onChangedFunction,
   });
 
@@ -63,8 +63,8 @@ class RedRoundedTextField extends StatelessWidget {
           textInputAction:
               isTextInputDone ? TextInputAction.done : TextInputAction.next,
           onFieldSubmitted: isTextInputDone
-              ? (_) => FocusScope.of(context).unfocus()
-              : (_) => FocusScope.of(context).nextFocus(),
+              ? (value) => FocusScope.of(context).unfocus()
+              : (value) => FocusScope.of(context).nextFocus(),
           validator: validatorCallBack,
           textAlign: isCenterText ? TextAlign.center : TextAlign.start,
           controller: textEditingController,
