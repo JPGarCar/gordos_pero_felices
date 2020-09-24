@@ -97,7 +97,9 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
 
     // Update business data if there is anything to update
     business.mainImageAsset = imagePath ?? business.mainImageAsset;
-    business.imageAssetList.addAll(paths);
+    if (paths != null) {
+      business.imageAssetList.addAll(paths);
+    }
 
     // Upload business to db
     business.addBusinessToDB(firebaseFirestore);
