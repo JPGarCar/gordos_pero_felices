@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/firebase_constants.dart';
 import 'package:gordos_pero_felizes/services/admin_services.dart';
-import 'package:gordos_pero_felizes/services/dropdown_items_getter.dart';
 import 'package:gordos_pero_felizes/services/image_getter.dart';
 import 'package:gordos_pero_felizes/widgets/business_editor.dart';
 import 'package:gordos_pero_felizes/widgets/dialogs/confirm_dialog.dart';
@@ -57,16 +56,7 @@ class _NewBusinessScreenState extends State<NewBusinessScreen> {
 
     // Update all necessary categories that were chosen to have this business
     categoriesIDs.forEach((element) async {
-      await firebaseFirestore
-          .collection(fk_categoryCollection)
-          .doc(element)
-          .update({
-        fk_businesses: FieldValue.arrayUnion([
-          firebaseFirestore
-              .collection(fk_businessCollection)
-              .doc(business.businessName)
-        ]),
-      });
+      await business.addToCategory(element, firebaseFirestore);
     });
   }
 

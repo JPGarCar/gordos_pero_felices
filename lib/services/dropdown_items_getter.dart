@@ -29,7 +29,7 @@ class DropDownItemsGetter {
     return dropDownItems;
   }
 
-  /// Deals with grabbing all the businesses
+  /// Deals with grabbing all the businesses TODO change to use future not callback
   static void getBusinesses(
       {Function(
               List<DropdownMenuItem> dropDownItems, QuerySnapshot querySnapshot)

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
 import 'package:gordos_pero_felizes/firebase_constants.dart';
+import 'package:gordos_pero_felizes/models/business.dart';
 import 'package:gordos_pero_felizes/services/admin_services.dart';
 import 'package:gordos_pero_felizes/services/dropdown_items_getter.dart';
 import 'package:gordos_pero_felizes/services/image_getter.dart';
@@ -28,97 +29,97 @@ class EditBusinessScreen extends StatefulWidget {
 
 class _EditBusinessScreenState extends State<EditBusinessScreen> {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
+  /// Drop down value, query and list for business chooser to edit
   String businessChooserStringValue;
   QuerySnapshot businessesQuerySnapshot;
-
   List<DropdownMenuItem> businessChooserDropDownList;
 
-  bool isActive = true;
-  int happyRating;
-  int houseRating;
-  int moneyRating;
+  /// Main image file and path
   File _mainImageFile;
   String mainImagePath;
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController reviewController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController favoriteDishesController = TextEditingController();
-  TextEditingController gordoTipController = TextEditingController();
-  TextEditingController igLinkController = TextEditingController();
-  TextEditingController rappiLinkController = TextEditingController();
-  TextEditingController uberEatsController = TextEditingController();
-
+  /// List of image assets for secondary images
   List<Asset> images = List<Asset>();
 
-  /// Deals with changing the controller values and other form values
+  /// Initial and final list of categories for this business, we need an initial
+  /// and final list to make sure we remove this business from any category that
+  /// is removed in the final, but is in the initial
+  List<String> initialCategoryIDs = List<String>();
+  List<String> finalCategoryIDs = List<String>();
+
+  /// Business object used to move information between here and business edit screen
+  Business business;
+
+  /// Will download the business to be edited and its information be added to
+  /// our local business object to then be sent to the business editor screen
   Future<void> updateValues() async {
+    // grab business from db and set to local object
     await firebaseFirestore
         .collection(fk_businessCollection)
         .doc(businessChooserStringValue)
         .get()
-        .then((DocumentSnapshot value) {
-      Map<String, dynamic> data = value.data();
-      nameController.text = data[fk_businessName];
-      reviewController.text = data[fk_textReview];
-      uberEatsController.text = data[fk_uberEatsLink];
-      rappiLinkController.text = data[fk_rappiLink];
-      igLinkController.text = data[fk_igLink];
-      phoneController.text = data[fk_phoneNumber];
-      gordoTipController.text = AdminServices.listToString(data[fk_tipList]);
-      favoriteDishesController.text =
-          AdminServices.listToString(data[fk_bestPlateList]);
-      moneyRating = data[fk_moneyRating];
-      happyRating = data[fk_happyRating];
-      houseRating = data[fk_houseRating];
-      isActive = data[fk_isActive];
-      mainImagePath = data[fk_businessMainImageAsset];
+        .then((DocumentSnapshot value) async {
+      var reference = value.reference;
+      business = await Business.getBusinessFromDB(reference);
+      mainImagePath = business.mainImageAsset;
+
+      // grab all categories that have this business associated
+      QuerySnapshot query = await firebaseFirestore
+          .collection(fk_categoryCollection)
+          .where(fk_businesses, arrayContains: reference)
+          .get();
+      query.docs.forEach((element) {
+        initialCategoryIDs.add(element.id);
+        finalCategoryIDs.add(element.id);
+      });
     });
   }
 
   /// Deals with updating the db
   Future<void> updateDB() async {
+    // Main image path names and upload
     String imagePath;
-    String initalPath = nameController.text.replaceAll(" ", "");
+    String initialPath = business.businessName.replaceAll(" ", "");
     _mainImageFile != null
         ? imagePath = await ImageGetter.uploadImage(
             image: _mainImageFile,
-            imagePath: 'businesses/$initalPath/${initalPath}_main')
+            imagePath: 'businesses/$initialPath/${initialPath}_main')
         : null;
 
+    // Secondary images paths and upload
     List<String> paths;
     images.isNotEmpty
         ? paths = await AdminServices.uploadImages(
             images: images,
-            businessName: nameController.text.replaceAll(" ", ""))
+            businessName: business.businessName.replaceAll(" ", ""))
         : null;
-    await firebaseFirestore
-        .collection(fk_businessCollection)
-        .doc(businessChooserStringValue)
-        .update({
-      fk_businessName: nameController.text,
-      fk_happyRating: happyRating,
-      fk_houseRating: houseRating,
-      fk_moneyRating: moneyRating,
-      fk_igLink: igLinkController.text,
-      fk_businessMainImageAsset: imagePath ?? mainImagePath,
-      fk_phoneNumber: phoneController.text,
-      fk_rappiLink: rappiLinkController.text,
-      fk_uberEatsLink: uberEatsController.text,
-      fk_textReview: reviewController.text,
-      fk_businessImageAssetList: FieldValue.arrayUnion(paths ?? []),
-      fk_tipList: AdminServices.getStringListByDot(gordoTipController.text),
-      fk_bestPlateList:
-          AdminServices.getStringListByDot(favoriteDishesController.text),
-      fk_isActive: isActive,
+
+    // Update business data if there is anything to update
+    business.mainImageAsset = imagePath ?? business.mainImageAsset;
+    business.imageAssetList.addAll(paths);
+
+    // Upload business to db
+    business.addBusinessToDB(firebaseFirestore);
+
+    // Update categories
+    // remove categorise that are in initial and are not in final
+    var categoriesToDelete = initialCategoryIDs
+        .where((element) => !finalCategoryIDs.contains(element));
+    categoriesToDelete.forEach((element) async {
+      business.removeFromCategory(element, firebaseFirestore);
+    });
+
+    // add the categories that are in final but where not in initial
+    var categoriesToAdd = finalCategoryIDs
+        .where((element) => !initialCategoryIDs.contains(element));
+    categoriesToAdd.forEach((element) async {
+      await business.addToCategory(element, firebaseFirestore);
     });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
+  /// Grab all the businesses that can be edited and add them to our
+  /// drop down list.
   @override
   void initState() {
     DropDownItemsGetter.getBusinesses(
@@ -135,100 +136,117 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          padding: k_appPadding,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TitleWidget(
+        body: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            /// Title widget with app padding
+            Padding(
+              padding: k_appPadding,
+              child: TitleWidget(
                 isImage: false,
                 leftIcon: Icons.arrow_back,
                 onPressedLeftIcon: () => Navigator.pop(context),
                 mainText: 'Editar Negocio',
                 textStyle: k_16wStyle,
               ),
-              Text('Porfavor selecione un negocio a editar.'),
-              businessChooserDropDownList != null
-                  ? RedRoundedDropDown(
-                      hint: 'Negocio',
-                      value: businessChooserStringValue,
-                      onChangeFunction: (value) async {
-                        businessChooserStringValue = value;
-                        await updateValues();
-                        setState(() {});
-                      },
-                      dropDownItems: businessChooserDropDownList,
-                    )
-                  : SizedBox(), // TODO change to load asset
-              businessChooserStringValue == null
-                  ? SizedBox()
-                  : Flexible(
-                      fit: FlexFit.loose,
-                      child: BusinessEditor(
-                        finalOnTapFunction: () {
-                          showDialog(
-                            child: YesNoDialog(
-                              dialogText:
-                                  'Seguro que queires cambiar este negocio?',
-                              onNoFunction: () => Navigator.pop(context),
-                              onYesFunction: () async {
-                                Navigator.pop(context);
-                                showDialog(
-                                    context: context, child: LoadingGif());
-                                updateDB().whenComplete(
-                                  () {
-                                    Navigator.pop(context);
-                                    showDialog(
-                                      context: context,
-                                      child: ConfirmDialog(
-                                        text:
-                                            'El negocio se ha cambiado correctamente!',
-                                        onTapFunction: () {
-                                          Navigator.pop(context);
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    );
-                                  },
-                                );
+            ),
+
+            /// Business Chooser only if there hasnt been a business chosen
+            businessChooserStringValue == null
+                ? Column(
+                    children: [
+                      Text('Porfavor selecione un negocio a editar.'),
+
+                      // Make sure there are items in the drop down list
+                      businessChooserDropDownList != null
+                          ? RedRoundedDropDown(
+                              hint: 'Negocio',
+                              value: businessChooserStringValue,
+                              onChangeFunction: (value) async {
+                                businessChooserStringValue = value;
+                                await updateValues();
+                                setState(() {});
                               },
-                            ),
-                            context: context,
-                          );
-                        },
-                        finalButtonString: 'Cambiar Negocio',
-                        multiImageOnTapFunction: () async {
-                          images = await ImageGetter.loadAssets();
-                          return GridView.count(
-                            crossAxisCount: 3,
-                            children: List.generate(
-                              images.length,
-                              (index) {
-                                Asset asset = images[index];
-                                return AssetThumb(
-                                  asset: asset,
-                                  width: 250,
-                                  height: 250,
-                                );
-                              },
-                            ),
-                          );
-                        },
-                        mainImageOnTapFunction: () async {
-                          _mainImageFile = await ImageGetter.getImage().then(
-                            (value) {
-                              setState(() {});
-                              return value;
+                              dropDownItems: businessChooserDropDownList,
+                            )
+                          : LoadingGif(),
+                    ],
+                  )
+                :
+
+                /// Else we open the business editor
+                Flexible(
+                    fit: FlexFit.loose,
+                    child: BusinessEditor(
+                      categoryIDs: finalCategoryIDs,
+                      business: business,
+
+                      /// Submit text and function
+                      finalButtonString: 'Cambiar Negocio',
+                      finalOnTapFunction: () {
+                        showDialog(
+                          child: YesNoDialog(
+                            dialogText:
+                                'Seguro que queires cambiar este negocio?',
+                            onNoFunction: () => Navigator.pop(context),
+                            onYesFunction: () async {
+                              Navigator.pop(context);
+                              showDialog(context: context, child: LoadingGif());
+                              updateDB().whenComplete(
+                                () {
+                                  Navigator.pop(context);
+                                  showDialog(
+                                    context: context,
+                                    child: ConfirmDialog(
+                                      text:
+                                          'El negocio se ha cambiado correctamente!',
+                                      onTapFunction: () {
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  );
+                                },
+                              );
                             },
-                          );
-                        },
-                        isCategories: false,
-                        mainImagePath: _mainImageFile?.path ?? mainImagePath,
-                        isOnlineMainImage: _mainImageFile == null,
-                      ),
+                          ),
+                          context: context,
+                        );
+                      },
+
+                      /// Secondary Images
+                      multiImageOnTapFunction: () async {
+                        images = await ImageGetter.loadAssets();
+                        return GridView.count(
+                          crossAxisCount: 3,
+                          children: List.generate(
+                            images.length,
+                            (index) {
+                              Asset asset = images[index];
+                              return AssetThumb(
+                                asset: asset,
+                                width: 250,
+                                height: 250,
+                              );
+                            },
+                          ),
+                        );
+                      },
+
+                      /// Main Image
+                      mainImagePath: _mainImageFile?.path ?? mainImagePath,
+                      isOnlineMainImage: _mainImageFile == null,
+                      mainImageOnTapFunction: () async {
+                        _mainImageFile = await ImageGetter.getImage().then(
+                          (value) {
+                            setState(() {});
+                            return value;
+                          },
+                        );
+                      },
                     ),
-            ],
-          ),
+                  ),
+          ],
         ),
       ),
     );

@@ -34,9 +34,6 @@ class BusinessEditor extends StatefulWidget {
   /// list of category ids that have been selected to be shown in list
   final List<String> categoryIDs;
 
-  /// We will disable categories for edit business screen for the time being
-  final bool isCategories;
-
   /// Business object we are adding or editing
   final Business business;
 
@@ -45,8 +42,6 @@ class BusinessEditor extends StatefulWidget {
     this.isOnlineMainImage = false,
     // Business object
     this.business,
-    // category dropdown item, items, callback
-    this.isCategories = true,
     // chosen category list and callback for list items
     @required this.categoryIDs,
     // image callbacks and var
@@ -91,21 +86,16 @@ class _BusinessEditorState extends State<BusinessEditor> {
     return list;
   }
 
-  /// Grab drop down menu items using helper function and update state
-  /// once we get the list
-  void grabDropDownItems() {
-    DropDownItemsGetter.getCategories().then((value) => setState(() {
-          categoryDropDownItems = value;
-        }));
-  }
-
   /// We have to grab the parent widget business object and put it in a more
   /// convenient variable, also populate dropDown list
   @override
   void initState() {
     super.initState();
     business = widget.business;
-    grabDropDownItems();
+    // grab all the categories available for the drop down chooser
+    DropDownItemsGetter.getCategories().then((value) => setState(() {
+          categoryDropDownItems = value;
+        }));
   }
 
   @override
@@ -119,11 +109,13 @@ class _BusinessEditorState extends State<BusinessEditor> {
             RedRoundedTextField(
               hint: 'Nombre de Negocio',
               onChangedFunction: (value) => business.businessName = value,
+              initialValue: business.businessName,
             ),
             RedRoundedTextField(
               isMultiLine: true,
               hint: 'Review de negocio...',
               onChangedFunction: (value) => business.textReview = value,
+              initialValue: business.textReview,
             ),
 
             /// Row with all three rating dropdowns, start with '?'
@@ -166,54 +158,48 @@ class _BusinessEditorState extends State<BusinessEditor> {
               ],
             ),
 
-            // Check if we are going to edit or add categories, temp fix for
-            // edit business screen!
-            widget.isCategories
-                ?
+            /// Column containing category dropDown chooser and chosen
+            /// category list
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RedRoundedDropDown(
+                  dropDownItems: categoryDropDownItems,
+                  value: dropDownValue,
+                  onChangeFunction: (value) => setState(() {
+                    // add category to chosen list
+                    widget.categoryIDs.add(value);
+                    // remove the category from the drop down so the same
+                    // category can't be chosen more than once
+                    categoryDropDownItems
+                        .removeWhere((element) => element.value == value);
+                  }),
+                  hint: 'Agregar Categoría',
+                ),
+                Flexible(
+                  child: ListView.builder(
+                    itemBuilder: (context, index) {
+                      return BusinessListItem(
+                        businessID: widget.categoryIDs[index],
 
-                /// Column containing category dropDown chooser and chosen
-                /// category list
-                Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      RedRoundedDropDown(
-                        dropDownItems: categoryDropDownItems,
-                        value: dropDownValue,
-                        onChangeFunction: (value) => setState(() {
-                          // add category to chosen list
-                          widget.categoryIDs.add(value);
-                          // remove the category from the drop down so the same
-                          // category can't be chosen more than once
-                          categoryDropDownItems
-                              .removeWhere((element) => element.value == value);
+                        // Was giving called setState on build so needed to wrap
+                        // the businessListItemFunction() inside its own
+                        // new function
+                        onTapFunction: () => setState(() {
+                          categoryDropDownItems.add(DropdownMenuItem(
+                            value: widget.categoryIDs[index],
+                            child: Text(widget.categoryIDs[index]),
+                          ));
+                          widget.categoryIDs.remove(widget.categoryIDs[index]);
                         }),
-                        hint: 'Agregar Categoría',
-                      ),
-                      Flexible(
-                        child: ListView.builder(
-                          itemBuilder: (context, index) {
-                            return BusinessListItem(
-                              businessID: widget.categoryIDs[index],
-
-                              // Was giving called setState on build so needed to wrap
-                              // the businessListItemFunction() inside its own
-                              // new function
-                              onTapFunction: (value) => setState(() {
-                                categoryDropDownItems.add(DropdownMenuItem(
-                                  value: value,
-                                  child: Text(value),
-                                ));
-                                widget.categoryIDs.remove(value);
-                              }),
-                            );
-                          },
-                          shrinkWrap: true,
-                          itemCount: widget.categoryIDs.length,
-                        ),
-                      ),
-                    ],
-                  )
-                : SizedBox(),
+                      );
+                    },
+                    shrinkWrap: true,
+                    itemCount: widget.categoryIDs.length,
+                  ),
+                ),
+              ],
+            ),
 
             /// Main image picker and preview!
             RedRoundedButton(
@@ -244,6 +230,7 @@ class _BusinessEditorState extends State<BusinessEditor> {
               isNumber: true,
               hint: 'Telefono',
               onChangedFunction: (value) => business.phoneNumber,
+              initialValue: business.phoneNumber,
             ),
             Padding(
               padding: EdgeInsets.only(top: 10),
@@ -254,6 +241,8 @@ class _BusinessEditorState extends State<BusinessEditor> {
                     isMultiLine: true,
                     hint: 'Platillos favoritos...',
                     onChangedFunction: (value) => dishes = value,
+                    initialValue:
+                        AdminServices.listToString(business.bestPlateList),
                   ),
                 ],
               ),
@@ -267,6 +256,7 @@ class _BusinessEditorState extends State<BusinessEditor> {
                     isMultiLine: true,
                     hint: 'Gordo Tips...',
                     onChangedFunction: (value) => tips = value,
+                    initialValue: AdminServices.listToString(business.tipList),
                   ),
                 ],
               ),
@@ -274,14 +264,17 @@ class _BusinessEditorState extends State<BusinessEditor> {
             RedRoundedTextField(
               hint: 'Instagram Link',
               onChangedFunction: (value) => business.igLink,
+              initialValue: business.igLink,
             ),
             RedRoundedTextField(
               hint: 'Rappi Link',
               onChangedFunction: (value) => business.rappiLink,
+              initialValue: business.rappiLink,
             ),
             RedRoundedTextField(
               hint: 'Uber Eats Link',
               onChangedFunction: (value) => business.uberEatsLink,
+              initialValue: business.uberEatsLink,
               isTextInputDone: true,
             ),
             RedRoundedSwitch(
