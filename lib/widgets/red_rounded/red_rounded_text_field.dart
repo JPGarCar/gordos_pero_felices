@@ -16,6 +16,7 @@ class RedRoundedTextField extends StatelessWidget {
   final Function onChangedFunction;
   final bool isMultiLine;
   final String initialValue;
+  final isEnabled;
 
   RedRoundedTextField({
     this.isMultiLine = false,
@@ -32,6 +33,7 @@ class RedRoundedTextField extends StatelessWidget {
     this.textEditingController,
     this.onChangedFunction,
     this.initialValue,
+    this.isEnabled = true,
   });
 
   @override
@@ -51,6 +53,7 @@ class RedRoundedTextField extends StatelessWidget {
           ],
         ),
         child: TextFormField(
+          enabled: isEnabled,
           initialValue: initialValue,
           maxLines: isMultiLine ? 10 : 1,
           onChanged: onChangedFunction ?? null,
