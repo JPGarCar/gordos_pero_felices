@@ -69,7 +69,8 @@ class _InitialScreenState extends State<InitialScreen> {
           inAsyncCall = true;
         });
         String error = await LoginServices.emailLogIn(
-            emailController.text, passwordController.text, (String uid) {
+            emailController.text.trim(), passwordController.text.trim(),
+            (String uid) {
           AppUser.setValuesFromDBUser(
               _firestore, uid, Provider.of<AppUser>(context, listen: false));
         });
@@ -130,7 +131,7 @@ class _InitialScreenState extends State<InitialScreen> {
                             hint: 'Correo Electrónico',
                             textEditingController: emailController,
                             validatorCallBack: (String value) {
-                              if (!EmailValidator.validate(value)) {
+                              if (!EmailValidator.validate(value.trim())) {
                                 errors.add(
                                     'Porfavor escriba un correo electronico valido.');
                                 return null;
@@ -143,7 +144,8 @@ class _InitialScreenState extends State<InitialScreen> {
                             isPassword: true,
                             textEditingController: passwordController,
                             validatorCallBack: (String value) {
-                              if (value.length < 6) {
+                              var pass = value.trim();
+                              if (pass.length < 6) {
                                 errors.add(
                                     'Porfavor escriba una contraseña valida.');
                                 return null;

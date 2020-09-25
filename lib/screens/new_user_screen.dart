@@ -194,7 +194,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
                       textEditingController: emailController,
                       isEmail: true,
                       validatorCallBack: (String value) {
-                        if (!EmailValidator.validate(value))
+                        if (!EmailValidator.validate(value.trim()))
                           errors.add(
                               'Porfavor escriba un correo electronico valido');
                         return null;
@@ -205,7 +205,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
                       textEditingController: confEmailController,
                       isEmail: true,
                       validatorCallBack: (String value) {
-                        if (emailController.text != value)
+                        if (emailController.text.trim() != value.trim())
                           errors.add(
                               'Asegurese que su correo electronico sea correcto.');
                         return null;
@@ -217,7 +217,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
                       textEditingController: passwordController,
                       isPassword: true,
                       validatorCallBack: (String value) {
-                        if (value.length < 6)
+                        if (value.trim().length < 6)
                           errors.add(
                               'Porfavor escriba una contraseña de más de 6 characteres.');
                         return null;
@@ -229,7 +229,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
                       textEditingController: confPasswordController,
                       isPassword: true,
                       validatorCallBack: (String value) {
-                        if (passwordController.text != value)
+                        if (passwordController.text.trim() != value.trim())
                           errors
                               .add('Asegurese que la contraseña sea correcta!');
                         return null;
@@ -377,7 +377,8 @@ class _NewUserScreenState extends State<NewUserScreen> {
     if (errors.isEmpty) {
       /// try to register the user
       dynamic signUpResponse = await singUpUser(
-          email: emailController.text, password: passwordController.text);
+          email: emailController.text.trim(),
+          password: passwordController.text.trim());
 
       if (signUpResponse.runtimeType == String) {
         /// show dialog with the error
