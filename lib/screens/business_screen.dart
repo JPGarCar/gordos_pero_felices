@@ -134,17 +134,19 @@ class _BusinessScreenState extends State<BusinessScreen> {
                                 spacing: 10,
                                 children: [
                                   /// Google maps
-                                  RedRoundedButton(
-                                    imageAsset:
-                                        'images/Google_Maps_logo_icon.png',
-                                    imageHeight: 30.0,
-                                    buttonText: 'Ir a Google Maps',
-                                    height: 50.0,
-                                    padding: 0.0,
-                                    onTapFunction: () {
-                                      MapsLauncher.launchQuery('query');
-                                    },
-                                  ),
+                                  business.mapsLink != ''
+                                      ? RedRoundedButton(
+                                          imageAsset:
+                                              'images/Google_Maps_logo_icon.png',
+                                          imageHeight: 30.0,
+                                          buttonText: 'Ir a Google Maps',
+                                          height: 50.0,
+                                          padding: 0.0,
+                                          onTapFunction: () async {
+                                            await launch(business.mapsLink);
+                                          },
+                                        )
+                                      : SizedBox(),
 
                                   /// Phone number
                                   // make sure there is a phone number to show
@@ -162,17 +164,41 @@ class _BusinessScreenState extends State<BusinessScreen> {
                                       : SizedBox(),
 
                                   /// Uber Eats
-                                  RedRoundedButton(
-                                    padding: 0.0,
-                                    height: 50.0,
-                                    imageAsset: 'images/uber_eats_logo.jpg',
-                                    imageHeight: 30,
-                                    buttonText: 'Uber Eats',
-                                    onTapFunction: () async {
-                                      await launch(
-                                          'ubereats://store/browse?client_id=eats&storeUUID=UW6ihZEHRvCLtTC-aRed1Q');
-                                    },
-                                  )
+                                  business.uberEatsLink != ''
+                                      ? RedRoundedButton(
+                                          padding: 0.0,
+                                          height: 50.0,
+                                          imageAsset:
+                                              'images/uber_eats_logo.jpg',
+                                          imageHeight: 30,
+                                          buttonText: 'Uber Eats',
+                                          onTapFunction: () async {
+                                            if (await canLaunch(
+                                                    business.uberEatsLink) ==
+                                                true) {
+                                              await launch(
+                                                  business.uberEatsLink);
+                                            }
+                                          },
+                                        )
+                                      : SizedBox(),
+
+                                  /// Rappi
+                                  business.rappiLink != ''
+                                      ? RedRoundedButton(
+                                          padding: 0.0,
+                                          height: 50.0,
+                                          imageAsset: 'images/rappi_logo.png',
+                                          buttonText: 'Rappi',
+                                          onTapFunction: () async {
+                                            if (await canLaunch(
+                                                    business.rappiLink) ==
+                                                true) {
+                                              await launch(business.rappiLink);
+                                            }
+                                          },
+                                        )
+                                      : SizedBox(),
                                 ],
                               ),
                             ),

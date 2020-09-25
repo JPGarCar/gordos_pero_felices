@@ -32,6 +32,7 @@ class Business {
         textReview: value[fk_textReview],
         uberEatsLink: value[fk_uberEatsLink],
         isActive: value[fk_isActive],
+        mapsLink: value[fk_mapLink],
       );
     });
     return business;
@@ -54,7 +55,7 @@ class Business {
   String uberEatsLink;
   String phoneNumber;
   String igLink;
-  // TODO google maps data
+  String mapsLink;
 
   bool isActive;
 
@@ -75,6 +76,7 @@ class Business {
       this.uberEatsLink = '',
       this.phoneNumber = '',
       this.igLink = '',
+      this.mapsLink = '',
       this.isActive = true}) {
     tipList ??= List<String>();
     bestPlateList ??= List<String>();
@@ -137,6 +139,7 @@ class Business {
       fk_tipList: tipList,
       fk_bestPlateList: bestPlateList,
       fk_isActive: isActive,
+      fk_mapLink: mapsLink,
     });
   }
 

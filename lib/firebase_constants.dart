@@ -41,6 +41,8 @@ const String fk_tipList = 'tipList';
 
 const String fk_uberEatsLink = 'uberEatsLink';
 
+const String fk_mapLink = 'mapLink';
+
 /// Category ///
 
 const String fk_businesses = 'businesses';
