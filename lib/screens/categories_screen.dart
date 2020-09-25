@@ -25,68 +25,66 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: k_whiteColor,
-        body: Container(
-          padding: k_appPadding,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              /// Title Widget
-              TitleWidget(
-                leftIcon: Icons.arrow_back,
-                onPressedLeftIcon: () => Navigator.pop(context),
-                rightIcon: Icons.account_circle,
-                onPressedRightIcon: () =>
-                    Navigator.pushNamed(context, UserScreen.screenId),
-                mainText: 'Categorías',
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  fontSize: 18,
-                ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            /// Title Widget
+            TitleWidget(
+              isAppPadding: true,
+              leftIcon: Icons.arrow_back,
+              onPressedLeftIcon: () => Navigator.pop(context),
+              rightIcon: Icons.account_circle,
+              onPressedRightIcon: () =>
+                  Navigator.pushNamed(context, UserScreen.screenId),
+              mainText: 'Categorías',
+              textStyle: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+                fontSize: 18,
               ),
-              Expanded(
-                /// Stream builder gets collection snapshot and creates a
-                /// Gridview with each new collection
-                child: StreamBuilder(
-                  stream: firebaseFirestore
-                      .collection(fk_categoryCollection)
-                      .snapshots(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    /// Checks if there is data or an error, deal with both
-                    if (!snapshot.hasData) {
-                      return LoadingGif();
-                    } else if (snapshot.hasError) {
-                      return Icon(Icons.error);
-                    }
+            ),
+            Expanded(
+              /// Stream builder gets collection snapshot and creates a
+              /// Gridview with each new collection
+              child: StreamBuilder(
+                stream: firebaseFirestore
+                    .collection(fk_categoryCollection)
+                    .snapshots(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  /// Checks if there is data or an error, deal with both
+                  if (!snapshot.hasData) {
+                    return LoadingGif();
+                  } else if (snapshot.hasError) {
+                    return Icon(Icons.error);
+                  }
 
-                    /// Everything is good, we can continue!
-                    /// We grab the snapshot and set all the docs in documents
-                    /// we also make sure we only proceed with active documents
-                    QuerySnapshot querySnapshot = snapshot.data;
-                    List<QueryDocumentSnapshot> documents = querySnapshot.docs;
-                    documents
-                        .removeWhere((element) => !element.get('isActive'));
+                  /// Everything is good, we can continue!
+                  /// We grab the snapshot and set all the docs in documents
+                  /// we also make sure we only proceed with active documents
+                  QuerySnapshot querySnapshot = snapshot.data;
+                  List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+                  documents.removeWhere((element) => !element.get('isActive'));
 
-                    return GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                      ),
+                  return GridView.builder(
+                    padding: k_appPadding,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
 
-                      /// Builder will return a Category card with the
-                      /// document category
-                      itemBuilder: (context, index) {
-                        DocumentSnapshot doc = documents[index];
-                        return CategoryCard(
-                            category: Category.getCategoryFromDocument(doc));
-                      },
-                      itemCount: documents.length,
-                    );
-                  },
-                ),
+                    /// Builder will return a Category card with the
+                    /// document category
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot doc = documents[index];
+                      return CategoryCard(
+                          category: Category.getCategoryFromDocument(doc));
+                    },
+                    itemCount: documents.length,
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

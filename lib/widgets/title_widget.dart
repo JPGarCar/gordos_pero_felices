@@ -18,8 +18,10 @@ class TitleWidget extends StatefulWidget {
   final bool isImage;
   final bool isBusiness;
   final String businessName;
+  final bool isAppPadding;
 
   TitleWidget({
+    this.isAppPadding = false,
     this.leftIcon,
     this.onPressedLeftIcon,
     this.rightIcon,
@@ -47,6 +49,7 @@ class TitleWidget extends StatefulWidget {
     this.isImage = true,
     this.isBusiness = true,
     @required this.businessName,
+    this.isAppPadding = false,
   });
 
   @override
@@ -70,7 +73,9 @@ class _TitleWidgetState extends State<TitleWidget> {
           ? EdgeInsets.symmetric(
               vertical: k_appPaddingVertical,
               horizontal: k_appPaddingHorizontal)
-          : EdgeInsets.only(bottom: k_appPaddingVertical),
+          : widget.isAppPadding
+              ? k_appPadding
+              : EdgeInsets.only(bottom: k_appPaddingVertical),
       child: Column(
         children: [
           TopRow(

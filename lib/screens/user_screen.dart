@@ -29,65 +29,64 @@ class _UserScreenState extends State<UserScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: k_whiteColor,
-        body: Container(
-          padding: k_appPadding,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TitleWidget(
-                leftIcon: Icons.arrow_back,
-                onPressedLeftIcon: () => Navigator.pop(context),
-                mainText: _appUser.name,
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 24,
-                ),
-                secondaryText: 'Tus Favoritos',
-                secondaryTextStyle: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  fontSize: 18,
-                ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TitleWidget(
+              isAppPadding: true,
+              leftIcon: Icons.arrow_back,
+              onPressedLeftIcon: () => Navigator.pop(context),
+              mainText: _appUser.name,
+              textStyle: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 24,
               ),
-              _appUser.favoriteBusinessList.isNotEmpty
-                  ? Expanded(
-                      child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                        ),
-                        itemBuilder: (context, index) {
-                          return FutureBuilder(
-                              future: Business.getBusinessFromDB(
-                                  _appUser.favoriteBusinessList[index]),
-                              builder: (context, snapshot) {
-                                /// Check if there is data or for an error
-                                if (!snapshot.hasData) {
-                                  return LoadingGif();
-                                } else if (snapshot.hasError) {
-                                  return Icon(Icons.error);
-                                }
+              secondaryText: 'Tus Favoritos',
+              secondaryTextStyle: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+                fontSize: 18,
+              ),
+            ),
+            _appUser.favoriteBusinessList.isNotEmpty
+                ? Expanded(
+                    child: GridView.builder(
+                      padding: k_appPadding,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                      ),
+                      itemBuilder: (context, index) {
+                        return FutureBuilder(
+                            future: Business.getBusinessFromDB(
+                                _appUser.favoriteBusinessList[index]),
+                            builder: (context, snapshot) {
+                              /// Check if there is data or for an error
+                              if (!snapshot.hasData) {
+                                return LoadingGif();
+                              } else if (snapshot.hasError) {
+                                return Icon(Icons.error);
+                              }
 
-                                /// All good, we can continue
-                                /// check if business is active, else do not build card
-                                Business business = snapshot.data;
-                                return business.isActive
-                                    ? BusinessCard(
-                                        isOverlay: false,
-                                        business: business,
-                                      )
-                                    : SizedBox();
-                              });
-                        },
-                        itemCount: _appUser.favoriteBusinessList.length,
-                      ),
-                    )
-                  : Expanded(
-                      child: Center(
-                        child: Text('Aun no tienes favoritos!'),
-                      ),
+                              /// All good, we can continue
+                              /// check if business is active, else do not build card
+                              Business business = snapshot.data;
+                              return business.isActive
+                                  ? BusinessCard(
+                                      isOverlay: false,
+                                      business: business,
+                                    )
+                                  : SizedBox();
+                            });
+                      },
+                      itemCount: _appUser.favoriteBusinessList.length,
                     ),
-            ],
-          ),
+                  )
+                : Expanded(
+                    child: Center(
+                      child: Text('Aun no tienes favoritos!'),
+                    ),
+                  ),
+          ],
         ),
       ),
     );
