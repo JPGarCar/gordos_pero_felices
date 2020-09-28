@@ -46,41 +46,40 @@ class _CategoryScreenState extends State<CategoryScreen> {
               ),
             ),
 
-            /// Listbuilder of all the businessReferences in the category
-            /// itemBuilder calls a FutureBuilder which grabs the Business
-            /// from a businessReferences in the category by calling the
-            /// Business static function getBusinessFromDB()
+            /// ListView with all businesses in the category;
+            /// we use a stream builder to keep businesses updated in case they
+            /// change while the user has them open;
+            /// We then use a future builder to get a business local object
+            /// out of the stream snapshot
             Expanded(
               child: ListView.builder(
                 padding: k_appPadding,
                 itemBuilder: (context, index) {
-                  return FutureBuilder(
-                    future: Business.getBusinessFromDB(
-                        Provider.of<Category>(context, listen: false)
-                            .businessReferences[index]),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<dynamic> snapshot) {
-                      /// Check if there is data or for an error
-                      if (!snapshot.hasData) {
-                        return LoadingGif();
-                      } else if (snapshot.hasError) {
-                        return Icon(Icons.error);
-                      }
+                  return StreamBuilder(
+                      stream: Provider.of<Category>(context)
+                          .businessReferences[index]
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        /// Check if there is data or for an error
+                        if (!snapshot.hasData) {
+                          return LoadingGif();
+                        } else if (snapshot.hasError) {
+                          return Icon(Icons.error);
+                        }
 
-                      /// All good, we can continue
-                      /// check if business is active, else do not build card
-                      Business business = snapshot.data;
-                      return business.isActive
-                          ? BusinessCard(
-                              business: business,
-                            )
-                          : SizedBox();
-                    },
-                  );
+                        /// All good, we can continue
+                        /// check if business is active, else do not build card
+                        Business business =
+                            Business.getBusinessFromDBForStream(snapshot.data);
+                        return business.isActive
+                            ? BusinessCard(
+                                business: business,
+                              )
+                            : SizedBox();
+                      });
                 },
-                itemCount: Provider.of<Category>(context, listen: false)
-                    .businessReferences
-                    .length,
+                itemCount:
+                    Provider.of<Category>(context).businessReferences.length,
               ),
             ),
           ],

@@ -9,12 +9,12 @@ import 'package:gordos_pero_felizes/services/g_p_f_icons_icons.dart';
 /// It holds all the business info, from images to ratings, to google map stuff.
 
 class Business {
+  /// Grabs the documentReference and creates a Business out of it, will
+  /// return a furure<Business> once the documentReference get returns.
   static Future<Business> getBusinessFromDB(
       DocumentReference documentReference) async {
     Business business;
 
-    /// Grabs the documentReference and creates a Business out of it, will
-    /// return a furure<Business> once the documentReference get returns.
     await documentReference.get().then((DocumentSnapshot docSnapshot) {
       var value = docSnapshot.data();
       business = Business(
@@ -35,6 +35,29 @@ class Business {
         mapsLink: value[fk_mapLink],
       );
     });
+    return business;
+  }
+
+  static Business getBusinessFromDBForStream(DocumentSnapshot document) {
+    Business business;
+    var value = document.data();
+    business = Business(
+      businessName: value[fk_businessName],
+      happyRating: value[fk_happyRating],
+      houseRating: value[fk_houseRating],
+      moneyRating: value[fk_moneyRating],
+      mainImageAsset: value[fk_businessMainImageAsset],
+      bestPlateList: List.from(value[fk_bestPlateList]),
+      imageAssetList: List.from(value[fk_businessImageAssetList]),
+      tipList: List.from(value[fk_tipList]),
+      igLink: value[fk_igLink],
+      phoneNumber: value[fk_phoneNumber],
+      rappiLink: value[fk_rappiLink],
+      textReview: value[fk_textReview],
+      uberEatsLink: value[fk_uberEatsLink],
+      isActive: value[fk_isActive],
+      mapsLink: value[fk_mapLink],
+    );
     return business;
   }
 
