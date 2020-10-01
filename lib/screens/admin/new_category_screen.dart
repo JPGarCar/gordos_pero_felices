@@ -8,6 +8,7 @@ import 'package:gordos_pero_felizes/services/dropdown_items_getter.dart';
 import 'package:gordos_pero_felizes/services/image_getter.dart';
 import 'package:gordos_pero_felizes/widgets/card/category_card.dart';
 import 'package:gordos_pero_felizes/widgets/dialogs/confirm_dialog.dart';
+import 'package:gordos_pero_felizes/widgets/parent_widget.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_dropdown.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_switch.dart';
@@ -87,156 +88,153 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Container(
-          padding: k_appPadding,
-          child: Column(
-            children: [
-              TitleWidget(
-                isImage: false,
-                leftIcon: Icons.arrow_back,
-                onPressedLeftIcon: () => Navigator.pop(context),
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18,
-                ),
-                mainText: 'Agregar una Categoría Nueva',
+    return ParentWidget(
+      bodyChild: Container(
+        padding: k_appPadding,
+        child: Column(
+          children: [
+            TitleWidget(
+              isImage: false,
+              leftIcon: Icons.arrow_back,
+              onPressedLeftIcon: () => Navigator.pop(context),
+              textStyle: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
               ),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      RedRoundedTextField(
-                        onChangedFunction: (string) {
-                          setState(() {});
-                        },
-                        isTextInputDone: true,
-                        hint: 'Nombre de categoría',
-                        textEditingController: nameController,
-                      ),
-                      RedRoundedButton(
-                        buttonText: 'Escojer imagen de categoria',
-                        onTapFunction: () async {
-                          _image = await ImageGetter.getImage();
-                          setState(() {});
-                        },
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 30),
-                        child: Column(
-                          children: [
-                            Text(
-                              'Preview de la categoría:',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
+              mainText: 'Agregar una Categoría Nueva',
+            ),
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    RedRoundedTextField(
+                      onChangedFunction: (string) {
+                        setState(() {});
+                      },
+                      isTextInputDone: true,
+                      hint: 'Nombre de categoría',
+                      textEditingController: nameController,
+                    ),
+                    RedRoundedButton(
+                      buttonText: 'Escojer imagen de categoria',
+                      onTapFunction: () async {
+                        _image = await ImageGetter.getImage();
+                        setState(() {});
+                      },
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 30),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Preview de la categoría:',
+                            style: TextStyle(
+                              fontSize: 16,
                             ),
-                            _image != null
-                                ? CategoryCard(
-                                    isOffline: true,
-                                    isActive: false,
-                                    category: new Category(
-                                      name: nameController.text,
-                                      imageAssetPath: _image.path,
-                                    ),
-                                  )
-                                : SizedBox(),
-                          ],
-                        ),
+                          ),
+                          _image != null
+                              ? CategoryCard(
+                                  isOffline: true,
+                                  isActive: false,
+                                  category: new Category(
+                                    name: nameController.text,
+                                    imageAssetPath: _image.path,
+                                  ),
+                                )
+                              : SizedBox(),
+                        ],
                       ),
+                    ),
 
-                      /// Business Selector
-                      dropDownItems != null
-                          ? Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  RedRoundedDropDown(
-                                    dropDownItems: dropDownItems,
-                                    value: businessID,
-                                    hint: 'Negocio a agregar',
-                                    onChangeFunction: (value) {
-                                      setState(() {
-                                        businessIDs.add(value);
-                                        dropDownItems.removeWhere((element) =>
-                                            element.value == value);
-                                      });
+                    /// Business Selector
+                    dropDownItems != null
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                RedRoundedDropDown(
+                                  dropDownItems: dropDownItems,
+                                  value: businessID,
+                                  hint: 'Negocio a agregar',
+                                  onChangeFunction: (value) {
+                                    setState(() {
+                                      businessIDs.add(value);
+                                      dropDownItems.removeWhere(
+                                          (element) => element.value == value);
+                                    });
+                                  },
+                                ),
+                                Flexible(
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: businessIDs.length,
+                                    itemBuilder: (context, index) {
+                                      return BusinessListItem(
+                                        businessID: businessIDs[index],
+                                        onTapFunction: () {
+                                          setState(() {
+                                            dropDownItems.add(
+                                              DropdownMenuItem(
+                                                value: businessIDs[index],
+                                                child: Text(businessIDs[index]),
+                                              ),
+                                            );
+                                            businessIDs.removeAt(index);
+                                          });
+                                        },
+                                      );
                                     },
                                   ),
-                                  Flexible(
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: businessIDs.length,
-                                      itemBuilder: (context, index) {
-                                        return BusinessListItem(
-                                          businessID: businessIDs[index],
-                                          onTapFunction: () {
-                                            setState(() {
-                                              dropDownItems.add(
-                                                DropdownMenuItem(
-                                                  value: businessIDs[index],
-                                                  child:
-                                                      Text(businessIDs[index]),
-                                                ),
-                                              );
-                                              businessIDs.removeAt(index);
-                                            });
-                                          },
-                                        );
+                                ),
+                              ],
+                            ),
+                          )
+                        : SizedBox(),
+                    RedRoundedSwitch(
+                      text: 'Activo?',
+                      value: isActive,
+                      onChangeFunction: (value) {
+                        setState(() {
+                          isActive = value;
+                        });
+                      },
+                    ),
+                    RedRoundedSwitch(
+                      text: 'Especial?',
+                      value: isSpecial,
+                      onChangeFunction: (value) {
+                        setState(() {
+                          isSpecial = value;
+                        });
+                      },
+                    ),
+                    _image != null
+                        ? nameController.text != ""
+                            ? RedRoundedButton(
+                                buttonText: 'Agregar Categoría Nueva',
+                                onTapFunction: () async {
+                                  await uploadCategory(nameController.text);
+                                  showDialog(
+                                    context: context,
+                                    child: ConfirmDialog(
+                                      text:
+                                          'La categoría se agregó correctamente!',
+                                      onTapFunction: () {
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
                                       },
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : SizedBox(),
-                      RedRoundedSwitch(
-                        text: 'Activo?',
-                        value: isActive,
-                        onChangeFunction: (value) {
-                          setState(() {
-                            isActive = value;
-                          });
-                        },
-                      ),
-                      RedRoundedSwitch(
-                        text: 'Especial?',
-                        value: isSpecial,
-                        onChangeFunction: (value) {
-                          setState(() {
-                            isSpecial = value;
-                          });
-                        },
-                      ),
-                      _image != null
-                          ? nameController.text != ""
-                              ? RedRoundedButton(
-                                  buttonText: 'Agregar Categoría Nueva',
-                                  onTapFunction: () async {
-                                    await uploadCategory(nameController.text);
-                                    showDialog(
-                                      context: context,
-                                      child: ConfirmDialog(
-                                        text:
-                                            'La categoría se agregó correctamente!',
-                                        onTapFunction: () {
-                                          Navigator.pop(context);
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    );
-                                  },
-                                )
-                              : SizedBox()
-                          : SizedBox(),
-                    ],
-                  ),
+                                  );
+                                },
+                              )
+                            : SizedBox()
+                        : SizedBox(),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -1,18 +1,15 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gordos_pero_felizes/constants.dart';
-import 'package:gordos_pero_felizes/models/app_user.dart';
 import 'package:gordos_pero_felizes/models/business.dart';
 import 'package:gordos_pero_felizes/screens/user_screen.dart';
 import 'package:gordos_pero_felizes/services/g_p_f_icons_icons.dart';
 import 'package:gordos_pero_felizes/widgets/card/custom_card.dart';
+import 'package:gordos_pero_felizes/widgets/parent_widget.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_button.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
-import 'package:maps_launcher/maps_launcher.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BusinessScreen extends StatefulWidget {
@@ -29,6 +26,9 @@ class _BusinessScreenState extends State<BusinessScreen> {
 
   // padding to be used between all the info sections
   var itemPadding = EdgeInsets.symmetric(vertical: 15);
+
+  // Business object from past screen
+  Business business;
 
   /// Deals with creating the cards for the carousel slider
   List<Widget> carouselItems(List<String> pathList) {
@@ -48,170 +48,171 @@ class _BusinessScreenState extends State<BusinessScreen> {
   }
 
   @override
+  void initState() {
+    // Grabbing the business object from route
+    business = ModalRoute.of(context).settings.arguments;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final Business business = ModalRoute.of(context).settings.arguments;
     // imageHeight = MediaQuery.of(context).size.height / 2;
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: k_whiteColor,
-        body: Column(
-          children: [
-            TitleWidget.business(
-              onPressedLeftIcon: () => Navigator.pop(context),
-              onPressedRightIcon: () =>
-                  Navigator.pushNamed(context, UserScreen.screenId),
-              mainText: business.businessName,
-              textStyle: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-              ),
-              businessName: business.businessName,
-              // TODO change this to user favorite
+    return ParentWidget(
+      bodyChild: Column(
+        children: [
+          TitleWidget.business(
+            onPressedLeftIcon: () => Navigator.pop(context),
+            onPressedRightIcon: () =>
+                Navigator.pushNamed(context, UserScreen.screenId),
+            mainText: business.businessName,
+            textStyle: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
             ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  // only give bottom padding to differentiate between carousel
-                  // and the information
-                  padding: EdgeInsets.only(bottom: k_appPaddingVertical),
-                  child: Column(
-                    children: [
-                      CarouselSlider(
-                        options: CarouselOptions(
-                          //height: imageHeight,
-                          autoPlay: true,
-                          // this is the aspect ratio that instagram uses
-                          aspectRatio: 4 / 5,
-                          enlargeCenterPage: true,
-                        ),
-                        items: carouselItems(business.imageAssetList),
+            businessName: business.businessName,
+            // TODO change this to user favorite
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                // only give bottom padding to differentiate between carousel
+                // and the information
+                padding: EdgeInsets.only(bottom: k_appPaddingVertical),
+                child: Column(
+                  children: [
+                    CarouselSlider(
+                      options: CarouselOptions(
+                        //height: imageHeight,
+                        autoPlay: true,
+                        // this is the aspect ratio that instagram uses
+                        aspectRatio: 4 / 5,
+                        enlargeCenterPage: true,
                       ),
-                      Padding(
-                        // resume horizontal padding outside the image carousel
-                        padding: EdgeInsets.symmetric(
-                            horizontal: k_appPaddingHorizontal),
-                        child: Column(
-                          // main column with all the information
-                          children: [
-                            /// Main text
-                            Container(
-                              padding: itemPadding,
-                              child: Text(
-                                business.textReview,
-                                style: TextStyle(fontSize: k_textFontSize),
-                              ),
+                      items: carouselItems(business.imageAssetList),
+                    ),
+                    Padding(
+                      // resume horizontal padding outside the image carousel
+                      padding: EdgeInsets.symmetric(
+                          horizontal: k_appPaddingHorizontal),
+                      child: Column(
+                        // main column with all the information
+                        children: [
+                          /// Main text
+                          Container(
+                            padding: itemPadding,
+                            child: Text(
+                              business.textReview,
+                              style: TextStyle(fontSize: k_textFontSize),
                             ),
+                          ),
 
-                            /// Icon reviews
-                            Padding(
-                              padding: itemPadding,
-                              child: IconReviewRow(business: business),
+                          /// Icon reviews
+                          Padding(
+                            padding: itemPadding,
+                            child: IconReviewRow(business: business),
+                          ),
+
+                          /// Best Plates
+                          CustomListView(
+                            padding: itemPadding,
+                            list: business.bestPlateList,
+                            title: 'Lo Que Pedimos:',
+                          ),
+
+                          /// List of tips
+                          CustomListView(
+                            padding: itemPadding,
+                            list: business.tipList,
+                            title: 'Nuestros Gordo Tips:',
+                          ),
+
+                          /// Menu TODO
+
+                          // Wraper to make sure the area looks clean and is
+                          // still responsive to the phone
+                          Padding(
+                            padding: itemPadding,
+                            child: Wrap(
+                              alignment: WrapAlignment.center,
+                              runSpacing: 15,
+                              spacing: 10,
+                              children: [
+                                /// Google maps
+                                business.mapsLink != ''
+                                    ? RedRoundedButton(
+                                        imageAsset:
+                                            'images/Google_Maps_logo_icon.png',
+                                        imageHeight: 30.0,
+                                        buttonText: 'Ir a Google Maps',
+                                        height: 50.0,
+                                        padding: 0.0,
+                                        onTapFunction: () async {
+                                          await launch(business.mapsLink);
+                                        },
+                                      )
+                                    : SizedBox(),
+
+                                /// Phone number
+                                // make sure there is a phone number to show
+                                business.phoneNumber != ''
+                                    ? RedRoundedButton(
+                                        padding: 0.0,
+                                        height: 50.0,
+                                        iconData: Icons.phone_in_talk,
+                                        buttonText: business.phoneNumber,
+                                        onTapFunction: () async {
+                                          await launch(
+                                              'tel://${business.phoneNumber}');
+                                        },
+                                      )
+                                    : SizedBox(),
+
+                                /// Uber Eats
+                                business.uberEatsLink != ''
+                                    ? RedRoundedButton(
+                                        padding: 0.0,
+                                        height: 50.0,
+                                        imageAsset: 'images/uber_eats_logo.jpg',
+                                        imageHeight: 30,
+                                        buttonText: 'Uber Eats',
+                                        onTapFunction: () async {
+                                          if (await canLaunch(
+                                                  business.uberEatsLink) ==
+                                              true) {
+                                            await launch(business.uberEatsLink);
+                                          }
+                                        },
+                                      )
+                                    : SizedBox(),
+
+                                /// Rappi
+                                business.rappiLink != ''
+                                    ? RedRoundedButton(
+                                        padding: 0.0,
+                                        height: 50.0,
+                                        imageAsset: 'images/rappi_logo.png',
+                                        buttonText: 'Rappi',
+                                        onTapFunction: () async {
+                                          if (await canLaunch(
+                                                  business.rappiLink) ==
+                                              true) {
+                                            await launch(business.rappiLink);
+                                          }
+                                        },
+                                      )
+                                    : SizedBox(),
+                              ],
                             ),
-
-                            /// Best Plates
-                            CustomListView(
-                              padding: itemPadding,
-                              list: business.bestPlateList,
-                              title: 'Lo Que Pedimos:',
-                            ),
-
-                            /// List of tips
-                            CustomListView(
-                              padding: itemPadding,
-                              list: business.tipList,
-                              title: 'Nuestros Gordo Tips:',
-                            ),
-
-                            /// Menu TODO
-
-                            // Wraper to make sure the area looks clean and is
-                            // still responsive to the phone
-                            Padding(
-                              padding: itemPadding,
-                              child: Wrap(
-                                alignment: WrapAlignment.center,
-                                runSpacing: 15,
-                                spacing: 10,
-                                children: [
-                                  /// Google maps
-                                  business.mapsLink != ''
-                                      ? RedRoundedButton(
-                                          imageAsset:
-                                              'images/Google_Maps_logo_icon.png',
-                                          imageHeight: 30.0,
-                                          buttonText: 'Ir a Google Maps',
-                                          height: 50.0,
-                                          padding: 0.0,
-                                          onTapFunction: () async {
-                                            await launch(business.mapsLink);
-                                          },
-                                        )
-                                      : SizedBox(),
-
-                                  /// Phone number
-                                  // make sure there is a phone number to show
-                                  business.phoneNumber != ''
-                                      ? RedRoundedButton(
-                                          padding: 0.0,
-                                          height: 50.0,
-                                          iconData: Icons.phone_in_talk,
-                                          buttonText: business.phoneNumber,
-                                          onTapFunction: () async {
-                                            await launch(
-                                                'tel://${business.phoneNumber}');
-                                          },
-                                        )
-                                      : SizedBox(),
-
-                                  /// Uber Eats
-                                  business.uberEatsLink != ''
-                                      ? RedRoundedButton(
-                                          padding: 0.0,
-                                          height: 50.0,
-                                          imageAsset:
-                                              'images/uber_eats_logo.jpg',
-                                          imageHeight: 30,
-                                          buttonText: 'Uber Eats',
-                                          onTapFunction: () async {
-                                            if (await canLaunch(
-                                                    business.uberEatsLink) ==
-                                                true) {
-                                              await launch(
-                                                  business.uberEatsLink);
-                                            }
-                                          },
-                                        )
-                                      : SizedBox(),
-
-                                  /// Rappi
-                                  business.rappiLink != ''
-                                      ? RedRoundedButton(
-                                          padding: 0.0,
-                                          height: 50.0,
-                                          imageAsset: 'images/rappi_logo.png',
-                                          buttonText: 'Rappi',
-                                          onTapFunction: () async {
-                                            if (await canLaunch(
-                                                    business.rappiLink) ==
-                                                true) {
-                                              await launch(business.rappiLink);
-                                            }
-                                          },
-                                        )
-                                      : SizedBox(),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

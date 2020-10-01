@@ -10,6 +10,7 @@ import 'package:gordos_pero_felizes/widgets/business_editor.dart';
 import 'package:gordos_pero_felizes/widgets/dialogs/confirm_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/dialogs/yes_no_dialog.dart';
 import 'package:gordos_pero_felizes/widgets/loading_gif.dart';
+import 'package:gordos_pero_felizes/widgets/parent_widget.dart';
 import 'package:gordos_pero_felizes/widgets/red_rounded/red_rounded_dropdown.dart';
 import 'package:gordos_pero_felizes/widgets/title_widget.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -136,120 +137,118 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            /// Title widget with app padding
-            Padding(
-              padding: k_appPadding,
-              child: TitleWidget(
-                isImage: false,
-                leftIcon: Icons.arrow_back,
-                onPressedLeftIcon: () => Navigator.pop(context),
-                mainText: 'Editar Negocio',
-                textStyle: k_16wStyle,
-              ),
+    return ParentWidget(
+      bodyChild: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          /// Title widget with app padding
+          Padding(
+            padding: k_appPadding,
+            child: TitleWidget(
+              isImage: false,
+              leftIcon: Icons.arrow_back,
+              onPressedLeftIcon: () => Navigator.pop(context),
+              mainText: 'Editar Negocio',
+              textStyle: k_16wStyle,
             ),
+          ),
 
-            /// Business Chooser only if there hasnt been a business chosen
-            businessChooserStringValue == null
-                ? Column(
-                    children: [
-                      Text('Porfavor selecione un negocio a editar.'),
+          /// Business Chooser only if there hasnt been a business chosen
+          businessChooserStringValue == null
+              ? Column(
+                  children: [
+                    Text('Porfavor selecione un negocio a editar.'),
 
-                      // Make sure there are items in the drop down list
-                      businessChooserDropDownList != null
-                          ? RedRoundedDropDown(
-                              hint: 'Negocio',
-                              value: businessChooserStringValue,
-                              onChangeFunction: (value) async {
-                                businessChooserStringValue = value;
-                                await updateValues();
-                                setState(() {});
+                    // Make sure there are items in the drop down list
+                    businessChooserDropDownList != null
+                        ? RedRoundedDropDown(
+                            hint: 'Negocio',
+                            value: businessChooserStringValue,
+                            onChangeFunction: (value) async {
+                              businessChooserStringValue = value;
+                              await updateValues();
+                              setState(() {});
+                            },
+                            dropDownItems: businessChooserDropDownList,
+                          )
+                        : LoadingGif(),
+                  ],
+                )
+              :
+
+              /// Else we open the business editor
+              Flexible(
+                  fit: FlexFit.loose,
+                  child: BusinessEditor(
+                    categoryIDs: finalCategoryIDs,
+                    business: business,
+
+                    /// Submit text and function
+                    finalButtonString: 'Cambiar Negocio',
+                    finalOnTapFunction: () {
+                      showDialog(
+                        child: YesNoDialog(
+                          dialogText:
+                              'Seguro que queires cambiar este negocio?',
+                          onNoFunction: () => Navigator.pop(context),
+                          onYesFunction: () async {
+                            Navigator.pop(context);
+                            showDialog(context: context, child: LoadingGif());
+                            updateDB().whenComplete(
+                              () {
+                                Navigator.pop(context);
+                                showDialog(
+                                  context: context,
+                                  child: ConfirmDialog(
+                                    text:
+                                        'El negocio se ha cambiado correctamente!',
+                                    onTapFunction: () {
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                );
                               },
-                              dropDownItems: businessChooserDropDownList,
-                            )
-                          : LoadingGif(),
-                    ],
-                  )
-                :
-
-                /// Else we open the business editor
-                Flexible(
-                    fit: FlexFit.loose,
-                    child: BusinessEditor(
-                      categoryIDs: finalCategoryIDs,
-                      business: business,
-
-                      /// Submit text and function
-                      finalButtonString: 'Cambiar Negocio',
-                      finalOnTapFunction: () {
-                        showDialog(
-                          child: YesNoDialog(
-                            dialogText:
-                                'Seguro que queires cambiar este negocio?',
-                            onNoFunction: () => Navigator.pop(context),
-                            onYesFunction: () async {
-                              Navigator.pop(context);
-                              showDialog(context: context, child: LoadingGif());
-                              updateDB().whenComplete(
-                                () {
-                                  Navigator.pop(context);
-                                  showDialog(
-                                    context: context,
-                                    child: ConfirmDialog(
-                                      text:
-                                          'El negocio se ha cambiado correctamente!',
-                                      onTapFunction: () {
-                                        Navigator.pop(context);
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                          context: context,
-                        );
-                      },
-
-                      /// Secondary Images
-                      multiImageOnTapFunction: () async {
-                        images = await ImageGetter.loadAssets();
-                        return GridView.count(
-                          crossAxisCount: 3,
-                          children: List.generate(
-                            images.length,
-                            (index) {
-                              Asset asset = images[index];
-                              return AssetThumb(
-                                asset: asset,
-                                width: 250,
-                                height: 250,
-                              );
-                            },
-                          ),
-                        );
-                      },
-
-                      /// Main Image
-                      mainImagePath: _mainImageFile?.path ?? mainImagePath,
-                      isOnlineMainImage: _mainImageFile == null,
-                      mainImageOnTapFunction: () async {
-                        _mainImageFile = await ImageGetter.getImage().then(
-                          (value) {
-                            setState(() {});
-                            return value;
+                            );
                           },
-                        );
-                      },
-                    ),
+                        ),
+                        context: context,
+                      );
+                    },
+
+                    /// Secondary Images
+                    multiImageOnTapFunction: () async {
+                      images = await ImageGetter.loadAssets();
+                      return GridView.count(
+                        crossAxisCount: 3,
+                        children: List.generate(
+                          images.length,
+                          (index) {
+                            Asset asset = images[index];
+                            return AssetThumb(
+                              asset: asset,
+                              width: 250,
+                              height: 250,
+                            );
+                          },
+                        ),
+                      );
+                    },
+
+                    /// Main Image
+                    mainImagePath: _mainImageFile?.path ?? mainImagePath,
+                    isOnlineMainImage: _mainImageFile == null,
+                    mainImageOnTapFunction: () async {
+                      _mainImageFile = await ImageGetter.getImage().then(
+                        (value) {
+                          setState(() {});
+                          return value;
+                        },
+                      );
+                    },
                   ),
-          ],
-        ),
+                ),
+        ],
       ),
     );
   }
